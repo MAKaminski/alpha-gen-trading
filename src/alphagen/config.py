@@ -60,7 +60,7 @@ class SchwabSettings(BaseSettings):
 class StorageSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="")
 
-    database_url: str = Field("sqlite+aiosqlite:///./alpha_gen.db", alias="DATABASE_URL")
+    database_url: str = Field("sqlite+aiosqlite:///./data/alpha_gen.db", alias="DATABASE_URL")
 
 
 class RiskSettings(BaseSettings):
