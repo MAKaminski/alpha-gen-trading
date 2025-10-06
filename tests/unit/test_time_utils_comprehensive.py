@@ -1,7 +1,6 @@
 """Comprehensive tests for time_utils module to achieve 100% coverage."""
 from __future__ import annotations
 
-import pytest
 from unittest.mock import patch, MagicMock
 from datetime import datetime, timezone, timedelta, time
 from zoneinfo import ZoneInfo

@@ -1,11 +1,11 @@
 """End-to-end tests for complete trading workflows."""
 import pytest
 import asyncio
-from unittest.mock import AsyncMock, MagicMock, patch
-from datetime import datetime, timezone, timedelta
+from unittest.mock import AsyncMock, patch
+from datetime import timedelta
 
 from alphagen.app import AlphaGenApp
-from alphagen.core.events import EquityTick, OptionQuote, NormalizedTick
+from alphagen.core.events import EquityTick, OptionQuote
 from alphagen.core.time_utils import now_est
 
 

@@ -1,5 +1,5 @@
 """Mock data fixtures for testing."""
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta
 from typing import List
 
 from alphagen.core.events import EquityTick, OptionQuote, NormalizedTick, TradeIntent, Signal

@@ -1,6 +1,6 @@
 """Unit tests for signal generation logic."""
 import pytest
-from datetime import datetime, timedelta
+from datetime import timedelta
 from unittest.mock import AsyncMock
 
 from alphagen.signals import SignalEngine

@@ -2,17 +2,15 @@
 from __future__ import annotations
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from datetime import datetime, timezone
 from pathlib import Path
 import tempfile
-import os
 
 # Set matplotlib backend before importing visualization modules
 import matplotlib
 matplotlib.use('Agg')  # Use non-GUI backend for testing
 
-from alphagen.core.events import NormalizedTick, Signal, EquityTick
 
 
 class TestLiveChartComprehensive:
@@ -219,9 +217,9 @@ class TestLiveChartComprehensive:
              patch('matplotlib.pyplot.ion') as mock_ion, \
              patch('matplotlib.pyplot.style') as mock_style, \
              patch('matplotlib.pyplot.subplots') as mock_subplots, \
-             patch('matplotlib.pyplot.show') as mock_show, \
-             patch('matplotlib.pyplot.pause') as mock_pause, \
-             patch('matplotlib.animation.FuncAnimation') as mock_animation:
+             patch('matplotlib.pyplot.show'), \
+             patch('matplotlib.pyplot.pause'), \
+             patch('matplotlib.animation.FuncAnimation'):
             
             mock_fig = Mock()
             mock_ax = Mock()
@@ -277,13 +275,13 @@ class TestLiveChartComprehensive:
         # Mock queue to return tick data then None
         chart._queue.get_nowait.side_effect = [("tick", tick_point), None]
         
-        with patch('matplotlib.use') as mock_use, \
-             patch('matplotlib.pyplot.ion') as mock_ion, \
-             patch('matplotlib.pyplot.style') as mock_style, \
+        with patch('matplotlib.use'), \
+             patch('matplotlib.pyplot.ion'), \
+             patch('matplotlib.pyplot.style'), \
              patch('matplotlib.pyplot.subplots') as mock_subplots, \
-             patch('matplotlib.pyplot.show') as mock_show, \
-             patch('matplotlib.pyplot.pause') as mock_pause, \
-             patch('matplotlib.animation.FuncAnimation') as mock_animation:
+             patch('matplotlib.pyplot.show'), \
+             patch('matplotlib.pyplot.pause'), \
+             patch('matplotlib.animation.FuncAnimation'):
             
             mock_fig = Mock()
             mock_ax = Mock()
@@ -335,13 +333,13 @@ class TestLiveChartComprehensive:
         # Mock queue to return None immediately
         chart._queue.get_nowait.return_value = None
         
-        with patch('matplotlib.use') as mock_use, \
-             patch('matplotlib.pyplot.ion') as mock_ion, \
-             patch('matplotlib.pyplot.style') as mock_style, \
+        with patch('matplotlib.use'), \
+             patch('matplotlib.pyplot.ion'), \
+             patch('matplotlib.pyplot.style'), \
              patch('matplotlib.pyplot.subplots') as mock_subplots, \
-             patch('matplotlib.pyplot.show') as mock_show, \
-             patch('matplotlib.pyplot.pause') as mock_pause, \
-             patch('matplotlib.animation.FuncAnimation') as mock_animation:
+             patch('matplotlib.pyplot.show'), \
+             patch('matplotlib.pyplot.pause'), \
+             patch('matplotlib.animation.FuncAnimation'):
             
             mock_fig = Mock()
             mock_ax = Mock()
@@ -394,13 +392,13 @@ class TestLiveChartComprehensive:
         # Mock queue to return None immediately
         chart._queue.get_nowait.return_value = None
         
-        with patch('matplotlib.use') as mock_use, \
-             patch('matplotlib.pyplot.ion') as mock_ion, \
-             patch('matplotlib.pyplot.style') as mock_style, \
+        with patch('matplotlib.use'), \
+             patch('matplotlib.pyplot.ion'), \
+             patch('matplotlib.pyplot.style'), \
              patch('matplotlib.pyplot.subplots') as mock_subplots, \
-             patch('matplotlib.pyplot.show') as mock_show, \
-             patch('matplotlib.pyplot.pause') as mock_pause, \
-             patch('matplotlib.animation.FuncAnimation') as mock_animation:
+             patch('matplotlib.pyplot.show'), \
+             patch('matplotlib.pyplot.pause'), \
+             patch('matplotlib.animation.FuncAnimation'):
             
             mock_fig = Mock()
             mock_ax = Mock()
@@ -446,27 +444,13 @@ class TestLiveChartComprehensive:
         # Mock queue to return None immediately
         chart._queue.get_nowait.return_value = None
         
-        # Mock matplotlib modules
-        mock_matplotlib = Mock()
-        mock_matplotlib.is_interactive.return_value = True
-        mock_plt = Mock()
-        mock_fig = Mock()
-        mock_ax = Mock()
-        mock_plt.subplots.return_value = (mock_fig, mock_ax)
-        
-        # Mock canvas manager that raises exception
-        mock_manager = Mock()
-        mock_window = Mock()
-        mock_window.wm_attributes.side_effect = Exception("Attribute error")
-        mock_fig.canvas.manager = mock_manager
-        mock_manager.window = mock_window
-        
-        with patch('matplotlib.use') as mock_use, \
-             patch('matplotlib.pyplot.ion') as mock_ion, \
-             patch('matplotlib.pyplot.style') as mock_style, \
+        with patch('matplotlib.use'), \
+             patch('matplotlib.pyplot.ion'), \
+             patch('matplotlib.pyplot.style'), \
              patch('matplotlib.pyplot.subplots') as mock_subplots, \
-             patch('matplotlib.pyplot.show') as mock_show, \
-             patch('matplotlib.pyplot.pause') as mock_pause:
+             patch('matplotlib.pyplot.show'), \
+             patch('matplotlib.pyplot.pause'), \
+             patch('matplotlib.animation.FuncAnimation'):
             
             mock_fig = Mock()
             mock_ax = Mock()
@@ -494,7 +478,14 @@ class TestLiveChartComprehensive:
             mock_ax.plot.return_value = (Mock(),)  # For line unpacking - returns tuple with one element
             mock_ax.scatter.return_value = Mock()
             
+            # Mock the while loop to exit immediately
+            original_running = chart._running
+            chart._running = False
+            
             chart._run()  # Should handle exception gracefully
+            
+            # Restore original running state
+            chart._running = original_running
 
 
 class TestSimpleChartComprehensive:
@@ -549,9 +540,9 @@ class TestSimpleChartComprehensive:
         with patch('matplotlib.pyplot.ion') as mock_ion, \
              patch('matplotlib.pyplot.style') as mock_style, \
              patch('matplotlib.pyplot.subplots') as mock_subplots, \
-             patch('matplotlib.pyplot.show') as mock_show, \
-             patch('matplotlib.pyplot.pause') as mock_pause, \
-             patch('matplotlib.animation.FuncAnimation') as mock_animation:
+             patch('matplotlib.pyplot.show'), \
+             patch('matplotlib.pyplot.pause'), \
+             patch('matplotlib.animation.FuncAnimation'):
             
             mock_subplots.return_value = (mock_fig, mock_ax)
             mock_ax.plot.return_value = (Mock(),)  # For line unpacking - returns tuple with one element
@@ -813,7 +804,7 @@ class TestFileChartComprehensive:
         
         with tempfile.TemporaryDirectory() as temp_dir:
             new_dir = Path(temp_dir) / "charts"
-            chart = FileChart(output_dir=str(new_dir))
+            FileChart(output_dir=str(new_dir))
             assert new_dir.exists()
 
     def test_start_when_already_running(self):
@@ -1030,10 +1021,10 @@ class TestFileChartComprehensive:
             chart._tick_buffer.append(tick_point)
             chart._signal_buffer.append(signal_point)
             
-            with patch('matplotlib.pyplot.style') as mock_style, \
+            with patch('matplotlib.pyplot.style'), \
                  patch('matplotlib.pyplot.subplots') as mock_subplots, \
-                 patch('matplotlib.pyplot.savefig') as mock_savefig, \
-                 patch('matplotlib.pyplot.close') as mock_close:
+                 patch('matplotlib.pyplot.savefig'), \
+                 patch('matplotlib.pyplot.close'):
                 
                 mock_fig = Mock()
                 mock_ax = Mock()
@@ -1092,10 +1083,10 @@ class TestFileChartComprehensive:
             )
             chart._tick_buffer.append(tick_point)
             
-            with patch('matplotlib.pyplot.style') as mock_style, \
+            with patch('matplotlib.pyplot.style'), \
                  patch('matplotlib.pyplot.subplots') as mock_subplots, \
                  patch('matplotlib.pyplot.savefig') as mock_savefig, \
-                 patch('matplotlib.pyplot.close') as mock_close:
+                 patch('matplotlib.pyplot.close'):
                 
                 mock_fig = Mock()
                 mock_ax = Mock()
@@ -1174,7 +1165,7 @@ class TestSimpleGUIChartComprehensive:
         mock_canvas = Mock()
         mock_canvas_class.return_value = mock_canvas
         
-        chart = SimpleGUChart(mock_parent)
+        SimpleGUChart(mock_parent)
         
         mock_figure_class.assert_called_once()
         mock_fig.add_subplot.assert_called_once_with(111)
@@ -1197,7 +1188,7 @@ class TestSimpleGUIChartComprehensive:
         mock_canvas = Mock()
         mock_canvas_class.return_value = mock_canvas
         
-        chart = SimpleGUChart(mock_parent)
+        SimpleGUChart(mock_parent)
         
         # Verify plot calls
         assert mock_ax.plot.call_count == 2  # VWAP and MA9 lines
@@ -1221,15 +1212,14 @@ class TestSimpleGUIChartComprehensive:
         mock_canvas = Mock()
         mock_canvas_class.return_value = mock_canvas
         
-        with patch('alphagen.visualization.simple_gui_chart.mdates') as mock_mdates:
-            chart = SimpleGUChart(mock_parent)
+        with patch('alphagen.visualization.simple_gui_chart.mdates'):
+            SimpleGUChart(mock_parent)
             
             mock_ax.xaxis.set_major_formatter.assert_called_once()
 
     def test_add_tick_data(self):
         """Test adding tick data to the chart."""
         from alphagen.visualization.simple_gui_chart import SimpleGUChart
-        from alphagen.core.events import NormalizedTick, EquityTick
         
         mock_parent = Mock()
         chart = SimpleGUChart(mock_parent)

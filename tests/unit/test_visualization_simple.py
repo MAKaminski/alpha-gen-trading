@@ -1,13 +1,11 @@
 """Simplified tests for visualization modules focusing on core functionality."""
 from __future__ import annotations
 
-import pytest
 from unittest.mock import Mock, patch
 from datetime import datetime, timezone
 from pathlib import Path
 import tempfile
 
-from alphagen.core.events import NormalizedTick, Signal, EquityTick
 
 
 class TestLiveChartSimple:

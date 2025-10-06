@@ -1,9 +1,6 @@
 """Comprehensive tests for CLI module."""
-import asyncio
-from datetime import datetime
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import patch
 
-import pytest
 from click.testing import CliRunner
 
 from alphagen.cli import cli, debug, report, run

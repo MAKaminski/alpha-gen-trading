@@ -148,7 +148,7 @@ class TestStorageFunctions:
             mock_engine.begin.return_value.__aexit__.return_value = None
 
             try:
-                async with session_scope() as session:
+                async with session_scope():
                     raise ValueError("Test exception")
             except ValueError:
                 pass  # Expected exception

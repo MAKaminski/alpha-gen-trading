@@ -2,7 +2,7 @@
 import asyncio
 import pytest
 from datetime import datetime, timezone
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 
 from alphagen.core.events import EquityTick, OptionQuote, NormalizedTick
 from alphagen.core.time_utils import now_est

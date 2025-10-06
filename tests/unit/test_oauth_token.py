@@ -1,7 +1,6 @@
 """Unit tests for OAuth token handling and refresh logic."""
 import pytest
 from unittest.mock import patch, AsyncMock, MagicMock
-from datetime import datetime, timezone
 
 from alphagen.schwab_oauth_client import SchwabOAuthClient
 from alphagen.core.events import EquityTick

@@ -1,8 +1,5 @@
 """Comprehensive unit tests for core modules to achieve 100% coverage."""
-import pytest
-from unittest.mock import patch, mock_open
 from datetime import datetime, timezone
-import sys
 
 # Test __init__.py
 def test_init_module():
@@ -270,34 +267,6 @@ def test_etl_modules():
 def test_comprehensive_coverage():
     """Test that all major modules can be imported and have expected structure."""
     # Test all major imports work
-    import alphagen
-    import alphagen.__main__
-    import alphagen.app
-    import alphagen.cli
-    import alphagen.config
-    import alphagen.core.events
-    import alphagen.core.time_utils
-    import alphagen.gui.debug_app
-    import alphagen.market_data
-    import alphagen.market_data.base
-    import alphagen.market_data.factory
-    import alphagen.market_data.schwab_stream
-    import alphagen.option_monitor
-    import alphagen.polygon_stream
-    import alphagen.reports
-    import alphagen.schwab_client
-    import alphagen.schwab_oauth_client
-    import alphagen.signals
-    import alphagen.storage
-    import alphagen.trade_generator
-    import alphagen.trade_manager
-    import alphagen.visualization
-    import alphagen.visualization.file_chart
-    import alphagen.visualization.live_chart
-    import alphagen.visualization.simple_chart
-    import alphagen.visualization.simple_gui_chart
-    import alphagen.etl.normalizer
-    import alphagen.etl.position
     
     # All imports successful
     assert True

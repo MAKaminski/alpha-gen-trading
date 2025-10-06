@@ -1,11 +1,9 @@
 """Integration tests for Schwab API interactions."""
 import pytest
-import httpx
 from unittest.mock import patch, AsyncMock
 from datetime import datetime, timezone
 
 from alphagen.schwab_oauth_client import SchwabOAuthClient
-from alphagen.core.events import PositionSnapshot, OptionQuote
 
 
 @pytest.mark.asyncio

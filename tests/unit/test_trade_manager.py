@@ -1,10 +1,10 @@
 """Unit tests for trade management logic."""
 import pytest
-from datetime import datetime, timedelta
+from datetime import timedelta
 from unittest.mock import AsyncMock, MagicMock
 
 from alphagen.trade_manager import TradeManager
-from alphagen.core.events import TradeIntent, TradeExecution, NormalizedTick, EquityTick, OptionQuote
+from alphagen.core.events import TradeIntent, TradeExecution, OptionQuote
 from alphagen.core.time_utils import now_est
 
 
