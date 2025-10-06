@@ -4,13 +4,12 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 from datetime import datetime
-from typing import AsyncIterator, TYPE_CHECKING
+from typing import AsyncIterator
 
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from sqlmodel import Field, SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.alphagen.config import load_app_config
 
 
 class TestEquityTickRow(SQLModel, table=True):

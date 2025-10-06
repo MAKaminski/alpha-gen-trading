@@ -1,8 +1,6 @@
 """Comprehensive tests for reports module."""
 
 import pytest
-from datetime import date
-from unittest.mock import patch
 
 from src.alphagen.reports import fetch_daily_pnl
 
