@@ -11,7 +11,6 @@ from sqlmodel import Field, SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 
-
 class TestEquityTickRow(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     symbol: str

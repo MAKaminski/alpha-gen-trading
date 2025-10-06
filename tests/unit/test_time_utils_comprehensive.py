@@ -169,7 +169,9 @@ class TestTimeUtilsComprehensive:
             )
             mock_bounds.return_value = (next_session_start, next_session_end)
 
-            with patch("src.alphagen.core.time_utils.US_MARKET_HOLIDAYS") as mock_holidays:
+            with patch(
+                "src.alphagen.core.time_utils.US_MARKET_HOLIDAYS"
+            ) as mock_holidays:
                 mock_holidays.__contains__ = MagicMock(return_value=False)
 
                 result = next_session_open(current_time)
@@ -193,7 +195,9 @@ class TestTimeUtilsComprehensive:
             )
             mock_bounds.return_value = (next_session_start, next_session_end)
 
-            with patch("src.alphagen.core.time_utils.US_MARKET_HOLIDAYS") as mock_holidays:
+            with patch(
+                "src.alphagen.core.time_utils.US_MARKET_HOLIDAYS"
+            ) as mock_holidays:
                 mock_holidays.__contains__ = MagicMock(return_value=False)
 
                 result = next_session_open(None)
@@ -242,7 +246,9 @@ class TestTimeUtilsComprehensive:
 
             mock_bounds.side_effect = mock_bounds_side_effect
 
-            with patch("src.alphagen.core.time_utils.US_MARKET_HOLIDAYS") as mock_holidays:
+            with patch(
+                "src.alphagen.core.time_utils.US_MARKET_HOLIDAYS"
+            ) as mock_holidays:
 
                 def mock_holiday_check(date):
                     return date in [
@@ -276,7 +282,9 @@ class TestTimeUtilsComprehensive:
             )
             mock_bounds.return_value = (same_day_start, same_day_end)
 
-            with patch("src.alphagen.core.time_utils.US_MARKET_HOLIDAYS") as mock_holidays:
+            with patch(
+                "src.alphagen.core.time_utils.US_MARKET_HOLIDAYS"
+            ) as mock_holidays:
                 mock_holidays.__contains__ = MagicMock(return_value=False)
 
                 result = next_session_open(current_time)

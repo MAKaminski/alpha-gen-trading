@@ -16,7 +16,9 @@ async def test_complete_trading_cycle():
     """Test a complete trading cycle from market data to position closure."""
     with (
         patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch(
+            "src.alphagen.app.create_market_data_provider"
+        ) as mock_market_data_factory,
         patch("src.alphagen.app.init_models") as mock_init_models,
     ):
         # Mock Schwab client
@@ -134,9 +136,13 @@ async def test_market_hours_handling():
     """Test that the system handles market hours correctly."""
     with (
         patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch(
+            "src.alphagen.app.create_market_data_provider"
+        ) as mock_market_data_factory,
         patch("src.alphagen.app.init_models") as mock_init_models,
-        patch("src.alphagen.core.time_utils.within_trading_window") as mock_trading_window,
+        patch(
+            "src.alphagen.core.time_utils.within_trading_window"
+        ) as mock_trading_window,
     ):
         # Mock trading window to return False (market closed)
         mock_trading_window.return_value = False
@@ -191,7 +197,9 @@ async def test_error_recovery():
     """Test that the system recovers from errors gracefully."""
     with (
         patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch(
+            "src.alphagen.app.create_market_data_provider"
+        ) as mock_market_data_factory,
         patch("src.alphagen.app.init_models") as mock_init_models,
     ):
         # Mock Schwab client that fails initially then succeeds
@@ -245,7 +253,9 @@ async def test_position_monitoring():
     """Test that position monitoring works correctly."""
     with (
         patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch(
+            "src.alphagen.app.create_market_data_provider"
+        ) as mock_market_data_factory,
         patch("src.alphagen.app.init_models") as mock_init_models,
     ):
         # Mock Schwab client with changing positions

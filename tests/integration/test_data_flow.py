@@ -14,7 +14,9 @@ async def test_market_data_to_signal_flow():
     """Test complete data flow from market data to signal generation."""
     with (
         patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch(
+            "src.alphagen.app.create_market_data_provider"
+        ) as mock_market_data_factory,
         patch("src.alphagen.app.init_models") as mock_init_models,
     ):
         # Mock Schwab client
@@ -76,7 +78,9 @@ async def test_position_polling_integration():
     """Test integration of position polling with the main app."""
     with (
         patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch(
+            "src.alphagen.app.create_market_data_provider"
+        ) as mock_market_data_factory,
         patch("src.alphagen.app.init_models") as mock_init_models,
     ):
         # Mock Schwab client with position data
@@ -119,7 +123,9 @@ async def test_signal_to_trade_flow():
     """Test integration from signal generation to trade execution."""
     with (
         patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch(
+            "src.alphagen.app.create_market_data_provider"
+        ) as mock_market_data_factory,
         patch("src.alphagen.app.init_models") as mock_init_models,
     ):
         # Mock Schwab client
@@ -166,7 +172,9 @@ async def test_error_handling_integration():
     """Test error handling across the integrated system."""
     with (
         patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch(
+            "src.alphagen.app.create_market_data_provider"
+        ) as mock_market_data_factory,
         patch("src.alphagen.app.init_models") as mock_init_models,
     ):
         # Mock Schwab client that raises an error
