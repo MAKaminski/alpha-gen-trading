@@ -41,7 +41,7 @@ jobs:
     
     - name: Type check with mypy
       run: |
-        mypy src/alphagen --ignore-missing-imports
+        mypy -p alphagen --ignore-missing-imports
     
     - name: Run unit tests
       run: |
