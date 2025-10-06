@@ -25,9 +25,9 @@ class DebugGUI:
         
         self.logger = structlog.get_logger("alphagen.gui.debug")
         
-        # State variables
-        self.stream_data_active = tk.BooleanVar(value=False)
-        self.view_chart_active = tk.BooleanVar(value=False)
+        # State variables - Default to enabled for better UX
+        self.stream_data_active = tk.BooleanVar(value=True)
+        self.view_chart_active = tk.BooleanVar(value=True)
         
         # Components
         self.gui_chart: Optional[SimpleGUChart] = None
@@ -40,6 +40,81 @@ class DebugGUI:
         
         self._setup_ui()
         self._setup_async_loop()
+        
+        # Auto-start features for better UX
+        self._auto_start_features()
+        
+    def _auto_start_features(self):
+        """Auto-start streaming and chart for better UX."""
+        # Schedule auto-start after UI is fully rendered
+        self.root.after(1000, self._delayed_auto_start)
+        
+    def _delayed_auto_start(self):
+        """Delayed auto-start to ensure UI is fully rendered."""
+        try:
+            # Start chart first (warm-up)
+            if self.view_chart_active.get():
+                self._log_to_console("🚀 Auto-starting chart...", "info")
+                self._start_chart()
+                self._warm_up_chart()
+            
+            # Start streaming after chart is ready
+            if self.stream_data_active.get():
+                self.root.after(500, self._start_auto_streaming)
+                
+        except Exception as e:
+            self._log_to_console(f"Auto-start error: {e}", "error")
+    
+    def _warm_up_chart(self):
+        """Warm up the chart with sample data for immediate rendering."""
+        if not self.gui_chart:
+            return
+            
+        try:
+            from datetime import datetime, timezone
+            import random
+            
+            # Generate sample data for warm-up
+            base_price = 400.0
+            current_time = datetime.now(timezone.utc)
+            
+            # Add 10 sample data points
+            for i in range(10):
+                sample_time = current_time.replace(second=current_time.second - (10-i))
+                price_change = random.uniform(-2.0, 2.0)
+                sample_price = base_price + price_change + (i * 0.1)
+                
+                # Create sample normalized tick
+                from alphagen.core.events import NormalizedTick, EquityTick
+                sample_equity = EquityTick(
+                    symbol="QQQ",
+                    price=sample_price,
+                    session_vwap=sample_price + random.uniform(-0.5, 0.5),
+                    ma9=sample_price + random.uniform(-0.3, 0.3),
+                    as_of=sample_time
+                )
+                
+                sample_tick = NormalizedTick(
+                    timestamp=sample_time,
+                    equity=sample_equity,
+                    option=None
+                )
+                
+                # Add to chart
+                self.gui_chart.handle_tick(sample_tick)
+            
+            self._log_to_console("📊 Chart warmed up with sample data", "info")
+            
+        except Exception as e:
+            self._log_to_console(f"Chart warm-up error: {e}", "warning")
+    
+    def _start_auto_streaming(self):
+        """Start auto-streaming after chart is ready."""
+        try:
+            self._log_to_console("🔄 Auto-starting data stream...", "info")
+            self._start_streaming()
+        except Exception as e:
+            self._log_to_console(f"Auto-streaming error: {e}", "error")
         
     def _setup_ui(self):
         """Set up the user interface."""
@@ -311,9 +386,9 @@ class DebugGUI:
         """Run the GUI application."""
         self._log_to_console("🚀 Alpha-Gen Unified Debug Console started", "info")
         self._log_to_console("", "info")
-        self._log_to_console("📊 Features:", "info")
-        self._log_to_console("  • Check 'Stream Data' to start receiving live market data", "info")
-        self._log_to_console("  • Check 'View Chart' to display live charts", "info")
+        self._log_to_console("📊 Features (Auto-Started):", "info")
+        self._log_to_console("  • ✅ Stream Data: Auto-started for live market data", "info")
+        self._log_to_console("  • ✅ View Chart: Auto-started with warm-up data", "info")
         self._log_to_console("  • Use 'Setup OAuth' to configure Schwab API access", "info")
         self._log_to_console("  • Use 'Clear Console' to clear the output", "info")
         self._log_to_console("  • Use 'Export Logs' to save console output to file", "info")
