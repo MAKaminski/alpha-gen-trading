@@ -85,9 +85,12 @@ class TestReportsComprehensive:
         # Mock the engine and connection
         mock_engine = AsyncMock()
         mock_conn = AsyncMock()
-        mock_engine.connect.return_value = mock_conn
-        mock_conn.__aenter__ = AsyncMock(return_value=mock_conn)
-        mock_conn.__aexit__ = AsyncMock(return_value=None)
+        
+        # Create a proper async context manager
+        mock_context_manager = AsyncMock()
+        mock_context_manager.__aenter__ = AsyncMock(return_value=mock_conn)
+        mock_context_manager.__aexit__ = AsyncMock(return_value=None)
+        mock_engine.connect.return_value = mock_context_manager
         
         # Mock empty result
         mock_result = AsyncMock()
