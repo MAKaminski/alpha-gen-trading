@@ -263,12 +263,34 @@ class TestFileChartSimple:
 
 class TestSimpleGUIChartSimple:
     """Simplified tests for SimpleGUChart focusing on core functionality."""
+    
+    def _setup_mocks(self):
+        """Helper method to setup common mocks for SimpleGUChart tests."""
+        mock_parent = Mock()
+        mock_parent._last_child_ids = {}
+        
+        mock_fig = Mock()
+        mock_ax = Mock()
+        mock_fig.add_subplot.return_value = mock_ax
+        
+        # Mock the plot method to return a tuple for unpacking
+        mock_line = Mock()
+        mock_ax.plot.return_value = (mock_line,)
+        
+        mock_canvas = Mock()
+        
+        return mock_parent, mock_fig, mock_ax, mock_line, mock_canvas
 
-    def test_init_default_params(self):
+    @patch('alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg')
+    @patch('alphagen.visualization.simple_gui_chart.Figure')
+    def test_init_default_params(self, mock_figure_class, mock_canvas_class):
         """Test SimpleGUChart initialization with default parameters."""
         from alphagen.visualization.simple_gui_chart import SimpleGUChart
         
-        mock_parent = Mock()
+        mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
+        mock_figure_class.return_value = mock_fig
+        mock_canvas_class.return_value = mock_canvas
+        
         chart = SimpleGUChart(mock_parent)
         
         assert chart.max_points == 100
@@ -276,20 +298,30 @@ class TestSimpleGUIChartSimple:
         assert len(chart.data_buffer) == 0
         assert chart.parent_frame == mock_parent
 
-    def test_init_custom_max_points(self):
+    @patch('alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg')
+    @patch('alphagen.visualization.simple_gui_chart.Figure')
+    def test_init_custom_max_points(self, mock_figure_class, mock_canvas_class):
         """Test SimpleGUChart initialization with custom max_points."""
         from alphagen.visualization.simple_gui_chart import SimpleGUChart
         
-        mock_parent = Mock()
+        mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
+        mock_figure_class.return_value = mock_fig
+        mock_canvas_class.return_value = mock_canvas
+        
         chart = SimpleGUChart(mock_parent, max_points=50)
         
         assert chart.max_points == 50
 
-    def test_scale_configs(self):
+    @patch('alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg')
+    @patch('alphagen.visualization.simple_gui_chart.Figure')
+    def test_scale_configs(self, mock_figure_class, mock_canvas_class):
         """Test scale configurations are properly set."""
         from alphagen.visualization.simple_gui_chart import SimpleGUChart
         
-        mock_parent = Mock()
+        mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
+        mock_figure_class.return_value = mock_fig
+        mock_canvas_class.return_value = mock_canvas
+        
         chart = SimpleGUChart(mock_parent)
         
         expected_scales = ["1min", "5min", "15min", "1hour", "4hour", "1day"]
@@ -300,42 +332,62 @@ class TestSimpleGUIChartSimple:
             assert "max_points" in config
             assert "label" in config
 
-    def test_change_time_scale(self):
+    @patch('alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg')
+    @patch('alphagen.visualization.simple_gui_chart.Figure')
+    def test_change_time_scale(self, mock_figure_class, mock_canvas_class):
         """Test changing time scale."""
         from alphagen.visualization.simple_gui_chart import SimpleGUChart
         
-        mock_parent = Mock()
+        mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
+        mock_figure_class.return_value = mock_fig
+        mock_canvas_class.return_value = mock_canvas
+        
         chart = SimpleGUChart(mock_parent)
         
-        chart.change_time_scale("5min")
+        chart.set_time_scale("5min")
         assert chart.time_scale == "5min"
 
-    def test_change_time_scale_invalid(self):
+    @patch('alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg')
+    @patch('alphagen.visualization.simple_gui_chart.Figure')
+    def test_change_time_scale_invalid(self, mock_figure_class, mock_canvas_class):
         """Test changing to invalid time scale."""
         from alphagen.visualization.simple_gui_chart import SimpleGUChart
         
-        mock_parent = Mock()
+        mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
+        mock_figure_class.return_value = mock_fig
+        mock_canvas_class.return_value = mock_canvas
+        
         chart = SimpleGUChart(mock_parent)
         original_scale = chart.time_scale
         
-        chart.change_time_scale("invalid")
+        chart.set_time_scale("invalid")
         assert chart.time_scale == original_scale  # Should remain unchanged
 
-    def test_get_current_data_empty(self):
+    @patch('alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg')
+    @patch('alphagen.visualization.simple_gui_chart.Figure')
+    def test_get_current_data_empty(self, mock_figure_class, mock_canvas_class):
         """Test getting current data when buffer is empty."""
         from alphagen.visualization.simple_gui_chart import SimpleGUChart
         
-        mock_parent = Mock()
+        mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
+        mock_figure_class.return_value = mock_fig
+        mock_canvas_class.return_value = mock_canvas
+        
         chart = SimpleGUChart(mock_parent)
         
-        data = chart.get_current_data()
-        assert data == []
+        # Test that buffer is empty
+        assert len(chart.data_buffer) == 0
 
-    def test_clear_data(self):
+    @patch('alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg')
+    @patch('alphagen.visualization.simple_gui_chart.Figure')
+    def test_clear_data(self, mock_figure_class, mock_canvas_class):
         """Test clearing all data from buffer."""
         from alphagen.visualization.simple_gui_chart import SimpleGUChart
         
-        mock_parent = Mock()
+        mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
+        mock_figure_class.return_value = mock_fig
+        mock_canvas_class.return_value = mock_canvas
+        
         chart = SimpleGUChart(mock_parent)
         
         # Add some data
@@ -348,34 +400,44 @@ class TestSimpleGUIChartSimple:
             mock_tick.as_of = datetime.now(timezone.utc)
             mock_tick.equity = mock_equity
             
-            chart.add_tick(mock_tick)
+            chart.handle_tick(mock_tick)
         
         assert len(chart.data_buffer) == 3
-        chart.clear_data()
+        chart.clear()
         assert len(chart.data_buffer) == 0
 
-    def test_get_time_scale_label(self):
+    @patch('alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg')
+    @patch('alphagen.visualization.simple_gui_chart.Figure')
+    def test_get_time_scale_label(self, mock_figure_class, mock_canvas_class):
         """Test getting time scale label."""
         from alphagen.visualization.simple_gui_chart import SimpleGUChart
         
-        mock_parent = Mock()
+        mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
+        mock_figure_class.return_value = mock_fig
+        mock_canvas_class.return_value = mock_canvas
+        
         chart = SimpleGUChart(mock_parent)
         
         chart.time_scale = "1min"
-        label = chart.get_time_scale_label()
+        label = chart.scale_configs["1min"]["label"]
         assert label == "1 Minute"
         
         chart.time_scale = "5min"
-        label = chart.get_time_scale_label()
+        label = chart.scale_configs["5min"]["label"]
         assert label == "5 Minutes"
 
-    def test_get_available_scales(self):
+    @patch('alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg')
+    @patch('alphagen.visualization.simple_gui_chart.Figure')
+    def test_get_available_scales(self, mock_figure_class, mock_canvas_class):
         """Test getting available time scales."""
         from alphagen.visualization.simple_gui_chart import SimpleGUChart
         
-        mock_parent = Mock()
+        mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
+        mock_figure_class.return_value = mock_fig
+        mock_canvas_class.return_value = mock_canvas
+        
         chart = SimpleGUChart(mock_parent)
         
-        scales = chart.get_available_scales()
+        scales = list(chart.scale_configs.keys())
         expected_scales = ["1min", "5min", "15min", "1hour", "4hour", "1day"]
         assert scales == expected_scales

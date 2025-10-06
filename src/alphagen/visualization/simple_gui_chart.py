@@ -4,6 +4,7 @@ from __future__ import annotations
 import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+import matplotlib.dates as mdates
 from collections import deque
 from typing import Deque
 
@@ -45,7 +46,6 @@ class SimpleGUChart:
         self.ax.grid(True, alpha=0.3)
         
         # Set up time formatting
-        import matplotlib.dates as mdates
         self.ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
         self.ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=1))
         
@@ -59,7 +59,6 @@ class SimpleGUChart:
             self.ax.set_title(f"Alpha-Gen QQQ VWAP vs MA9 - {config['label']} Scale")
             
             # Update time axis formatting based on scale
-            import matplotlib.dates as mdates
             if scale == "1min":
                 self.ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=1))
                 self.ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
