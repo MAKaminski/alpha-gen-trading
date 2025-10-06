@@ -1,0 +1,57 @@
+[project]
+name = "alpha-gen"
+version = "0.1.0"
+description = "Real-time QQQ option shorting automation leveraging Polygon and Schwab APIs"
+authors = [
+    { name = "Alpha Gen" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.25.0",
+    "websockets>=12.0",
+    "pydantic>=2.5",
+    "sqlmodel>=0.0.14",
+    "aiosqlite>=0.19",
+    "apscheduler>=3.10",
+    "python-dateutil>=2.8",
+    "holidays>=0.35",
+    "click>=8.1",
+    "structlog>=24.1",
+    "pydantic-settings>=2.1",
+    "matplotlib>=3.8",
+    "python-dotenv>=1.0",
+    "schwab-py>=1.5.1"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-asyncio>=0.23",
+    "pytest-cov>=4.0",
+    "pytest-mock>=3.10",
+    "pytest-xdist>=3.3",
+    "ruff>=0.1",
+    "black>=23.0",
+    "mypy>=1.5",
+    "pre-commit>=3.4"
+]
+test = [
+    "pytest>=7.4",
+    "pytest-asyncio>=0.23",
+    "pytest-cov>=4.0",
+    "pytest-mock>=3.10",
+    "pytest-xdist>=3.3",
+    "httpx>=0.25.0",
+    "respx>=0.20.0",
+    "freezegun>=1.2.0"
+]
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"

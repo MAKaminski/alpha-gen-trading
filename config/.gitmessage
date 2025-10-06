@@ -1,0 +1,32 @@
+# <type>(<scope>): <subject>
+#
+# <body>
+#
+# <footer>
+
+# Type should be one of the following:
+# * feat: A new feature
+# * fix: A bug fix
+# * docs: Documentation only changes
+# * style: Changes that do not affect the meaning of the code
+# * refactor: A code change that neither fixes a bug nor adds a feature
+# * perf: A code change that improves performance
+# * test: Adding missing tests or correcting existing tests
+# * chore: Changes to the build process or auxiliary tools
+
+# Scope should be one of the following:
+# * core: Core application logic
+# * api: API integrations (Schwab, Polygon)
+# * trading: Trading logic and execution
+# * data: Data processing and ETL
+# * ui: User interface and visualization
+# * config: Configuration and settings
+# * tests: Test-related changes
+# * docs: Documentation
+# * deps: Dependencies
+
+# Examples:
+# feat(trading): add stop-loss functionality to trade manager
+# fix(api): resolve Schwab OAuth token refresh issue
+# test(unit): add tests for signal generation logic
+# docs(api): update Schwab API integration guide

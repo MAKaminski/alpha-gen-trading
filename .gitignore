@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual envs
+.venv/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+config/.env
+config/.env.*
+!config/.env.example
+
+# SQLite database
+alpha_gen.db
+alpha_gen.db-journal
+data/*.db
+data/*.db-journal
+
+# Generated charts
+charts/*.png
+charts/*.jpg
+charts/*.jpeg
+
+# OAuth tokens (keep example)
+config/schwab_token.json
+!config/schwab_token.json.example
+
+# IDE
+.vscode/
+.idea/
+.DS_Store

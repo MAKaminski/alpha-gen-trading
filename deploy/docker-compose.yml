@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  alpha-gen:
+    build: .
+    image: alpha-gen:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./alpha_gen.db:/app/alpha_gen.db
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
