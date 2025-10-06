@@ -1,26 +1,35 @@
 #!/usr/bin/env python3
-"""Debug script for Alpha-Gen application."""
+"""DEPRECATED: Debug script for Alpha-Gen application.
 
-import asyncio
+This script is deprecated. Use the unified debug GUI instead:
+    python -m alphagen debug
+"""
+
 import sys
 from pathlib import Path
 
-# Add src to Python path
-src_path = Path(__file__).parent / "src"
-sys.path.insert(0, str(src_path))
-
-from alphagen.app import main
-
 if __name__ == "__main__":
-    print("Starting Alpha-Gen in debug mode...")
-    print(f"Python path: {sys.path[0]}")
-    print(f"Working directory: {Path.cwd()}")
+    print("⚠️  DEPRECATED: This debug script is no longer supported.")
+    print("")
+    print("🚀 Please use the unified debug GUI instead:")
+    print("   python -m alphagen debug")
+    print("")
+    print("The new debug GUI provides:")
+    print("  • Live data streaming controls")
+    print("  • Real-time charting")
+    print("  • OAuth setup integration")
+    print("  • Console logging and export")
+    print("  • All debugging features in one interface")
+    print("")
+    print("Redirecting to unified debug GUI...")
+    
+    # Add src to Python path
+    src_path = Path(__file__).parent.parent / "src"
+    sys.path.insert(0, str(src_path))
     
     try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        print("\nDebug session interrupted by user")
+        from alphagen.gui.debug_app import main as run_debug_gui
+        run_debug_gui()
     except Exception as e:
-        print(f"Debug session failed: {e}")
-        import traceback
-        traceback.print_exc()
+        print(f"Failed to start debug GUI: {e}")
+        print("Please run: python -m alphagen debug")

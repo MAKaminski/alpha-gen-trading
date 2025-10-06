@@ -24,7 +24,6 @@
    - `SCHWAB_API_SECRET`
    - `POLYGON_API_KEY`
 10. [CONSTANT 6] The time period for the MA9 should be 9 Mins
-11. VERIFY TIME PERIODS
 
 # Strategy
 

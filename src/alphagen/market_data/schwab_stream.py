@@ -14,7 +14,7 @@ from alphagen.config import load_app_config
 from alphagen.core.events import EquityTick, OptionQuote
 from alphagen.core.time_utils import to_est
 from alphagen.market_data.base import MarketDataProvider, StreamCallbacks
-from alphagen.schwab_client import SchwabClient
+from alphagen.schwab_oauth_client import SchwabOAuthClient
 
 
 class SchwabMarketDataProvider(MarketDataProvider):
@@ -25,7 +25,7 @@ class SchwabMarketDataProvider(MarketDataProvider):
         self._callbacks: Optional[StreamCallbacks] = None
         self._websocket: Optional[websockets.WebSocketServerProtocol] = None
         self._task: Optional[asyncio.Task[None]] = None
-        self._client = SchwabClient.create()
+        self._client = SchwabOAuthClient.create()
         self._config = load_app_config()
 
     async def start(self, callbacks: StreamCallbacks) -> None:

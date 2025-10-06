@@ -35,5 +35,12 @@ def report(for_date: datetime | None) -> None:
     asyncio.run(_display())
 
 
+@cli.command()
+def debug() -> None:
+    """Start the unified debug GUI with live data streaming and charts."""
+    from alphagen.gui.debug_app import main as run_debug_gui
+    run_debug_gui()
+
+
 if __name__ == "__main__":
     cli()

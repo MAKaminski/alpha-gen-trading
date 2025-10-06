@@ -87,10 +87,18 @@ class LiveChart:
 
     def _run(self) -> None:
         try:
+            import matplotlib
             import matplotlib.dates as mdates
             import matplotlib.pyplot as plt
             from matplotlib.animation import FuncAnimation
             import numpy as np
+            
+            # Ensure we're using an interactive backend
+            if not matplotlib.is_interactive():
+                # Use TkAgg backend since we're in a tkinter environment
+                matplotlib.use('TkAgg')
+                plt.ion()  # Turn on interactive mode
+                
         except Exception as exc:  # pragma: no cover - matplotlib import failure
             self._logger.error("live_chart_import_failed", error=str(exc))
             return
@@ -157,9 +165,35 @@ class LiveChart:
             fig.autofmt_xdate()
             return line_vwap, line_ma9, scatter
 
-        FuncAnimation(fig, update, interval=250)
+        anim = FuncAnimation(fig, update, interval=250, cache_frame_data=False)
         try:
-            plt.show()
+            self._logger.info("live_chart_displaying", backend=matplotlib.get_backend(), interactive=matplotlib.is_interactive())
+            
+            # Show the chart first
+            plt.show(block=False)  # Non-blocking so GUI can continue
+            self._logger.info("live_chart_window_created")
+            
+            # Make the window more prominent after it's created
+            try:
+                if hasattr(fig.canvas, 'manager') and hasattr(fig.canvas.manager, 'window'):
+                    fig.canvas.manager.window.wm_attributes('-topmost', 1)  # Bring to front
+                    fig.canvas.manager.window.wm_attributes('-topmost', 0)  # Allow normal stacking
+                    self._logger.info("chart_window_brought_to_front")
+                else:
+                    self._logger.warning("chart_window_manager_not_available")
+            except Exception as e:
+                self._logger.warning("chart_window_attributes_failed", error=str(e))
+            
+            # Force a redraw
+            fig.canvas.draw()
+            fig.canvas.flush_events()
+            
+            # Keep the chart alive
+            while self._running:
+                plt.pause(0.1)
+                
+        except Exception as e:
+            self._logger.warning("chart_display_error", error=str(e))
         finally:
             self._running = False
             self._logger.info("live_chart_closed")

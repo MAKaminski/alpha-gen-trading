@@ -1,45 +1,38 @@
 #!/usr/bin/env python3
-"""Debug test specifically for VS Code debugger."""
+"""DEPRECATED: Debug test specifically for VS Code debugger.
+
+This script is deprecated. Use the unified debug GUI instead:
+    python -m alphagen debug
+"""
 
 import sys
-import time
 from pathlib import Path
 
-# Add src to Python path
-src_path = Path(__file__).parent / "src"
-sys.path.insert(0, str(src_path))
-
-import matplotlib
-import matplotlib.pyplot as plt
-
-# Force interactive mode
-matplotlib.use('macosx')
-plt.ion()
-
-print("🔧 Debug Chart Test for VS Code")
-print(f"Matplotlib backend: {matplotlib.get_backend()}")
-print(f"Interactive mode: {plt.isinteractive()}")
-
-# Create a simple test chart
-fig, ax = plt.subplots(figsize=(10, 6))
-ax.set_title("Debug Test Chart - Should Be Visible!")
-ax.plot([1, 2, 3, 4], [1, 4, 2, 3], 'ro-', label='Test Line')
-ax.legend()
-ax.grid(True)
-
-print("📊 Creating chart window...")
-plt.show(block=False)
-plt.pause(0.1)
-
-print("✅ Chart should now be visible!")
-print("Look for a window titled 'Figure 1' or similar")
-print("If you see it, the chart system is working!")
-
-# Keep the script running so you can see the chart
-print("Press Ctrl+C to exit...")
-try:
-    while True:
-        time.sleep(1)
-except KeyboardInterrupt:
-    print("\n🛑 Exiting...")
-    plt.close('all')
+if __name__ == "__main__":
+    print("⚠️  DEPRECATED: This debug script is no longer supported.")
+    print("")
+    print("🚀 Please use the unified debug GUI instead:")
+    print("   python -m alphagen debug")
+    print("")
+    print("The new debug GUI provides:")
+    print("  • Live data streaming controls")
+    print("  • Real-time charting with VWAP vs MA9")
+    print("  • OAuth setup integration")
+    print("  • Console logging and export")
+    print("  • All debugging features in one interface")
+    print("")
+    print("For VS Code debugging, use:")
+    print("  '🐛 Debug Alpha-Gen (Unified GUI)' configuration")
+    print("")
+    print("Redirecting to unified debug GUI...")
+    
+    # Add src to Python path
+    src_path = Path(__file__).parent.parent / "src"
+    sys.path.insert(0, str(src_path))
+    
+    try:
+        from alphagen.gui.debug_app import main as run_debug_gui
+        run_debug_gui()
+    except Exception as e:
+        print(f"Failed to start debug GUI: {e}")
+        print("Please run: python -m alphagen debug")
