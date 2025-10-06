@@ -1,4 +1,5 @@
 """Base contracts and callback structures for market data providers."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -20,8 +21,6 @@ class Callback(Protocol):
 
 
 class MarketDataProvider(Protocol):
-    async def start(self, callbacks: StreamCallbacks) -> None:
-        ...
+    async def start(self, callbacks: StreamCallbacks) -> None: ...
 
-    async def stop(self) -> None:
-        ...
+    async def stop(self) -> None: ...

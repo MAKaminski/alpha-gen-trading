@@ -4,15 +4,33 @@ import pytest
 from unittest.mock import MagicMock, patch, AsyncMock
 from datetime import datetime, timezone
 
-from alphagen.storage import (
-    EquityTickRow, OptionQuoteRow, PositionSnapshotRow, NormalizedTickRow,
-    SignalRow, TradeIntentRow, ExecutionRow, get_engine, init_models,
-    session_scope, insert_equity_tick, insert_option_quote, insert_positions,
-    insert_normalized_tick, insert_signal, insert_trade_intent, insert_execution
+from src.alphagen.storage import (
+    EquityTickRow,
+    OptionQuoteRow,
+    PositionSnapshotRow,
+    NormalizedTickRow,
+    SignalRow,
+    TradeIntentRow,
+    ExecutionRow,
+    get_engine,
+    init_models,
+    session_scope,
+    insert_equity_tick,
+    insert_option_quote,
+    insert_positions,
+    insert_normalized_tick,
+    insert_signal,
+    insert_trade_intent,
+    insert_execution,
 )
-from alphagen.core.events import (
-    EquityTick, OptionQuote, PositionSnapshot, NormalizedTick, Signal,
-    TradeIntent, TradeExecution
+from src.alphagen.core.events import (
+    EquityTick,
+    OptionQuote,
+    PositionSnapshot,
+    NormalizedTick,
+    Signal,
+    TradeIntent,
+    TradeExecution,
 )
 
 
@@ -23,11 +41,7 @@ class TestStorageModels:
         """Test EquityTickRow creation."""
         timestamp = datetime.now(timezone.utc)
         row = EquityTickRow(
-            symbol="QQQ",
-            price=400.0,
-            session_vwap=399.5,
-            ma9=400.2,
-            as_of=timestamp
+            symbol="QQQ", price=400.0, session_vwap=399.5, ma9=400.2, as_of=timestamp
         )
         assert row.symbol == "QQQ"
         assert row.price == 400.0
@@ -41,7 +55,7 @@ class TestStorageModels:
             bid=5.50,
             ask=5.75,
             expiry=timestamp,
-            as_of=timestamp
+            as_of=timestamp,
         )
         assert row.option_symbol == "QQQ241220C00400000"
         assert row.strike == 400.0
@@ -54,7 +68,7 @@ class TestStorageModels:
             quantity=100,
             market_value=40000.0,
             average_price=400.0,
-            as_of=timestamp
+            as_of=timestamp,
         )
         assert row.symbol == "QQQ"
         assert row.quantity == 100
@@ -67,7 +81,7 @@ class TestStorageModels:
             equity_symbol="QQQ",
             equity_price=400.0,
             option_symbol=None,
-            option_strike=None
+            option_strike=None,
         )
         assert row.equity_symbol == "QQQ"
         assert row.equity_price == 400.0
@@ -81,7 +95,7 @@ class TestStorageModels:
             option_symbol="QQQ241220C00400000",
             reference_price=400.0,
             rationale="VWAP crossover",
-            cooldown_until=timestamp
+            cooldown_until=timestamp,
         )
         assert row.action == "buy"
         assert row.option_symbol == "QQQ241220C00400000"
@@ -96,7 +110,7 @@ class TestStorageModels:
             quantity=100,
             limit_price=400.0,
             stop_loss=380.0,
-            take_profit=420.0
+            take_profit=420.0,
         )
         assert row.action == "buy"
         assert row.quantity == 100
@@ -110,7 +124,7 @@ class TestStorageModels:
             fill_price=400.0,
             pnl_contrib=50.0,
             as_of=timestamp,
-            intent_id=1
+            intent_id=1,
         )
         assert row.order_id == "12345"
         assert row.status == "filled"
@@ -140,7 +154,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_session_scope_exception(self):
         """Test session_scope context manager with exception."""
-        with patch('alphagen.storage.get_engine') as mock_get_engine:
+        with patch("src.alphagen.storage.get_engine") as mock_get_engine:
             mock_engine = MagicMock()
             mock_session = MagicMock()
             mock_get_engine.return_value = mock_engine
@@ -156,7 +170,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_insert_equity_tick(self):
         """Test insert_equity_tick function."""
-        with patch('alphagen.storage.session_scope') as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             mock_session = MagicMock()
             mock_session_scope.return_value.__aenter__.return_value = mock_session
             mock_session_scope.return_value.__aexit__.return_value = None
@@ -167,7 +181,7 @@ class TestStorageFunctions:
                 price=400.0,
                 session_vwap=399.5,
                 ma9=400.2,
-                as_of=timestamp
+                as_of=timestamp,
             )
 
             await insert_equity_tick(tick)
@@ -180,7 +194,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_insert_option_quote(self):
         """Test insert_option_quote function."""
-        with patch('alphagen.storage.session_scope') as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             mock_session = MagicMock()
             mock_session_scope.return_value.__aenter__.return_value = mock_session
             mock_session_scope.return_value.__aexit__.return_value = None
@@ -192,7 +206,7 @@ class TestStorageFunctions:
                 bid=5.50,
                 ask=5.75,
                 expiry=timestamp,
-                as_of=timestamp
+                as_of=timestamp,
             )
 
             await insert_option_quote(quote)
@@ -205,7 +219,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_insert_positions(self):
         """Test insert_positions function."""
-        with patch('alphagen.storage.session_scope') as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             mock_session = MagicMock()
             mock_session_scope.return_value.__aenter__.return_value = mock_session
             mock_session_scope.return_value.__aexit__.return_value = None
@@ -216,7 +230,7 @@ class TestStorageFunctions:
                 quantity=100,
                 market_value=40000.0,
                 average_price=400.0,
-                as_of=timestamp
+                as_of=timestamp,
             )
 
             await insert_positions([position])
@@ -229,7 +243,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_insert_normalized_tick(self):
         """Test insert_normalized_tick function."""
-        with patch('alphagen.storage.session_scope') as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             mock_session = MagicMock()
             mock_session_scope.return_value.__aenter__.return_value = mock_session
             mock_session_scope.return_value.__aexit__.return_value = None
@@ -240,12 +254,10 @@ class TestStorageFunctions:
                 price=400.0,
                 session_vwap=399.5,
                 ma9=400.2,
-                as_of=timestamp
+                as_of=timestamp,
             )
             normalized_tick = NormalizedTick(
-                as_of=timestamp,
-                equity=equity_tick,
-                option=None
+                as_of=timestamp, equity=equity_tick, option=None
             )
 
             await insert_normalized_tick(normalized_tick)
@@ -258,7 +270,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_insert_signal(self):
         """Test insert_signal function."""
-        with patch('alphagen.storage.session_scope') as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             mock_session = MagicMock()
             mock_session_scope.return_value.__aenter__.return_value = mock_session
             mock_session_scope.return_value.__aexit__.return_value = None
@@ -270,7 +282,7 @@ class TestStorageFunctions:
                 option_symbol="QQQ241220C00400000",
                 reference_price=400.0,
                 rationale="VWAP crossover",
-                cooldown_until=timestamp
+                cooldown_until=timestamp,
             )
 
             await insert_signal(signal)
@@ -283,7 +295,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_insert_trade_intent(self):
         """Test insert_trade_intent function."""
-        with patch('alphagen.storage.session_scope') as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             mock_session = MagicMock()
             mock_session.flush = AsyncMock()
             mock_session_scope.return_value.__aenter__.return_value = mock_session
@@ -297,7 +309,7 @@ class TestStorageFunctions:
                 quantity=100,
                 limit_price=400.0,
                 stop_loss=380.0,
-                take_profit=420.0
+                take_profit=420.0,
             )
 
             await insert_trade_intent(intent)
@@ -310,7 +322,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_insert_execution(self):
         """Test insert_execution function."""
-        with patch('alphagen.storage.session_scope') as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             mock_session = MagicMock()
             mock_session_scope.return_value.__aenter__.return_value = mock_session
             mock_session_scope.return_value.__aexit__.return_value = None
@@ -323,7 +335,7 @@ class TestStorageFunctions:
                 quantity=100,
                 limit_price=400.0,
                 stop_loss=380.0,
-                take_profit=420.0
+                take_profit=420.0,
             )
             execution = TradeExecution(
                 order_id="12345",
@@ -331,7 +343,7 @@ class TestStorageFunctions:
                 fill_price=400.0,
                 pnl_contrib=50.0,
                 as_of=timestamp,
-                intent=intent
+                intent=intent,
             )
 
             await insert_execution(execution)

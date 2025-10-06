@@ -1,4 +1,5 @@
 """Schwab REST client wrapper."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -9,7 +10,12 @@ import httpx
 import structlog
 
 from alphagen.config import load_app_config
-from alphagen.core.events import OptionQuote, PositionSnapshot, TradeExecution, TradeIntent
+from alphagen.core.events import (
+    OptionQuote,
+    PositionSnapshot,
+    TradeExecution,
+    TradeIntent,
+)
 from alphagen.core.time_utils import to_est
 
 
@@ -75,7 +81,9 @@ class SchwabClient:
             intent=intent,
         )
 
-    async def close_positions(self, intents: Iterable[TradeIntent]) -> list[TradeExecution]:
+    async def close_positions(
+        self, intents: Iterable[TradeIntent]
+    ) -> list[TradeExecution]:
         executions: list[TradeExecution] = []
         for intent in intents:
             exec_result = await self.submit_order(intent)
@@ -87,18 +95,30 @@ class SchwabClient:
         response = await self._client.get(endpoint)
         response.raise_for_status()
         payload = response.json()
-        quote_payload = payload.get(option_symbol) or payload.get('quotes', {}).get(option_symbol) if isinstance(payload.get('quotes'), dict) else None
+        quote_payload = (
+            payload.get(option_symbol) or payload.get("quotes", {}).get(option_symbol)
+            if isinstance(payload.get("quotes"), dict)
+            else None
+        )
         if not quote_payload:
             return None
-        bid = float(quote_payload.get('bidPrice') or 0.0)
-        ask = float(quote_payload.get('askPrice') or 0.0)
-        strike = float(quote_payload.get('strikePrice') or 0.0)
-        quote_time = quote_payload.get('quoteTimeInLong') or quote_payload.get('quoteTime')
-        as_of = to_est(datetime.fromtimestamp(quote_time / 1000, tz=timezone.utc)) if quote_time else to_est(datetime.now(timezone.utc))
-        expiry_raw = quote_payload.get('expirationDate') or quote_payload.get('optionExpirationDate')
+        bid = float(quote_payload.get("bidPrice") or 0.0)
+        ask = float(quote_payload.get("askPrice") or 0.0)
+        strike = float(quote_payload.get("strikePrice") or 0.0)
+        quote_time = quote_payload.get("quoteTimeInLong") or quote_payload.get(
+            "quoteTime"
+        )
+        as_of = (
+            to_est(datetime.fromtimestamp(quote_time / 1000, tz=timezone.utc))
+            if quote_time
+            else to_est(datetime.now(timezone.utc))
+        )
+        expiry_raw = quote_payload.get("expirationDate") or quote_payload.get(
+            "optionExpirationDate"
+        )
         if expiry_raw:
             try:
-                expiry = datetime.fromisoformat(expiry_raw.replace('Z', '+00:00'))
+                expiry = datetime.fromisoformat(expiry_raw.replace("Z", "+00:00"))
             except ValueError:
                 expiry = datetime.now(timezone.utc)
         else:

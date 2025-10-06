@@ -1,4 +1,5 @@
 """Polygon websocket consumers for equity and option data."""
+
 from __future__ import annotations
 
 import asyncio
@@ -44,7 +45,9 @@ class PolygonMarketDataProvider(MarketDataProvider):
 
     async def _connect_streams(self) -> None:
         auth_payload = json.dumps({"action": "auth", "params": self._cfg.api_key})
-        self._equity_ws = await websockets.connect(self._cfg.stock_ws_url, ping_interval=10)
+        self._equity_ws = await websockets.connect(
+            self._cfg.stock_ws_url, ping_interval=10
+        )
         await self._equity_ws.send(auth_payload)
         await self._equity_ws.send(
             json.dumps({"action": "subscribe", "params": f"XA.{self._ticker}"})

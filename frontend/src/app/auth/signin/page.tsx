@@ -1,6 +1,7 @@
 "use client";
 
 import { signIn, getSession } from 'next-auth/react'
+import { Session } from 'next-auth'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -11,7 +12,7 @@ import Link from 'next/link'
 export default function SignInPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [session, setSession] = useState(null)
+  const [session, setSession] = useState<Session | null>(null)
 
   useEffect(() => {
     const checkSession = async () => {

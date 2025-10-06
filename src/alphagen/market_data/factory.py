@@ -1,4 +1,5 @@
 """Factory for selecting the configured market data provider."""
+
 from __future__ import annotations
 
 from alphagen.config import MarketDataSource, load_app_config

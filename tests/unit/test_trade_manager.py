@@ -1,11 +1,12 @@
 """Unit tests for trade management logic."""
+
 import pytest
 from datetime import timedelta
 from unittest.mock import AsyncMock, MagicMock
 
-from alphagen.trade_manager import TradeManager
-from alphagen.core.events import TradeIntent, TradeExecution, OptionQuote
-from alphagen.core.time_utils import now_est
+from src.alphagen.trade_manager import TradeManager
+from src.alphagen.core.events import TradeIntent, TradeExecution, OptionQuote
+from src.alphagen.core.time_utils import now_est
 
 
 @pytest.fixture
@@ -75,9 +76,9 @@ async def test_handle_intent_opens_position(trade_manager, mock_emit_execution):
         stop_loss=11.00,
         take_profit=2.75,
     )
-    
+
     await trade_manager.handle_intent(intent)
-    
+
     # Verify position was opened
     assert "QQQ241220C00400000" in trade_manager._open_positions
     mock_emit_execution.assert_called_once()
@@ -97,9 +98,9 @@ async def test_single_position_rule(trade_manager, mock_emit_execution):
         stop_loss=11.00,
         take_profit=2.75,
     )
-    
+
     await trade_manager.handle_intent(intent1)
-    
+
     # Try to open second position (should be blocked)
     intent2 = TradeIntent(
         as_of=now_est(),
@@ -110,9 +111,9 @@ async def test_single_position_rule(trade_manager, mock_emit_execution):
         stop_loss=11.00,
         take_profit=2.75,
     )
-    
+
     await trade_manager.handle_intent(intent2)
-    
+
     # Should still only have one position
     assert len(trade_manager._open_positions) == 1
     assert "QQQ241220C00400000" in trade_manager._open_positions
@@ -132,9 +133,9 @@ async def test_take_profit_exit(trade_manager, mock_emit_execution):
         stop_loss=11.00,
         take_profit=2.75,  # 50% of entry credit
     )
-    
+
     await trade_manager.handle_intent(intent)
-    
+
     # Create quote that triggers take profit
     quote = OptionQuote(
         option_symbol="QQQ241220C00400000",
@@ -144,9 +145,9 @@ async def test_take_profit_exit(trade_manager, mock_emit_execution):
         expiry=now_est() + timedelta(hours=1),
         as_of=now_est(),
     )
-    
+
     await trade_manager.update_option_quote(quote)
-    
+
     # Position should be closed
     assert "QQQ241220C00400000" not in trade_manager._open_positions
     assert mock_emit_execution.call_count == 2  # One for open, one for close
@@ -165,9 +166,9 @@ async def test_stop_loss_exit(trade_manager, mock_emit_execution):
         stop_loss=11.00,  # 200% of entry credit
         take_profit=2.75,
     )
-    
+
     await trade_manager.handle_intent(intent)
-    
+
     # Create quote that triggers stop loss
     quote = OptionQuote(
         option_symbol="QQQ241220C00400000",
@@ -177,9 +178,9 @@ async def test_stop_loss_exit(trade_manager, mock_emit_execution):
         expiry=now_est() + timedelta(hours=1),
         as_of=now_est(),
     )
-    
+
     await trade_manager.update_option_quote(quote)
-    
+
     # Position should be closed
     assert "QQQ241220C00400000" not in trade_manager._open_positions
     assert mock_emit_execution.call_count == 2  # One for open, one for close
@@ -198,7 +199,7 @@ async def test_pnl_calculation(trade_manager):
         stop_loss=11.00,
         take_profit=2.75,
     )
-    
+
     entry_execution = TradeExecution(
         order_id="entry_123",
         status="filled",
@@ -207,7 +208,7 @@ async def test_pnl_calculation(trade_manager):
         as_of=now_est(),
         intent=entry_intent,
     )
-    
+
     # Create exit execution
     exit_intent = TradeIntent(
         as_of=now_est(),
@@ -218,7 +219,7 @@ async def test_pnl_calculation(trade_manager):
         stop_loss=0.0,
         take_profit=0.0,
     )
-    
+
     exit_execution = TradeExecution(
         order_id="exit_123",
         status="filled",
@@ -227,10 +228,10 @@ async def test_pnl_calculation(trade_manager):
         as_of=now_est(),
         intent=exit_intent,
     )
-    
+
     # Calculate P&L
     pnl = trade_manager._calculate_pnl(entry_execution, exit_execution)
-    
+
     # For a short position: (entry_price - exit_price) * quantity * multiplier
     # (5.50 - 2.75) * 25 * 100 = 6,875
     expected_pnl = (5.50 - 2.75) * 25 * 100
@@ -250,12 +251,12 @@ async def test_close_all_positions(trade_manager, mock_emit_execution):
         stop_loss=11.00,
         take_profit=2.75,
     )
-    
+
     await trade_manager.handle_intent(intent)
-    
+
     # Close all positions
     await trade_manager.close_all(reason="manual")
-    
+
     # Position should be closed
     assert len(trade_manager._open_positions) == 0
     assert mock_emit_execution.call_count == 2  # One for open, one for close

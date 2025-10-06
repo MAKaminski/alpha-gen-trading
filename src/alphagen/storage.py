@@ -1,4 +1,5 @@
 """Database models and repository helpers."""
+
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
@@ -9,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from sqlmodel import Field, SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from alphagen.config import load_app_config
+from src.alphagen.config import load_app_config
 
 
 class EquityTickRow(SQLModel, table=True):
@@ -40,9 +41,6 @@ class PositionSnapshotRow(SQLModel, table=True):
     as_of: datetime
 
 
-
-
-
 class NormalizedTickRow(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     as_of: datetime
@@ -53,6 +51,7 @@ class NormalizedTickRow(SQLModel, table=True):
     option_symbol: str | None
     option_bid: float | None
     option_ask: float | None
+
 
 class SignalRow(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -113,7 +112,6 @@ async def session_scope() -> AsyncIterator[AsyncSession]:
         await session.close()
 
 
-
 # --- Persistence helpers -------------------------------------------------
 if TYPE_CHECKING:
     from alphagen.core.events import (
@@ -129,25 +127,29 @@ if TYPE_CHECKING:
 
 async def insert_equity_tick(tick: "EquityTick") -> None:
     async with session_scope() as session:
-        session.add(EquityTickRow(
-            symbol=tick.symbol,
-            price=tick.price,
-            session_vwap=tick.session_vwap,
-            ma9=tick.ma9,
-            as_of=tick.as_of,
-        ))
+        session.add(
+            EquityTickRow(
+                symbol=tick.symbol,
+                price=tick.price,
+                session_vwap=tick.session_vwap,
+                ma9=tick.ma9,
+                as_of=tick.as_of,
+            )
+        )
 
 
 async def insert_option_quote(quote: "OptionQuote") -> None:
     async with session_scope() as session:
-        session.add(OptionQuoteRow(
-            option_symbol=quote.option_symbol,
-            strike=quote.strike,
-            bid=quote.bid,
-            ask=quote.ask,
-            expiry=quote.expiry,
-            as_of=quote.as_of,
-        ))
+        session.add(
+            OptionQuoteRow(
+                option_symbol=quote.option_symbol,
+                strike=quote.strike,
+                bid=quote.bid,
+                ask=quote.ask,
+                expiry=quote.expiry,
+                as_of=quote.as_of,
+            )
+        )
 
 
 async def insert_signal(signal: "Signal") -> None:
@@ -179,7 +181,9 @@ async def insert_trade_intent(intent: "TradeIntent") -> int:
         return row.id or 0
 
 
-async def insert_execution(execution: "TradeExecution", intent_id: int | None = None) -> None:
+async def insert_execution(
+    execution: "TradeExecution", intent_id: int | None = None
+) -> None:
     async with session_scope() as session:
         session.add(
             ExecutionRow(

@@ -48,34 +48,41 @@ export function useMarketData() {
         handleLogMessage(lastMessage.data);
         break;
       case 'stream_status':
-        setIsStreaming(lastMessage.data.active);
+        const streamData = lastMessage.data as { active: boolean };
+        setIsStreaming(streamData.active);
         break;
       default:
         console.log('Unknown message type:', lastMessage.type);
     }
   }, [lastMessage]);
 
-  const handleEquityTick = (data: any) => {
+  const handleEquityTick = (data: unknown) => {
+    const equityData = data as { symbol: string; price: number; timestamp?: string };
     const newData: MarketData = {
-      symbol: data.symbol,
-      price: data.price,
-      timestamp: data.timestamp || new Date().toISOString(),
+      symbol: equityData.symbol,
+      price: equityData.price,
+      timestamp: equityData.timestamp || new Date().toISOString(),
     };
     
     setMarketData(prev => [...prev.slice(-99), newData]);
     
-    addLog('info', `Equity: ${data.symbol} = $${data.price.toFixed(2)}`);
+    addLog('info', `Equity: ${equityData.symbol} = $${equityData.price.toFixed(2)}`);
   };
 
-  const handleOptionQuote = (data: any) => {
-    addLog('info', `Option: ${data.option_symbol} bid=$${data.bid.toFixed(2)} ask=$${data.ask.toFixed(2)}`);
+  const handleOptionQuote = (data: unknown) => {
+    const optionData = data as { option_symbol: string; bid: number; ask: number };
+    addLog('info', `Option: ${optionData.option_symbol} bid=$${optionData.bid.toFixed(2)} ask=$${optionData.ask.toFixed(2)}`);
   };
 
-  const handleNormalizedTick = (data: any) => {
+  const handleNormalizedTick = (data: unknown) => {
+    const normalizedData = data as { 
+      timestamp?: string; 
+      equity?: { session_vwap?: number; ma9?: number } 
+    };
     const newChartData: ChartData = {
-      timestamp: data.timestamp || new Date().toISOString(),
-      vwap: data.equity?.session_vwap || 0,
-      ma9: data.equity?.ma9 || 0,
+      timestamp: normalizedData.timestamp || new Date().toISOString(),
+      vwap: normalizedData.equity?.session_vwap || 0,
+      ma9: normalizedData.equity?.ma9 || 0,
     };
     
     setChartData(prev => [...prev.slice(-99), newChartData]);
@@ -83,8 +90,9 @@ export function useMarketData() {
     addLog('debug', `Normalized tick: VWAP=${newChartData.vwap.toFixed(2)}, MA9=${newChartData.ma9.toFixed(2)}`);
   };
 
-  const handleLogMessage = (data: any) => {
-    addLog(data.level || 'info', data.message);
+  const handleLogMessage = (data: unknown) => {
+    const logData = data as { level?: LogEntry['level']; message: string };
+    addLog(logData.level || 'info', logData.message);
   };
 
   const addLog = (level: LogEntry['level'], message: string) => {

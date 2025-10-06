@@ -1,4 +1,5 @@
 """Time utilities for market session management."""
+
 from __future__ import annotations
 
 from datetime import datetime, timedelta
@@ -20,8 +21,12 @@ def within_trading_window(moment: datetime | None = None) -> bool:
     moment = moment or now_est()
     if moment.date() in US_MARKET_HOLIDAYS:
         return False
-    window_open = datetime.combine(moment.date(), MARKET_OPEN, tzinfo=EST) - SESSION_BUFFER
-    window_close = datetime.combine(moment.date(), MARKET_CLOSE, tzinfo=EST) + SESSION_BUFFER
+    window_open = (
+        datetime.combine(moment.date(), MARKET_OPEN, tzinfo=EST) - SESSION_BUFFER
+    )
+    window_close = (
+        datetime.combine(moment.date(), MARKET_CLOSE, tzinfo=EST) + SESSION_BUFFER
+    )
     return window_open <= moment <= window_close
 
 

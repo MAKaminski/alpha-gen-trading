@@ -1,4 +1,5 @@
 """Command-line interface for Alpha-Gen."""
+
 from __future__ import annotations
 
 import asyncio
@@ -29,6 +30,7 @@ def run() -> None:
 @click.option("--for-date", "for_date", type=click.DateTime(formats=["%Y-%m-%d"]))
 def report(for_date: datetime | None) -> None:
     """Display daily P/L summary."""
+
     async def _display() -> None:
         data = await fetch_daily_pnl(for_date.date() if for_date else None)
         for row in data:
@@ -48,6 +50,7 @@ def debug() -> None:
     """Start the unified debug GUI with live data streaming and charts."""
     try:
         from alphagen.gui.debug_app import main as run_debug_gui
+
         run_debug_gui()
     except Exception as e:
         click.echo(f"Error starting debug GUI: {e}", err=True)

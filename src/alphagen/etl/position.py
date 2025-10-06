@@ -1,4 +1,5 @@
 """Position calculator that merges broker snapshots with intent state."""
+
 from __future__ import annotations
 
 from collections import defaultdict

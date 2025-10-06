@@ -1,4 +1,5 @@
 """Generate trade intents from signals."""
+
 from __future__ import annotations
 
 from typing import Callable, Coroutine

@@ -1,4 +1,5 @@
 """Live chart visualization for market data and signals."""
+
 from __future__ import annotations
 
 import asyncio
@@ -44,7 +45,7 @@ class LiveChart:
             "chart_tick",
             symbol=tick.symbol,
             price=tick.price,
-            timestamp=tick.as_of.isoformat()
+            timestamp=tick.as_of.isoformat(),
         )
 
     def handle_signal(self, signal: Signal) -> None:
@@ -55,7 +56,7 @@ class LiveChart:
             "chart_signal",
             symbol=signal.option_symbol,
             action=signal.action,
-            timestamp=signal.as_of.isoformat()
+            timestamp=signal.as_of.isoformat(),
         )
 
     async def _run_chart(self) -> None:

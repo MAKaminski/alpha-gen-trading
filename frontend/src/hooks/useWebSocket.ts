@@ -4,8 +4,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface WebSocketMessage {
   type: string;
-  data?: any;
-  [key: string]: any;
+  data?: unknown;
+  [key: string]: unknown;
 }
 
 export function useWebSocket(url?: string) {
