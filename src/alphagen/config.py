@@ -106,9 +106,15 @@ def load_app_config() -> AppConfig:
         polygon=PolygonSettings(
             API_KEY=getenv("POLYGON_API_KEY"),
             EQUITY_TICKER=getenv("POLYGON_EQUITY_TICKER", DEFAULT_EQUITY_TICKER),
-            OPTIONS_UNDERLYING=getenv("POLYGON_OPTIONS_UNDERLYING", DEFAULT_EQUITY_TICKER),
-            STOCK_WS_URL=getenv("POLYGON_STOCK_WS_URL", "wss://socket.polygon.io/stocks"),
-            OPTIONS_WS_URL=getenv("POLYGON_OPTIONS_WS_URL", "wss://socket.polygon.io/options"),
+            OPTIONS_UNDERLYING=getenv(
+                "POLYGON_OPTIONS_UNDERLYING", DEFAULT_EQUITY_TICKER
+            ),
+            STOCK_WS_URL=getenv(
+                "POLYGON_STOCK_WS_URL", "wss://socket.polygon.io/stocks"
+            ),
+            OPTIONS_WS_URL=getenv(
+                "POLYGON_OPTIONS_WS_URL", "wss://socket.polygon.io/options"
+            ),
             S3_ACCESS_KEY=getenv("POLYGON_S3_ACCESS_KEY"),
             S3_SECRET_KEY=getenv("POLYGON_S3_SECRET_KEY"),
             S3_ENDPOINT=getenv("POLYGON_S3_ENDPOINT"),
@@ -119,11 +125,15 @@ def load_app_config() -> AppConfig:
             account_id=getenv("SCHWAB_ACCOUNT_ID"),
             base_url=getenv("SCHWAB_BASE_URL", "https://api.schwab.com"),
             paper_trading=getenv("SCHWAB_PAPER_TRADING", "true").lower() == "true",
-            callback_url=getenv("SCHWAB_CALLBACK_URL", "http://localhost:8080/callback"),
+            callback_url=getenv(
+                "SCHWAB_CALLBACK_URL", "http://localhost:8080/callback"
+            ),
             token_path=getenv("SCHWAB_TOKEN_PATH", "config/schwab_token.json"),
         ),
         storage=StorageSettings(
-            DATABASE_URL=getenv("DATABASE_URL", "sqlite+aiosqlite:///./data/alpha_gen.db"),
+            DATABASE_URL=getenv(
+                "DATABASE_URL", "sqlite+aiosqlite:///./data/alpha_gen.db"
+            ),
         ),
         risk=RiskSettings(
             STOP_LOSS_MULTIPLE=float(getenv("RISK_STOP_LOSS_MULTIPLE", "2.0")),
