@@ -96,7 +96,7 @@ class TestTimeUtils:
     def test_next_session_open_skips_holidays(self):
         """Test next_session_open skips market holidays."""
         result = next_session_open()
-        
+
         # Should be next trading day (Wednesday) session start (with buffer)
         assert result.date() == datetime(2024, 1, 17).date()
         assert result.hour == 9  # 9:30 AM - 30 min buffer = 9:00 AM
@@ -118,7 +118,7 @@ class TestTimeUtils:
         """Test next_session_open with custom after parameter."""
         custom_after = datetime(2024, 1, 16, 14, 0, 0, tzinfo=EST)
         result = next_session_open(custom_after)
-        
+
         # Should be next trading day
         assert result.date() == datetime(2024, 1, 17).date()
         assert result > custom_after
