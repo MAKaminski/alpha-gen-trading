@@ -49,12 +49,12 @@ class SchwabSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="SCHWAB_")
 
     api_key: str | None = Field(None)
-    api_secret: str = Field(...)
-    account_id: str = Field(...)
+    api_secret: str | None = Field(None)
+    account_id: str | None = Field(None)
     base_url: str = Field("https://api.schwab.com")
     paper_trading: bool = Field(True)
     callback_url: str | None = Field("http://localhost:8080/callback")
-    token_path: str = Field("./schwab_token.json")
+    token_path: str = Field("./config/schwab_token.json")
 
 
 class StorageSettings(BaseSettings):

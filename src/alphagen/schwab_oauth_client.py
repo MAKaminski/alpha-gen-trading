@@ -26,10 +26,18 @@ class SchwabOAuthClient:
     _logger: structlog.BoundLogger = structlog.get_logger("alphagen.schwab_oauth")
 
     @classmethod
-    def create(cls) -> "SchwabOAuthClient":
+    def create(cls) -> "SchwabOAuthClient | None":
         """Create Schwab client with OAuth2 authentication."""
         cfg = load_app_config().schwab
         logger = structlog.get_logger("alphagen.schwab_oauth")
+        
+        # Check if required settings are available
+        if not cfg.api_key or not cfg.api_secret or not cfg.account_id:
+            logger.warning("schwab_settings_missing", 
+                          api_key=bool(cfg.api_key),
+                          api_secret=bool(cfg.api_secret),
+                          account_id=bool(cfg.account_id))
+            return None
         
         # Check if we have a token file
         token_path = Path(cfg.token_path)

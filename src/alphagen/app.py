@@ -38,6 +38,11 @@ class AlphaGenApp:
         self._logger = structlog.get_logger("alphagen.app")
         self._config = load_app_config()
         self._schwab = SchwabOAuthClient.create()
+        
+        if self._schwab is None:
+            self._logger.warning("schwab_client_not_available", 
+                                msg="Schwab client not initialized - check configuration")
+        
         self._option_monitor = OptionMonitor(
             client=self._schwab,
             on_quote=self._handle_option_quote_update,
