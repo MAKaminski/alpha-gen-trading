@@ -14,6 +14,7 @@ from src.alphagen.config import load_app_config
 
 
 class EquityTickRow(SQLModel, table=True):
+    __table_args__ = {"extend_existing": True}
     id: int | None = Field(default=None, primary_key=True)
     symbol: str
     price: float
@@ -23,6 +24,7 @@ class EquityTickRow(SQLModel, table=True):
 
 
 class OptionQuoteRow(SQLModel, table=True):
+    __table_args__ = {"extend_existing": True}
     id: int | None = Field(default=None, primary_key=True)
     option_symbol: str
     strike: float
@@ -33,6 +35,7 @@ class OptionQuoteRow(SQLModel, table=True):
 
 
 class PositionSnapshotRow(SQLModel, table=True):
+    __table_args__ = {"extend_existing": True}
     id: int | None = Field(default=None, primary_key=True)
     symbol: str
     quantity: int
@@ -42,6 +45,7 @@ class PositionSnapshotRow(SQLModel, table=True):
 
 
 class NormalizedTickRow(SQLModel, table=True):
+    __table_args__ = {"extend_existing": True}
     id: int | None = Field(default=None, primary_key=True)
     as_of: datetime
     equity_symbol: str
@@ -49,20 +53,24 @@ class NormalizedTickRow(SQLModel, table=True):
     session_vwap: float
     ma9: float
     option_symbol: str | None
+    option_strike: float | None
     option_bid: float | None
     option_ask: float | None
 
 
 class SignalRow(SQLModel, table=True):
+    __table_args__ = {"extend_existing": True}
     id: int | None = Field(default=None, primary_key=True)
     action: str
     option_symbol: str
+    reference_price: float
     rationale: str
     as_of: datetime
     cooldown_until: datetime
 
 
 class TradeIntentRow(SQLModel, table=True):
+    __table_args__ = {"extend_existing": True}
     id: int | None = Field(default=None, primary_key=True)
     action: str
     option_symbol: str
@@ -74,6 +82,7 @@ class TradeIntentRow(SQLModel, table=True):
 
 
 class ExecutionRow(SQLModel, table=True):
+    __table_args__ = {"extend_existing": True}
     id: int | None = Field(default=None, primary_key=True)
     order_id: str
     status: str
@@ -158,6 +167,7 @@ async def insert_signal(signal: "Signal") -> None:
             SignalRow(
                 action=signal.action,
                 option_symbol=signal.option_symbol,
+                reference_price=signal.reference_price,
                 rationale=signal.rationale,
                 as_of=signal.as_of,
                 cooldown_until=signal.cooldown_until,
@@ -224,6 +234,7 @@ async def insert_normalized_tick(tick: "NormalizedTick") -> None:
                 session_vwap=tick.equity.session_vwap,
                 ma9=tick.equity.ma9,
                 option_symbol=option.option_symbol if option else None,
+                option_strike=option.strike if option else None,
                 option_bid=option.bid if option else None,
                 option_ask=option.ask if option else None,
             )
