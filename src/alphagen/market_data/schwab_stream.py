@@ -86,26 +86,15 @@ class SchwabMarketDataProvider(MarketDataProvider):
         assert self._callbacks is not None
         
         try:
-            # Get real-time quote from Schwab
-            quote = await self._client.fetch_option_quote(symbol)
-            if quote:
-                await self._callbacks.on_option_quote(quote)
+            # Get real equity quote from Schwab
+            equity_tick = await self._client.fetch_equity_quote(symbol)
+            if equity_tick:
+                await self._callbacks.on_equity_tick(equity_tick)
             
-            # For equity data, we need to get it from Schwab's market data API
-            # This is a simplified version - in production you'd use the proper Schwab market data endpoints
-            current_time = to_est(datetime.now(timezone.utc))
+            # For options, we would need to determine the appropriate option symbol
+            # For now, we'll skip option quotes in the real data fetch
+            # In production, you'd implement logic to find the nearest expiry option
             
-            # Get real equity quote (this would need to be implemented with Schwab's market data API)
-            # For now, we'll use a placeholder that shows we're trying to get real data
-            equity_tick = EquityTick(
-                symbol=symbol,
-                price=400.0,  # This would come from real Schwab data
-                session_vwap=399.0,  # This would be calculated from real data
-                ma9=401.0,  # This would be calculated from real data
-                as_of=current_time,
-            )
-            
-            await self._callbacks.on_equity_tick(equity_tick)
             self._logger.debug("real_market_data_fetched", symbol=symbol)
             
         except Exception as e:

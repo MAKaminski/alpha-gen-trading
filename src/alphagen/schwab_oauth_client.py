@@ -13,7 +13,7 @@ from schwab.auth import client_from_login_flow, client_from_token_file
 from schwab.client import Client
 
 from alphagen.config import load_app_config
-from alphagen.core.events import OptionQuote, PositionSnapshot, TradeExecution, TradeIntent
+from alphagen.core.events import EquityTick, OptionQuote, PositionSnapshot, TradeExecution, TradeIntent
 from alphagen.core.time_utils import to_est
 
 
@@ -187,6 +187,83 @@ class SchwabOAuthClient:
             exec_result = await self.submit_order(intent)
             executions.append(exec_result)
         return executions
+
+    async def fetch_equity_quote(self, symbol: str) -> EquityTick | None:
+        """Fetch equity quote for a given symbol."""
+        if not self._client:
+            self._logger.error("no_client_available", msg="OAuth2 client not initialized - cannot fetch real data")
+            return None
+            
+        try:
+            # Use schwab-py client to get equity quote
+            quote_response = self._client.get_quote(symbol)
+            
+            # Handle Response object
+            if hasattr(quote_response, 'json'):
+                quote_data = quote_response.json()
+            else:
+                quote_data = quote_response
+            
+            # Debug logging
+            self._logger.debug("schwab_quote_response", symbol=symbol, response_type=type(quote_data).__name__)
+            if isinstance(quote_data, dict):
+                self._logger.debug("schwab_quote_keys", keys=list(quote_data.keys()))
+            
+            # Parse the response to extract quote data
+            # Schwab API returns {symbol: quote_data} format
+            if quote_data and symbol in quote_data:
+                quote_info = quote_data[symbol]
+            elif quote_data and 'quotes' in quote_data and quote_data['quotes']:
+                quote_info = quote_data['quotes'][0]
+            else:
+                quote_info = None
+            
+            if quote_info:
+                # Debug: log available fields
+                self._logger.debug("quote_info_fields", fields=list(quote_info.keys()) if isinstance(quote_info, dict) else "not_dict")
+                
+                # Extract price data from the 'quote' field
+                quote_data = quote_info.get('quote', {})
+                if not quote_data:
+                    # Fallback to direct fields
+                    quote_data = quote_info
+                
+                self._logger.debug("quote_data_fields", fields=list(quote_data.keys()) if isinstance(quote_data, dict) else "not_dict")
+                
+                last_price = quote_data.get('lastPrice', 0.0)
+                bid_price = quote_data.get('bidPrice', 0.0)
+                ask_price = quote_data.get('askPrice', 0.0)
+                
+                # Try alternative field names
+                if last_price == 0.0:
+                    last_price = quote_data.get('last', 0.0)
+                if bid_price == 0.0:
+                    bid_price = quote_data.get('bid', 0.0)
+                if ask_price == 0.0:
+                    ask_price = quote_data.get('ask', 0.0)
+                
+                # Calculate mid price
+                mid_price = (bid_price + ask_price) / 2 if bid_price and ask_price else last_price
+                
+                # For now, use mock VWAP and MA9 - in production these would be calculated
+                # from historical data or real-time calculations
+                current_time = to_est(datetime.now(timezone.utc))
+                
+                return EquityTick(
+                    symbol=symbol,
+                    price=mid_price,
+                    session_vwap=mid_price * 0.995,  # Mock VWAP (slightly below price)
+                    ma9=mid_price * 1.005,  # Mock MA9 (slightly above price)
+                    as_of=current_time,
+                )
+            
+            # If no quotes found, return None
+            self._logger.warning("no_quotes_found", symbol=symbol, response_keys=list(quote_data.keys()) if isinstance(quote_data, dict) else "not_dict")
+            return None
+            
+        except Exception as e:
+            self._logger.error("equity_quote_fetch_failed", symbol=symbol, error=str(e))
+            return None
 
     async def fetch_option_quote(self, option_symbol: str) -> OptionQuote | None:
         """Fetch option quote for a given symbol."""
