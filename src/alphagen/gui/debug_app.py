@@ -287,7 +287,16 @@ class DebugGUI:
             
     async def _handle_stream_error(self, error: Exception):
         """Handle stream errors."""
-        self._log_to_console(f"Stream error: {error}", "error")
+        error_msg = str(error)
+        if "token_invalid" in error_msg or "InvalidTokenError" in error_msg:
+            self._log_to_console("❌ OAuth token is invalid or expired!", "error")
+            self._log_to_console("Please click 'Setup OAuth' to re-authenticate", "warning")
+            # Stop streaming on token error
+            if self.stream_data_active.get():
+                self.stream_data_active.set(False)
+                self._stop_streaming()
+        else:
+            self._log_to_console(f"Stream error: {error}", "error")
         
     def _create_async_callback(self, async_func):
         """Create an async callback that can be awaited."""

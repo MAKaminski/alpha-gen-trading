@@ -188,6 +188,18 @@ class SchwabOAuthClient:
             executions.append(exec_result)
         return executions
 
+    async def _refresh_token_if_needed(self) -> bool:
+        """Refresh OAuth token if it's expired."""
+        try:
+            # Check if token is expired and refresh if needed
+            if hasattr(self._client, 'ensure_valid_access_token'):
+                self._client.ensure_valid_access_token()
+                return True
+            return True
+        except Exception as e:
+            self._logger.error("token_refresh_failed", error=str(e))
+            return False
+
     async def fetch_equity_quote(self, symbol: str) -> EquityTick | None:
         """Fetch equity quote for a given symbol."""
         if not self._client:
@@ -195,6 +207,11 @@ class SchwabOAuthClient:
             return None
             
         try:
+            # Refresh token if needed
+            if not await self._refresh_token_if_needed():
+                self._logger.error("token_refresh_failed", msg="Cannot refresh OAuth token")
+                return None
+                
             # Use schwab-py client to get equity quote
             quote_response = self._client.get_quote(symbol)
             
@@ -262,7 +279,12 @@ class SchwabOAuthClient:
             return None
             
         except Exception as e:
-            self._logger.error("equity_quote_fetch_failed", symbol=symbol, error=str(e))
+            error_msg = str(e)
+            if "token_invalid" in error_msg or "InvalidTokenError" in error_msg:
+                self._logger.error("oauth_token_invalid", symbol=symbol, error=error_msg, 
+                                 msg="OAuth token is invalid or expired. Please re-authenticate.")
+            else:
+                self._logger.error("equity_quote_fetch_failed", symbol=symbol, error=error_msg)
             return None
 
     async def fetch_option_quote(self, option_symbol: str) -> OptionQuote | None:
@@ -307,3 +329,17 @@ class SchwabOAuthClient:
         if self._client and hasattr(self._client, 'save_token'):
             self._client.save_token(token_path)
             self._logger.info("token_saved", path=token_path)
+    
+    def is_token_valid(self) -> bool:
+        """Check if the current OAuth token is valid."""
+        if not self._client:
+            return False
+        try:
+            # Try to refresh the token to check validity
+            if hasattr(self._client, 'ensure_valid_access_token'):
+                self._client.ensure_valid_access_token()
+                return True
+            return True
+        except Exception as e:
+            self._logger.warning("token_validation_failed", error=str(e))
+            return False
