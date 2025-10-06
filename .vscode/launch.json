@@ -1,0 +1,36 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "🐛 Run Alpha-Gen (Unified GUI)",
+            "type": "python",
+            "request": "launch",
+            "module": "alphagen",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "args": ["debug"]
+        },
+        {
+            "name": "🧪 Run Test Suite [All Tests - Unit, Integration E2E]",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "args": [
+                "tests/unit/",
+                "-v",
+                "--tb=short",
+                "--cov=src/alphagen",
+                "--cov-report=term-missing",
+                "--cov-report=html:htmlcov"
+            ]
+        }
+    ]
+}

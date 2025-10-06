@@ -26,7 +26,7 @@ async def test_fetch_positions_with_mock_data():
     """Test fetching positions with mock Schwab API response."""
     with patch('alphagen.schwab_oauth_client.client_from_token_file') as mock_client_from_token:
         mock_client = AsyncMock()
-        mock_client.get_account.return_value = {
+        mock_client.get_account = AsyncMock(return_value={
             'securitiesAccount': {
                 'positions': [
                     {
@@ -38,7 +38,7 @@ async def test_fetch_positions_with_mock_data():
                     }
                 ]
             }
-        }
+        })
         mock_client_from_token.return_value = mock_client
         
         client = SchwabOAuthClient.create()
