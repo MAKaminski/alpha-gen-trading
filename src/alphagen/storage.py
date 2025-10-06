@@ -13,7 +13,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from src.alphagen.config import load_app_config
 
 
-class EquityTickRow(SQLModel, table=True, extend_existing=True):
+class EquityTickRow(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     symbol: str
     price: float
@@ -22,7 +22,7 @@ class EquityTickRow(SQLModel, table=True, extend_existing=True):
     as_of: datetime
 
 
-class OptionQuoteRow(SQLModel, table=True, extend_existing=True):
+class OptionQuoteRow(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     option_symbol: str
     strike: float
@@ -32,7 +32,7 @@ class OptionQuoteRow(SQLModel, table=True, extend_existing=True):
     as_of: datetime
 
 
-class PositionSnapshotRow(SQLModel, table=True, extend_existing=True):
+class PositionSnapshotRow(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     symbol: str
     quantity: int
@@ -41,7 +41,7 @@ class PositionSnapshotRow(SQLModel, table=True, extend_existing=True):
     as_of: datetime
 
 
-class NormalizedTickRow(SQLModel, table=True, extend_existing=True):
+class NormalizedTickRow(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     as_of: datetime
     equity_symbol: str

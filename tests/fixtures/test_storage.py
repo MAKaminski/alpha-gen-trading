@@ -12,6 +12,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 
 class TestEquityTickRow(SQLModel, table=True):
+    __test__ = False  # Prevent pytest from collecting this as a test class
     id: int | None = Field(default=None, primary_key=True)
     symbol: str
     price: float
@@ -21,6 +22,7 @@ class TestEquityTickRow(SQLModel, table=True):
 
 
 class TestOptionQuoteRow(SQLModel, table=True):
+    __test__ = False  # Prevent pytest from collecting this as a test class
     id: int | None = Field(default=None, primary_key=True)
     option_symbol: str
     strike: float
@@ -31,6 +33,7 @@ class TestOptionQuoteRow(SQLModel, table=True):
 
 
 class TestPositionSnapshotRow(SQLModel, table=True):
+    __test__ = False  # Prevent pytest from collecting this as a test class
     id: int | None = Field(default=None, primary_key=True)
     symbol: str
     quantity: int
@@ -40,6 +43,7 @@ class TestPositionSnapshotRow(SQLModel, table=True):
 
 
 class TestNormalizedTickRow(SQLModel, table=True):
+    __test__ = False  # Prevent pytest from collecting this as a test class
     id: int | None = Field(default=None, primary_key=True)
     as_of: datetime
     equity_symbol: str
@@ -54,6 +58,7 @@ class TestNormalizedTickRow(SQLModel, table=True):
 
 
 class TestSignalRow(SQLModel, table=True):
+    __test__ = False  # Prevent pytest from collecting this as a test class
     id: int | None = Field(default=None, primary_key=True)
     signal_type: str
     strength: float
@@ -61,6 +66,7 @@ class TestSignalRow(SQLModel, table=True):
 
 
 class TestTradeIntentRow(SQLModel, table=True):
+    __test__ = False  # Prevent pytest from collecting this as a test class
     id: int | None = Field(default=None, primary_key=True)
     symbol: str
     action: str
@@ -70,6 +76,7 @@ class TestTradeIntentRow(SQLModel, table=True):
 
 
 class TestExecutionRow(SQLModel, table=True):
+    __test__ = False  # Prevent pytest from collecting this as a test class
     id: int | None = Field(default=None, primary_key=True)
     symbol: str
     action: str
