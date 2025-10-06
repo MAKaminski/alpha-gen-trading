@@ -1,4 +1,5 @@
 """Schwab streaming market data provider."""
+
 from __future__ import annotations
 
 import asyncio
@@ -37,17 +38,17 @@ class SchwabMarketDataProvider(MarketDataProvider):
             self._task.cancel()
             await asyncio.gather(self._task, return_exceptions=True)
             self._task = None
-        
+
         if self._websocket:
             await self._websocket.close()
             self._websocket = None
-            
+
         await self._client.close()
 
     async def _stream_data(self) -> None:
         """Main streaming loop for Schwab market data."""
         assert self._callbacks is not None
-        
+
         try:
             # For now, implement a polling-based approach since Schwab's streaming API
             # requires complex authentication and subscription management
@@ -58,19 +59,21 @@ class SchwabMarketDataProvider(MarketDataProvider):
 
     async def _poll_market_data(self) -> None:
         """Poll market data from Schwab API (fallback when streaming not available)."""
-        self._logger.info("schwab_polling_started", msg="Using polling mode for market data")
-        
+        self._logger.info(
+            "schwab_polling_started", msg="Using polling mode for market data"
+        )
+
         # Subscribe to QQQ equity data
         equity_symbol = self._config.polygon.equity_ticker
-        
+
         while True:
             try:
                 # Get real market data from Schwab
                 await self._fetch_real_market_data(equity_symbol)
-                
+
                 # Poll every 5 seconds
                 await asyncio.sleep(5)
-                
+
             except asyncio.CancelledError:
                 break
             except Exception as e:
@@ -82,31 +85,33 @@ class SchwabMarketDataProvider(MarketDataProvider):
     async def _fetch_real_market_data(self, symbol: str) -> None:
         """Fetch real market data from Schwab API."""
         assert self._callbacks is not None
-        
+
         try:
             # Get real equity quote from Schwab
             equity_tick = await self._client.fetch_equity_quote(symbol)
             if equity_tick:
                 await self._callbacks.on_equity_tick(equity_tick)
-            
+
             # For options, we would need to determine the appropriate option symbol
             # For now, we'll skip option quotes in the real data fetch
             # In production, you'd implement logic to find the nearest expiry option
-            
+
             self._logger.debug("real_market_data_fetched", symbol=symbol)
-            
+
         except Exception as e:
-            self._logger.warning("real_market_data_fetch_failed", symbol=symbol, error=str(e))
+            self._logger.warning(
+                "real_market_data_fetch_failed", symbol=symbol, error=str(e)
+            )
             raise
 
     async def _generate_mock_data(self, symbol: str) -> None:
         """Generate mock market data for testing purposes."""
         assert self._callbacks is not None
-        
+
         # Create mock equity tick
         current_time = to_est(datetime.now(timezone.utc))
         base_price = 400.0 + (hash(symbol) % 100) / 100.0  # Mock price variation
-        
+
         equity_tick = EquityTick(
             symbol=symbol,
             price=base_price,
@@ -114,9 +119,9 @@ class SchwabMarketDataProvider(MarketDataProvider):
             ma9=base_price * 1.01,  # Mock 9-period moving average
             as_of=current_time,
         )
-        
+
         await self._callbacks.on_equity_tick(equity_tick)
-        
+
         # Create mock option quote (example for QQQ options)
         option_quote = OptionQuote(
             option_symbol=f"{symbol}241220C00400000",  # QQQ Dec 20, 2024 $400 Call
@@ -126,5 +131,5 @@ class SchwabMarketDataProvider(MarketDataProvider):
             expiry=datetime(2024, 12, 20, tzinfo=timezone.utc),
             as_of=current_time,
         )
-        
+
         await self._callbacks.on_option_quote(option_quote)

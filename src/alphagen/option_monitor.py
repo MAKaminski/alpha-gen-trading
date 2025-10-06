@@ -1,4 +1,5 @@
 """Option quote polling to support stop-loss/take-profit logic."""
+
 from __future__ import annotations
 
 import asyncio
@@ -60,7 +61,9 @@ class OptionMonitor:
                 except asyncio.CancelledError:  # pragma: no cover - cooperative cancel
                     raise
                 except Exception as exc:  # pylint: disable=broad-except
-                    self._logger.warning("option_monitor_error", symbol=symbol, error=str(exc))
+                    self._logger.warning(
+                        "option_monitor_error", symbol=symbol, error=str(exc)
+                    )
                 await asyncio.sleep(self._interval)
         except asyncio.CancelledError:
             self._logger.debug("option_monitor_task_cancelled", symbol=symbol)

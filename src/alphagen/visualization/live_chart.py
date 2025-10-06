@@ -1,4 +1,5 @@
 """Real-time matplotlib visualization for VWAP vs MA9."""
+
 from __future__ import annotations
 
 from collections import deque
@@ -92,13 +93,13 @@ class LiveChart:
             import matplotlib.pyplot as plt
             from matplotlib.animation import FuncAnimation
             import numpy as np
-            
+
             # Ensure we're using an interactive backend
             if not matplotlib.is_interactive():
                 # Use TkAgg backend since we're in a tkinter environment
-                matplotlib.use('TkAgg')
+                matplotlib.use("TkAgg")
                 plt.ion()  # Turn on interactive mode
-                
+
         except Exception as exc:  # pragma: no cover - matplotlib import failure
             self._logger.error("live_chart_import_failed", error=str(exc))
             return
@@ -108,8 +109,8 @@ class LiveChart:
             num="Alpha-Gen QQQ VWAP vs MA9",
             figsize=(10, 6),
         )
-        line_vwap, = ax.plot([], [], label="VWAP", color="#4caf50", linewidth=1.8)
-        line_ma9, = ax.plot([], [], label="MA9", color="#2196f3", linewidth=1.4)
+        (line_vwap,) = ax.plot([], [], label="VWAP", color="#4caf50", linewidth=1.8)
+        (line_ma9,) = ax.plot([], [], label="MA9", color="#2196f3", linewidth=1.4)
         scatter = ax.scatter([], [], marker="x", color="#ffeb3b", s=60, label="Cross")
         ax.set_xlabel("Time (ET)")
         ax.set_ylabel("Price ($)")
@@ -137,12 +138,14 @@ class LiveChart:
 
             if closing:
                 plt.close(fig)
-                return line_vwap,
+                return (line_vwap,)
 
             if not self._tick_buffer:
-                return line_vwap,
+                return (line_vwap,)
 
-            times = np.array([mdates.date2num(pt.timestamp) for pt in self._tick_buffer])
+            times = np.array(
+                [mdates.date2num(pt.timestamp) for pt in self._tick_buffer]
+            )
             vwap = np.array([pt.vwap for pt in self._tick_buffer])
             ma9 = np.array([pt.ma9 for pt in self._tick_buffer])
 
@@ -154,7 +157,12 @@ class LiveChart:
                 xs = np.array([mdates.date2num(sig.timestamp) for sig in signals_list])
                 ys = np.array([sig.price for sig in signals_list])
                 scatter.set_offsets(np.column_stack((xs, ys)))
-                sizes = np.array([80.0 if sig.action.endswith("OPEN") else 50.0 for sig in signals_list])
+                sizes = np.array(
+                    [
+                        80.0 if sig.action.endswith("OPEN") else 50.0
+                        for sig in signals_list
+                    ]
+                )
                 scatter.set_sizes(sizes)
             else:
                 scatter.set_offsets(np.empty((0, 2)))
@@ -167,31 +175,41 @@ class LiveChart:
 
         FuncAnimation(fig, update, interval=250, cache_frame_data=False)
         try:
-            self._logger.info("live_chart_displaying", backend=matplotlib.get_backend(), interactive=matplotlib.is_interactive())
-            
+            self._logger.info(
+                "live_chart_displaying",
+                backend=matplotlib.get_backend(),
+                interactive=matplotlib.is_interactive(),
+            )
+
             # Show the chart first
             plt.show(block=False)  # Non-blocking so GUI can continue
             self._logger.info("live_chart_window_created")
-            
+
             # Make the window more prominent after it's created
             try:
-                if hasattr(fig.canvas, 'manager') and hasattr(fig.canvas.manager, 'window'):
-                    fig.canvas.manager.window.wm_attributes('-topmost', 1)  # Bring to front
-                    fig.canvas.manager.window.wm_attributes('-topmost', 0)  # Allow normal stacking
+                if hasattr(fig.canvas, "manager") and hasattr(
+                    fig.canvas.manager, "window"
+                ):
+                    fig.canvas.manager.window.wm_attributes(
+                        "-topmost", 1
+                    )  # Bring to front
+                    fig.canvas.manager.window.wm_attributes(
+                        "-topmost", 0
+                    )  # Allow normal stacking
                     self._logger.info("chart_window_brought_to_front")
                 else:
                     self._logger.warning("chart_window_manager_not_available")
             except Exception as e:
                 self._logger.warning("chart_window_attributes_failed", error=str(e))
-            
+
             # Force a redraw
             fig.canvas.draw()
             fig.canvas.flush_events()
-            
+
             # Keep the chart alive
             while self._running:
                 plt.pause(0.1)
-                
+
         except Exception as e:
             self._logger.warning("chart_display_error", error=str(e))
         finally:

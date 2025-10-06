@@ -1,4 +1,5 @@
 """ETL stage that normalizes raw Polygon streams into aligned ticks."""
+
 from __future__ import annotations
 
 from collections import deque

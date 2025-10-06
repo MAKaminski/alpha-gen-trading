@@ -1,4 +1,5 @@
 """Market data provider interfaces."""
+
 from .base import MarketDataProvider, StreamCallbacks
 from .factory import create_market_data_provider
 

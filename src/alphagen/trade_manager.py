@@ -1,11 +1,17 @@
 """Trade execution and lifecycle management."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Callable, Coroutine, Dict, Optional
 
-from alphagen.core.events import NormalizedTick, OptionQuote, TradeExecution, TradeIntent
+from alphagen.core.events import (
+    NormalizedTick,
+    OptionQuote,
+    TradeExecution,
+    TradeIntent,
+)
 from alphagen.config import OPTION_CONTRACT_MULTIPLIER
 from alphagen.core.time_utils import session_bounds
 from alphagen.option_monitor import OptionMonitor
@@ -20,7 +26,10 @@ class TradeManager:
     option_monitor: OptionMonitor | None = None
     _open_positions: Dict[str, TradeExecution] = field(default_factory=dict)
     _last_quotes: Dict[str, OptionQuote] = field(default_factory=dict)
-    _logger: structlog.BoundLogger = field(default_factory=lambda: structlog.get_logger("alphagen.trade_manager"), init=False)
+    _logger: structlog.BoundLogger = field(
+        default_factory=lambda: structlog.get_logger("alphagen.trade_manager"),
+        init=False,
+    )
 
     async def handle_intent(self, intent: TradeIntent) -> None:
         symbol = intent.option_symbol

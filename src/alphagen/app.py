@@ -1,4 +1,5 @@
 """Application orchestrator for Alpha-Gen."""
+
 from __future__ import annotations
 
 import asyncio
@@ -9,7 +10,15 @@ import structlog
 
 from alphagen import __version__
 from alphagen.config import load_app_config
-from alphagen.core.events import EquityTick, NormalizedTick, OptionQuote, PositionState, Signal, TradeExecution, TradeIntent
+from alphagen.core.events import (
+    EquityTick,
+    NormalizedTick,
+    OptionQuote,
+    PositionState,
+    Signal,
+    TradeExecution,
+    TradeIntent,
+)
 from alphagen.etl.normalizer import Normalizer
 from alphagen.etl.position import PositionCalculator
 from alphagen.market_data import StreamCallbacks, create_market_data_provider
@@ -36,11 +45,13 @@ class AlphaGenApp:
         self._logger = structlog.get_logger("alphagen.app")
         self._config = load_app_config()
         self._schwab = SchwabOAuthClient.create()
-        
+
         if self._schwab is None:
-            self._logger.warning("schwab_client_not_available", 
-                                msg="Schwab client not initialized - check configuration")
-        
+            self._logger.warning(
+                "schwab_client_not_available",
+                msg="Schwab client not initialized - check configuration",
+            )
+
         self._option_monitor = OptionMonitor(
             client=self._schwab,
             on_quote=self._handle_option_quote_update,
@@ -119,7 +130,9 @@ class AlphaGenApp:
         await self._trade_manager.handle_tick(tick)
 
     async def _handle_signal(self, signal_event: Signal) -> None:
-        self._logger.info("signal", symbol=signal_event.option_symbol, action=signal_event.action)
+        self._logger.info(
+            "signal", symbol=signal_event.option_symbol, action=signal_event.action
+        )
         await insert_signal(signal_event)
         if self._chart:
             self._chart.handle_signal(signal_event)

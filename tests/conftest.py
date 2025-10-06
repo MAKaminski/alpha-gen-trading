@@ -1,4 +1,5 @@
 """Pytest configuration and shared fixtures."""
+
 import asyncio
 import pytest
 from datetime import datetime, timezone
@@ -74,9 +75,16 @@ def mock_market_data_provider():
 @pytest.fixture
 def sample_config():
     """Create a sample configuration for testing."""
-    from alphagen.config import AppConfig, PolygonSettings, SchwabSettings, StorageSettings, RiskSettings, FeatureSettings
+    from alphagen.config import (
+        AppConfig,
+        PolygonSettings,
+        SchwabSettings,
+        StorageSettings,
+        RiskSettings,
+        FeatureSettings,
+    )
     from zoneinfo import ZoneInfo
-    
+
     return AppConfig(
         polygon=PolygonSettings(
             api_key="test_key",

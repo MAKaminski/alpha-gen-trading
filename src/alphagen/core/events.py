@@ -1,4 +1,5 @@
 """Domain event models used across the pipeline."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -92,7 +93,9 @@ class CooldownState:
     def expired(cls) -> "CooldownState":
         return cls(until=datetime.min.replace(tzinfo=EST))
 
-    def extend(self, duration: timedelta, from_time: Optional[datetime] = None) -> "CooldownState":
+    def extend(
+        self, duration: timedelta, from_time: Optional[datetime] = None
+    ) -> "CooldownState":
         start = from_time or self.until
         return CooldownState(until=start + duration)
 

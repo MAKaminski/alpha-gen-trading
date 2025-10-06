@@ -5,7 +5,16 @@ from unittest.mock import MagicMock, patch, AsyncMock
 from datetime import datetime, timezone
 
 from alphagen.app import AlphaGenApp
-from alphagen.core.events import EquityTick, OptionQuote, NormalizedTick, Signal, TradeIntent, TradeExecution, PositionState, PositionSnapshot
+from alphagen.core.events import (
+    EquityTick,
+    OptionQuote,
+    NormalizedTick,
+    Signal,
+    TradeIntent,
+    TradeExecution,
+    PositionState,
+    PositionSnapshot,
+)
 
 
 class TestAlphaGenAppSimple:
@@ -13,22 +22,22 @@ class TestAlphaGenAppSimple:
 
     def test_app_initialization(self):
         """Test app initialization."""
-        with patch.object(AlphaGenApp, '__init__', lambda x: None):
+        with patch.object(AlphaGenApp, "__init__", lambda x: None):
             app = AlphaGenApp()
             assert app is not None
 
     def test_app_has_required_attributes(self):
         """Test app has required attributes."""
-        with patch.object(AlphaGenApp, '__init__', lambda x: None):
+        with patch.object(AlphaGenApp, "__init__", lambda x: None):
             app = AlphaGenApp()
             # Set some basic attributes
             app._logger = MagicMock()
             app._running = False
             app._background_tasks = []
-            
-            assert hasattr(app, '_logger')
-            assert hasattr(app, '_running')
-            assert hasattr(app, '_background_tasks')
+
+            assert hasattr(app, "_logger")
+            assert hasattr(app, "_running")
+            assert hasattr(app, "_background_tasks")
 
     @pytest.mark.asyncio
     async def test_handle_equity_tick_simple(self):
@@ -36,11 +45,7 @@ class TestAlphaGenAppSimple:
         # Create test data
         timestamp = datetime.now(timezone.utc)
         equity_tick = EquityTick(
-            symbol="QQQ",
-            price=400.0,
-            session_vwap=399.5,
-            ma9=400.2,
-            as_of=timestamp
+            symbol="QQQ", price=400.0, session_vwap=399.5, ma9=400.2, as_of=timestamp
         )
 
         # Mock app components
@@ -50,7 +55,7 @@ class TestAlphaGenAppSimple:
         app._normalizer.ingest_equity = AsyncMock()
 
         # Create AlphaGenApp instance
-        with patch.object(AlphaGenApp, '__init__', lambda x: None):
+        with patch.object(AlphaGenApp, "__init__", lambda x: None):
             alpha_app = AlphaGenApp()
             alpha_app._logger = app._logger
             alpha_app._normalizer = app._normalizer
@@ -72,7 +77,7 @@ class TestAlphaGenAppSimple:
             bid=5.50,
             ask=5.75,
             expiry=timestamp,
-            as_of=timestamp
+            as_of=timestamp,
         )
 
         # Mock app components
@@ -82,7 +87,7 @@ class TestAlphaGenAppSimple:
         app._normalizer.ingest_option = AsyncMock()
 
         # Create AlphaGenApp instance
-        with patch.object(AlphaGenApp, '__init__', lambda x: None):
+        with patch.object(AlphaGenApp, "__init__", lambda x: None):
             alpha_app = AlphaGenApp()
             alpha_app._logger = app._logger
             alpha_app._normalizer = app._normalizer
@@ -99,16 +104,10 @@ class TestAlphaGenAppSimple:
         # Create test data
         timestamp = datetime.now(timezone.utc)
         equity_tick = EquityTick(
-            symbol="QQQ",
-            price=400.0,
-            session_vwap=399.5,
-            ma9=400.2,
-            as_of=timestamp
+            symbol="QQQ", price=400.0, session_vwap=399.5, ma9=400.2, as_of=timestamp
         )
         normalized_tick = NormalizedTick(
-            as_of=timestamp,
-            equity=equity_tick,
-            option=None
+            as_of=timestamp, equity=equity_tick, option=None
         )
 
         # Mock app components
@@ -121,7 +120,7 @@ class TestAlphaGenAppSimple:
         app._trade_manager.handle_tick = AsyncMock()
 
         # Create AlphaGenApp instance
-        with patch.object(AlphaGenApp, '__init__', lambda x: None):
+        with patch.object(AlphaGenApp, "__init__", lambda x: None):
             alpha_app = AlphaGenApp()
             alpha_app._logger = app._logger
             alpha_app._chart = app._chart
@@ -140,16 +139,10 @@ class TestAlphaGenAppSimple:
         # Create test data
         timestamp = datetime.now(timezone.utc)
         equity_tick = EquityTick(
-            symbol="QQQ",
-            price=400.0,
-            session_vwap=399.5,
-            ma9=400.2,
-            as_of=timestamp
+            symbol="QQQ", price=400.0, session_vwap=399.5, ma9=400.2, as_of=timestamp
         )
         normalized_tick = NormalizedTick(
-            as_of=timestamp,
-            equity=equity_tick,
-            option=None
+            as_of=timestamp, equity=equity_tick, option=None
         )
 
         # Mock app components
@@ -162,7 +155,7 @@ class TestAlphaGenAppSimple:
         app._trade_manager.handle_tick = AsyncMock()
 
         # Create AlphaGenApp instance
-        with patch.object(AlphaGenApp, '__init__', lambda x: None):
+        with patch.object(AlphaGenApp, "__init__", lambda x: None):
             alpha_app = AlphaGenApp()
             alpha_app._logger = app._logger
             alpha_app._chart = app._chart
@@ -186,7 +179,7 @@ class TestAlphaGenAppSimple:
             option_symbol="QQQ241220C00400000",
             reference_price=400.0,
             rationale="VWAP crossover",
-            cooldown_until=timestamp
+            cooldown_until=timestamp,
         )
 
         # Mock app components
@@ -197,7 +190,7 @@ class TestAlphaGenAppSimple:
         app._trade_generator.handle_signal = AsyncMock()
 
         # Create AlphaGenApp instance
-        with patch.object(AlphaGenApp, '__init__', lambda x: None):
+        with patch.object(AlphaGenApp, "__init__", lambda x: None):
             alpha_app = AlphaGenApp()
             alpha_app._logger = app._logger
             alpha_app._chart = app._chart
@@ -221,7 +214,7 @@ class TestAlphaGenAppSimple:
             quantity=100,
             limit_price=400.0,
             stop_loss=380.0,
-            take_profit=420.0
+            take_profit=420.0,
         )
 
         # Mock app components
@@ -232,7 +225,7 @@ class TestAlphaGenAppSimple:
         app._intent_index = {}
 
         # Create AlphaGenApp instance
-        with patch.object(AlphaGenApp, '__init__', lambda x: None):
+        with patch.object(AlphaGenApp, "__init__", lambda x: None):
             alpha_app = AlphaGenApp()
             alpha_app._logger = app._logger
             alpha_app._trade_manager = app._trade_manager
@@ -255,7 +248,7 @@ class TestAlphaGenAppSimple:
         app._logger = MagicMock()
 
         # Create AlphaGenApp instance
-        with patch.object(AlphaGenApp, '__init__', lambda x: None):
+        with patch.object(AlphaGenApp, "__init__", lambda x: None):
             alpha_app = AlphaGenApp()
             alpha_app._logger = app._logger
 
@@ -277,7 +270,7 @@ class TestAlphaGenAppSimple:
             quantity=100,
             limit_price=400.0,
             stop_loss=380.0,
-            take_profit=420.0
+            take_profit=420.0,
         )
         execution = TradeExecution(
             order_id="12345",
@@ -285,7 +278,7 @@ class TestAlphaGenAppSimple:
             fill_price=400.0,
             pnl_contrib=50.0,
             as_of=timestamp,
-            intent=intent
+            intent=intent,
         )
 
         # Mock app components
@@ -296,7 +289,7 @@ class TestAlphaGenAppSimple:
         app._position_calculator.register_execution = AsyncMock()
 
         # Create AlphaGenApp instance
-        with patch.object(AlphaGenApp, '__init__', lambda x: None):
+        with patch.object(AlphaGenApp, "__init__", lambda x: None):
             alpha_app = AlphaGenApp()
             alpha_app._logger = app._logger
             alpha_app._intent_index = app._intent_index
@@ -306,7 +299,9 @@ class TestAlphaGenAppSimple:
             await alpha_app._record_execution(execution)
 
             # Verify position calculator was called
-            app._position_calculator.register_execution.assert_called_once_with(execution)
+            app._position_calculator.register_execution.assert_called_once_with(
+                execution
+            )
 
     @pytest.mark.asyncio
     async def test_on_position_state_simple(self):
@@ -318,12 +313,9 @@ class TestAlphaGenAppSimple:
             quantity=100,
             market_value=40000.0,
             average_price=400.0,
-            as_of=timestamp
+            as_of=timestamp,
         )
-        position_state = PositionState(
-            symbols={"QQQ": position},
-            as_of=timestamp
-        )
+        position_state = PositionState(symbols={"QQQ": position}, as_of=timestamp)
 
         # Mock app components
         app = MagicMock()
@@ -332,7 +324,7 @@ class TestAlphaGenAppSimple:
         app._position_calculator.update_positions = AsyncMock()
 
         # Create AlphaGenApp instance
-        with patch.object(AlphaGenApp, '__init__', lambda x: None):
+        with patch.object(AlphaGenApp, "__init__", lambda x: None):
             alpha_app = AlphaGenApp()
             alpha_app._logger = app._logger
             alpha_app._position_calculator = app._position_calculator
@@ -354,7 +346,7 @@ class TestAlphaGenAppSimple:
             bid=5.50,
             ask=5.75,
             expiry=timestamp,
-            as_of=timestamp
+            as_of=timestamp,
         )
 
         # Mock app components
@@ -364,7 +356,7 @@ class TestAlphaGenAppSimple:
         app._trade_manager.update_option_quote = AsyncMock()
 
         # Create AlphaGenApp instance
-        with patch.object(AlphaGenApp, '__init__', lambda x: None):
+        with patch.object(AlphaGenApp, "__init__", lambda x: None):
             alpha_app = AlphaGenApp()
             alpha_app._logger = app._logger
             alpha_app._trade_manager = app._trade_manager

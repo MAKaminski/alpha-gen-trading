@@ -1,4 +1,5 @@
 """Signal generation logic based on normalized ticks."""
+
 from __future__ import annotations
 
 from datetime import datetime, timedelta
@@ -31,12 +32,16 @@ class SignalEngine:
         if self._last_diff is None:
             self._last_diff = diff
             return
-        crossed = diff == 0 or (diff > 0 > self._last_diff) or (diff < 0 < self._last_diff)
+        crossed = (
+            diff == 0 or (diff > 0 > self._last_diff) or (diff < 0 < self._last_diff)
+        )
         if not crossed:
             self._last_diff = diff
             return
         action = "SELL_TO_OPEN" if diff > 0 else "SELL_PUT_TO_OPEN"
-        rationale = f"VWAP/MA9 crossover detected (diff={diff:.4f}, prev={self._last_diff:.4f})"
+        rationale = (
+            f"VWAP/MA9 crossover detected (diff={diff:.4f}, prev={self._last_diff:.4f})"
+        )
         cooldown_until = now + self._cooldown_duration
         signal = Signal(
             as_of=now,
