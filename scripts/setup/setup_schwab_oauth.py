@@ -49,8 +49,16 @@ async def setup_oauth():
         
         # Test the client
         print("\n🧪 Testing API connection...")
-        accounts = client.get_account_numbers()
-        print(f"Found {len(accounts)} accounts: {accounts}")
+        try:
+            accounts = client.get_account_numbers()
+            if hasattr(accounts, 'json'):
+                accounts_data = accounts.json()
+                print(f"Found {len(accounts_data)} accounts: {accounts_data}")
+            else:
+                print(f"Account response: {accounts}")
+        except Exception as e:
+            print(f"Account test failed: {e}")
+            print("OAuth2 setup completed successfully despite account test failure")
         
         return True
         

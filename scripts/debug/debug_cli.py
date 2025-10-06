@@ -16,7 +16,7 @@ def run_oauth_setup():
     try:
         import subprocess
         result = subprocess.run([
-            sys.executable, "setup_schwab_oauth.py"
+            sys.executable, "scripts/setup/setup_schwab_oauth.py"
         ], capture_output=False, text=True)
         
         if result.returncode == 0:
