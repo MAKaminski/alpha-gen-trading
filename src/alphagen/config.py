@@ -12,7 +12,7 @@ from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Load environment variables from .env file
-load_dotenv()
+load_dotenv("config/.env")
 
 
 EST = ZoneInfo("America/New_York")
@@ -54,7 +54,7 @@ class SchwabSettings(BaseSettings):
     base_url: str = Field("https://api.schwab.com")
     paper_trading: bool = Field(True)
     callback_url: str | None = Field("http://localhost:8080/callback")
-    token_path: str = Field("./config/schwab_token.json")
+    token_path: str = Field("config/schwab_token.json")
 
 
 class StorageSettings(BaseSettings):
