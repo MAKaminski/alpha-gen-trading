@@ -5,9 +5,9 @@ import asyncio
 from unittest.mock import AsyncMock, patch
 from datetime import timedelta
 
-from alphagen.app import AlphaGenApp
-from alphagen.core.events import EquityTick, OptionQuote
-from alphagen.core.time_utils import now_est
+from src.alphagen.app import AlphaGenApp
+from src.alphagen.core.events import EquityTick, OptionQuote
+from src.alphagen.core.time_utils import now_est
 
 
 @pytest.mark.e2e
@@ -15,9 +15,9 @@ from alphagen.core.time_utils import now_est
 async def test_complete_trading_cycle():
     """Test a complete trading cycle from market data to position closure."""
     with (
-        patch("alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("alphagen.app.create_market_data_provider") as mock_market_data_factory,
-        patch("alphagen.app.init_models") as mock_init_models,
+        patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
+        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch("src.alphagen.app.init_models") as mock_init_models,
     ):
         # Mock Schwab client
         mock_schwab = AsyncMock()
@@ -133,10 +133,10 @@ async def test_complete_trading_cycle():
 async def test_market_hours_handling():
     """Test that the system handles market hours correctly."""
     with (
-        patch("alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("alphagen.app.create_market_data_provider") as mock_market_data_factory,
-        patch("alphagen.app.init_models") as mock_init_models,
-        patch("alphagen.core.time_utils.within_trading_window") as mock_trading_window,
+        patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
+        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch("src.alphagen.app.init_models") as mock_init_models,
+        patch("src.alphagen.core.time_utils.within_trading_window") as mock_trading_window,
     ):
         # Mock trading window to return False (market closed)
         mock_trading_window.return_value = False
@@ -190,9 +190,9 @@ async def test_market_hours_handling():
 async def test_error_recovery():
     """Test that the system recovers from errors gracefully."""
     with (
-        patch("alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("alphagen.app.create_market_data_provider") as mock_market_data_factory,
-        patch("alphagen.app.init_models") as mock_init_models,
+        patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
+        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch("src.alphagen.app.init_models") as mock_init_models,
     ):
         # Mock Schwab client that fails initially then succeeds
         mock_schwab = AsyncMock()
@@ -244,9 +244,9 @@ async def test_error_recovery():
 async def test_position_monitoring():
     """Test that position monitoring works correctly."""
     with (
-        patch("alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("alphagen.app.create_market_data_provider") as mock_market_data_factory,
-        patch("alphagen.app.init_models") as mock_init_models,
+        patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
+        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch("src.alphagen.app.init_models") as mock_init_models,
     ):
         # Mock Schwab client with changing positions
         mock_schwab = AsyncMock()

@@ -5,8 +5,8 @@ import pytest
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock
 
-from alphagen.core.events import EquityTick, OptionQuote, NormalizedTick
-from alphagen.core.time_utils import now_est
+from src.alphagen.core.events import EquityTick, OptionQuote, NormalizedTick
+from src.alphagen.core.time_utils import now_est
 
 
 @pytest.fixture
@@ -75,7 +75,7 @@ def mock_market_data_provider():
 @pytest.fixture
 def sample_config():
     """Create a sample configuration for testing."""
-    from alphagen.config import (
+    from src.alphagen.config import (
         AppConfig,
         PolygonSettings,
         SchwabSettings,

@@ -4,9 +4,9 @@ import pytest
 from unittest.mock import AsyncMock, patch
 from datetime import datetime
 
-from alphagen.storage import session_scope, insert_positions
-from alphagen.core.events import PositionSnapshot
-from alphagen.config import EST
+from src.alphagen.storage import session_scope, insert_positions
+from src.alphagen.core.events import PositionSnapshot
+from src.alphagen.config import EST
 
 
 class TestStorageComprehensive:
@@ -23,7 +23,7 @@ class TestStorageComprehensive:
     @pytest.mark.asyncio
     async def test_session_scope_success(self):
         """Test session_scope commits on success."""
-        with patch("alphagen.storage.AsyncSession") as mock_session_class:
+        with patch("src.alphagen.storage.AsyncSession") as mock_session_class:
             mock_session = AsyncMock()
             mock_session_class.return_value = mock_session
 
@@ -38,7 +38,7 @@ class TestStorageComprehensive:
     @pytest.mark.asyncio
     async def test_session_scope_rollback_on_exception(self):
         """Test session_scope rolls back on exception."""
-        with patch("alphagen.storage.AsyncSession") as mock_session_class:
+        with patch("src.alphagen.storage.AsyncSession") as mock_session_class:
             mock_session = AsyncMock()
             mock_session_class.return_value = mock_session
 
@@ -54,7 +54,7 @@ class TestStorageComprehensive:
     @pytest.mark.asyncio
     async def test_insert_positions_empty_list(self):
         """Test insert_positions with empty list does nothing."""
-        with patch("alphagen.storage.session_scope") as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             await insert_positions([])
             mock_session_scope.assert_not_called()
 
@@ -79,7 +79,7 @@ class TestStorageComprehensive:
             ),
         ]
 
-        with patch("alphagen.storage.session_scope") as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             mock_session = AsyncMock()
             mock_session_scope.return_value.__aenter__.return_value = mock_session
 

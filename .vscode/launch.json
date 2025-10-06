@@ -5,11 +5,11 @@
             "name": "🐛 Run Alpha-Gen (Unified GUI)",
             "type": "python",
             "request": "launch",
-            "module": "alphagen",
+            "module": "src.alphagen",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "env": {
-                "PYTHONPATH": "${workspaceFolder}/src"
+                "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/src"
             },
             "args": ["debug"]
         },
@@ -21,16 +21,38 @@
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "env": {
-                "PYTHONPATH": "${workspaceFolder}/src"
+                "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/src"
             },
             "args": [
-                "tests/unit/",
+                "tests/",
                 "-v",
                 "--tb=short",
                 "--cov=src/alphagen",
                 "--cov-report=term-missing",
-                "--cov-report=html:htmlcov"
+                "--cov-report=html:htmlcov",
+                "--cov-fail-under=80"
             ]
+        },
+        {
+            "name": "🚀 Run Backend API",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/src"
+            }
+        },
+        {
+            "name": "🔧 Run Frontend Dev Server",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/frontend",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/frontend",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run", "dev"]
         }
     ]
 }

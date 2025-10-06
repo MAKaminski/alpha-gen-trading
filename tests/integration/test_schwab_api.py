@@ -4,14 +4,14 @@ import pytest
 from unittest.mock import patch, AsyncMock
 from datetime import datetime, timezone
 
-from alphagen.schwab_oauth_client import SchwabOAuthClient
+from src.alphagen.schwab_oauth_client import SchwabOAuthClient
 
 
 @pytest.mark.asyncio
 async def test_schwab_oauth_client_creation():
     """Test Schwab OAuth client creation with mock token."""
     with patch(
-        "alphagen.schwab_oauth_client.client_from_token_file"
+        "src.alphagen.schwab_oauth_client.client_from_token_file"
     ) as mock_client_from_token:
         mock_client = AsyncMock()
         mock_client_from_token.return_value = mock_client
@@ -26,7 +26,7 @@ async def test_schwab_oauth_client_creation():
 async def test_fetch_positions_with_mock_data():
     """Test fetching positions with mock Schwab API response."""
     with patch(
-        "alphagen.schwab_oauth_client.client_from_token_file"
+        "src.alphagen.schwab_oauth_client.client_from_token_file"
     ) as mock_client_from_token:
         mock_client = AsyncMock()
         mock_client.get_account = AsyncMock(
@@ -59,7 +59,7 @@ async def test_fetch_positions_with_mock_data():
 async def test_fetch_positions_handles_response_object():
     """Test fetching positions when API returns Response object."""
     with patch(
-        "alphagen.schwab_oauth_client.client_from_token_file"
+        "src.alphagen.schwab_oauth_client.client_from_token_file"
     ) as mock_client_from_token:
         mock_client = AsyncMock()
 
@@ -80,7 +80,7 @@ async def test_fetch_positions_handles_response_object():
 async def test_fetch_option_quote_success():
     """Test successful option quote fetching."""
     with patch(
-        "alphagen.schwab_oauth_client.client_from_token_file"
+        "src.alphagen.schwab_oauth_client.client_from_token_file"
     ) as mock_client_from_token:
         mock_client = AsyncMock()
         mock_client.get_option_chain.return_value = {
@@ -114,7 +114,7 @@ async def test_fetch_option_quote_success():
 async def test_fetch_option_quote_not_found():
     """Test option quote fetching when option not found."""
     with patch(
-        "alphagen.schwab_oauth_client.client_from_token_file"
+        "src.alphagen.schwab_oauth_client.client_from_token_file"
     ) as mock_client_from_token:
         mock_client = AsyncMock()
         mock_client.get_option_chain.return_value = {"callExpDateMap": {}}
@@ -130,7 +130,7 @@ async def test_fetch_option_quote_not_found():
 async def test_submit_order_success():
     """Test successful order submission."""
     with patch(
-        "alphagen.schwab_oauth_client.client_from_token_file"
+        "src.alphagen.schwab_oauth_client.client_from_token_file"
     ) as mock_client_from_token:
         mock_client = AsyncMock()
         mock_client.place_order.return_value = {"order_id": "test_order_123"}
@@ -138,7 +138,7 @@ async def test_submit_order_success():
 
         client = SchwabOAuthClient.create()
 
-        from alphagen.core.events import TradeIntent
+        from src.alphagen.core.events import TradeIntent
 
         intent = TradeIntent(
             as_of=datetime.now(timezone.utc),
@@ -161,7 +161,7 @@ async def test_submit_order_success():
 async def test_no_client_handling():
     """Test behavior when OAuth client is not available."""
     with patch(
-        "alphagen.schwab_oauth_client.client_from_token_file"
+        "src.alphagen.schwab_oauth_client.client_from_token_file"
     ) as mock_client_from_token:
         mock_client_from_token.side_effect = Exception("No token file")
 

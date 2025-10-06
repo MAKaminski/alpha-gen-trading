@@ -4,9 +4,9 @@ import pytest
 from datetime import timedelta
 from unittest.mock import AsyncMock
 
-from alphagen.signals import SignalEngine
-from alphagen.core.events import NormalizedTick, EquityTick, OptionQuote
-from alphagen.core.time_utils import now_est
+from src.alphagen.signals import SignalEngine
+from src.alphagen.core.events import NormalizedTick, EquityTick, OptionQuote
+from src.alphagen.core.time_utils import now_est
 
 
 @pytest.mark.asyncio
@@ -170,7 +170,7 @@ async def test_no_signal_without_option():
 
 def test_cooldown_state_management():
     """Test cooldown state management."""
-    from alphagen.core.events import CooldownState
+    from src.alphagen.core.events import CooldownState
     from datetime import timedelta
 
     # Test expired cooldown

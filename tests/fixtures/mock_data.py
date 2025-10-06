@@ -3,14 +3,14 @@
 from datetime import datetime, timedelta
 from typing import List
 
-from alphagen.core.events import (
+from src.alphagen.core.events import (
     EquityTick,
     OptionQuote,
     NormalizedTick,
     TradeIntent,
     Signal,
 )
-from alphagen.core.time_utils import now_est
+from src.alphagen.core.time_utils import now_est
 
 
 def create_equity_tick(

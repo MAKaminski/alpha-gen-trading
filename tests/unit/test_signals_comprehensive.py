@@ -4,9 +4,9 @@ import pytest
 from datetime import datetime, timedelta
 from unittest.mock import AsyncMock
 
-from alphagen.signals import SignalEngine
-from alphagen.core.events import NormalizedTick, EquityTick, OptionQuote, Signal
-from alphagen.config import EST
+from src.alphagen.signals import SignalEngine
+from src.alphagen.core.events import NormalizedTick, EquityTick, OptionQuote, Signal
+from src.alphagen.config import EST
 
 
 class TestSignalEngineComprehensive:
@@ -147,7 +147,7 @@ class TestSignalEngineComprehensive:
             timedelta(minutes=5), from_time=now
         )
 
-        with patch("alphagen.signals.now_est", return_value=now):
+        with patch("src.alphagen.signals.now_est", return_value=now):
             remaining = signal_engine.remaining_cooldown()
 
             assert remaining == timedelta(minutes=5)

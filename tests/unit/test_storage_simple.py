@@ -4,7 +4,7 @@ import pytest
 from unittest.mock import MagicMock, patch, AsyncMock
 from datetime import datetime, timezone
 
-from alphagen.storage import (
+from src.alphagen.storage import (
     EquityTickRow,
     OptionQuoteRow,
     PositionSnapshotRow,
@@ -23,7 +23,7 @@ from alphagen.storage import (
     insert_trade_intent,
     insert_execution,
 )
-from alphagen.core.events import (
+from src.alphagen.core.events import (
     EquityTick,
     OptionQuote,
     PositionSnapshot,
@@ -154,7 +154,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_session_scope_exception(self):
         """Test session_scope context manager with exception."""
-        with patch("alphagen.storage.get_engine") as mock_get_engine:
+        with patch("src.alphagen.storage.get_engine") as mock_get_engine:
             mock_engine = MagicMock()
             mock_session = MagicMock()
             mock_get_engine.return_value = mock_engine
@@ -170,7 +170,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_insert_equity_tick(self):
         """Test insert_equity_tick function."""
-        with patch("alphagen.storage.session_scope") as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             mock_session = MagicMock()
             mock_session_scope.return_value.__aenter__.return_value = mock_session
             mock_session_scope.return_value.__aexit__.return_value = None
@@ -194,7 +194,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_insert_option_quote(self):
         """Test insert_option_quote function."""
-        with patch("alphagen.storage.session_scope") as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             mock_session = MagicMock()
             mock_session_scope.return_value.__aenter__.return_value = mock_session
             mock_session_scope.return_value.__aexit__.return_value = None
@@ -219,7 +219,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_insert_positions(self):
         """Test insert_positions function."""
-        with patch("alphagen.storage.session_scope") as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             mock_session = MagicMock()
             mock_session_scope.return_value.__aenter__.return_value = mock_session
             mock_session_scope.return_value.__aexit__.return_value = None
@@ -243,7 +243,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_insert_normalized_tick(self):
         """Test insert_normalized_tick function."""
-        with patch("alphagen.storage.session_scope") as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             mock_session = MagicMock()
             mock_session_scope.return_value.__aenter__.return_value = mock_session
             mock_session_scope.return_value.__aexit__.return_value = None
@@ -270,7 +270,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_insert_signal(self):
         """Test insert_signal function."""
-        with patch("alphagen.storage.session_scope") as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             mock_session = MagicMock()
             mock_session_scope.return_value.__aenter__.return_value = mock_session
             mock_session_scope.return_value.__aexit__.return_value = None
@@ -295,7 +295,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_insert_trade_intent(self):
         """Test insert_trade_intent function."""
-        with patch("alphagen.storage.session_scope") as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             mock_session = MagicMock()
             mock_session.flush = AsyncMock()
             mock_session_scope.return_value.__aenter__.return_value = mock_session
@@ -322,7 +322,7 @@ class TestStorageFunctions:
     @pytest.mark.asyncio
     async def test_insert_execution(self):
         """Test insert_execution function."""
-        with patch("alphagen.storage.session_scope") as mock_session_scope:
+        with patch("src.alphagen.storage.session_scope") as mock_session_scope:
             mock_session = MagicMock()
             mock_session_scope.return_value.__aenter__.return_value = mock_session
             mock_session_scope.return_value.__aexit__.return_value = None

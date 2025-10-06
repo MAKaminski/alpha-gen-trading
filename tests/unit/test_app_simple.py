@@ -4,8 +4,8 @@ import pytest
 from unittest.mock import MagicMock, patch, AsyncMock
 from datetime import datetime, timezone
 
-from alphagen.app import AlphaGenApp
-from alphagen.core.events import (
+from src.alphagen.app import AlphaGenApp
+from src.alphagen.core.events import (
     EquityTick,
     OptionQuote,
     NormalizedTick,

@@ -14,15 +14,15 @@ def test_init_module():
 # Test __main__.py
 def test_main_module():
     """Test __main__.py module."""
-    import alphagen.__main__
+    import src.alphagen.__main__
 
-    assert hasattr(alphagen.__main__, "cli")
+    assert hasattr(src.alphagen.__main__, "cli")
 
 
 # Test config.py
 def test_config_module():
     """Test config module basic functionality."""
-    from alphagen.config import load_app_config, EST, MARKET_OPEN, MARKET_CLOSE
+    from src.alphagen.config import load_app_config, EST, MARKET_OPEN, MARKET_CLOSE
 
     # Test constants
     assert EST is not None
@@ -41,7 +41,7 @@ def test_config_module():
 # Test core/events.py
 def test_events_module():
     """Test core events module."""
-    from alphagen.core.events import (
+    from src.alphagen.core.events import (
         EquityTick,
         OptionQuote,
         PositionSnapshot,
@@ -130,7 +130,7 @@ def test_events_module():
 # Test core/time_utils.py
 def test_time_utils_module():
     """Test core time utilities module."""
-    from alphagen.core.time_utils import now_est, to_est, within_trading_window
+    from src.alphagen.core.time_utils import now_est, to_est, within_trading_window
 
     # Test now_est
     current_time = now_est()
@@ -150,7 +150,7 @@ def test_time_utils_module():
 # Test CLI module
 def test_cli_module():
     """Test CLI module."""
-    from alphagen.cli import cli, debug, run, report
+    from src.alphagen.cli import cli, debug, run, report
 
     # Test that functions exist
     assert callable(cli)
@@ -162,9 +162,9 @@ def test_cli_module():
 # Test market_data modules
 def test_market_data_modules():
     """Test market data modules."""
-    from alphagen.market_data import create_market_data_provider
-    from alphagen.market_data.base import MarketDataProvider
-    from alphagen.market_data.factory import (
+    from src.alphagen.market_data import create_market_data_provider
+    from src.alphagen.market_data.base import MarketDataProvider
+    from src.alphagen.market_data.factory import (
         create_market_data_provider as factory_create,
     )
 
@@ -180,16 +180,16 @@ def test_market_data_modules():
 # Test storage module
 def test_storage_module():
     """Test storage module."""
-    import alphagen.storage
+    import src.alphagen.storage
 
     # Test that module exists
-    assert alphagen.storage is not None
+    assert src.alphagen.storage is not None
 
 
 # Test trade_generator module
 def test_trade_generator_module():
     """Test trade generator module."""
-    from alphagen.trade_generator import TradeGenerator
+    from src.alphagen.trade_generator import TradeGenerator
 
     # Test TradeGenerator class exists
     assert TradeGenerator is not None
@@ -198,19 +198,19 @@ def test_trade_generator_module():
 # Test reports module
 def test_reports_module():
     """Test reports module."""
-    import alphagen.reports
+    import src.alphagen.reports
 
     # Test that module exists
-    assert alphagen.reports is not None
+    assert src.alphagen.reports is not None
 
 
 # Test visualization modules
 def test_visualization_modules():
     """Test visualization modules."""
-    from alphagen.visualization.file_chart import FileChart
-    from alphagen.visualization.live_chart import LiveChart
-    from alphagen.visualization.simple_chart import SimpleChart
-    from alphagen.visualization.simple_gui_chart import SimpleGUChart
+    from src.alphagen.visualization.file_chart import FileChart
+    from src.alphagen.visualization.live_chart import LiveChart
+    from src.alphagen.visualization.simple_chart import SimpleChart
+    from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
     # Test chart classes exist
     assert FileChart is not None
@@ -222,7 +222,7 @@ def test_visualization_modules():
 # Test option_monitor module
 def test_option_monitor_module():
     """Test option monitor module."""
-    from alphagen.option_monitor import OptionMonitor
+    from src.alphagen.option_monitor import OptionMonitor
 
     # Test OptionMonitor class exists
     assert OptionMonitor is not None
@@ -231,16 +231,16 @@ def test_option_monitor_module():
 # Test polygon_stream module
 def test_polygon_stream_module():
     """Test polygon stream module."""
-    import alphagen.polygon_stream
+    import src.alphagen.polygon_stream
 
     # Test module exists
-    assert alphagen.polygon_stream is not None
+    assert src.alphagen.polygon_stream is not None
 
 
 # Test schwab_client module
 def test_schwab_client_module():
     """Test Schwab client module."""
-    from alphagen.schwab_client import SchwabClient
+    from src.alphagen.schwab_client import SchwabClient
 
     # Test SchwabClient class
     assert hasattr(SchwabClient, "create")
@@ -250,7 +250,7 @@ def test_schwab_client_module():
 # Test schwab_stream module
 def test_schwab_stream_module():
     """Test Schwab stream module."""
-    from alphagen.market_data.schwab_stream import SchwabMarketDataProvider
+    from src.alphagen.market_data.schwab_stream import SchwabMarketDataProvider
 
     # Test SchwabMarketDataProvider class
     assert hasattr(SchwabMarketDataProvider, "start")
@@ -260,7 +260,7 @@ def test_schwab_stream_module():
 # Test GUI module
 def test_gui_module():
     """Test GUI module."""
-    from alphagen.gui import debug_app
+    from src.alphagen.gui import debug_app
 
     # Test that module exists
     assert hasattr(debug_app, "DebugGUI")
@@ -270,7 +270,7 @@ def test_gui_module():
 # Test app module
 def test_app_module():
     """Test app module."""
-    from alphagen.app import AlphaGenApp
+    from src.alphagen.app import AlphaGenApp
 
     # Test AlphaGenApp class
     assert hasattr(AlphaGenApp, "run")
@@ -279,14 +279,14 @@ def test_app_module():
 # Test ETL modules
 def test_etl_modules():
     """Test ETL modules."""
-    from alphagen.etl.normalizer import Normalizer
-    import alphagen.etl.position
+    from src.alphagen.etl.normalizer import Normalizer
+    import src.alphagen.etl.position
 
     # Test Normalizer class
     assert Normalizer is not None
 
     # Test position module exists
-    assert alphagen.etl.position is not None
+    assert src.alphagen.etl.position is not None
 
 
 # Test comprehensive coverage

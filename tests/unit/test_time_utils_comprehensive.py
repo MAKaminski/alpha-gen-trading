@@ -6,7 +6,7 @@ from unittest.mock import patch, MagicMock
 from datetime import datetime, timezone, timedelta, time
 from zoneinfo import ZoneInfo
 
-from alphagen.core.time_utils import (
+from src.alphagen.core.time_utils import (
     now_est,
     within_trading_window,
     session_bounds,
@@ -30,7 +30,7 @@ class TestTimeUtilsComprehensive:
         time_diff = abs((result - now_est_expected).total_seconds())
         assert time_diff < 5  # Should be within 5 seconds
 
-    @patch("alphagen.core.time_utils.now_est")
+    @patch("src.alphagen.core.time_utils.now_est")
     def test_within_trading_window_with_custom_moment(self, mock_now_est):
         """Test within_trading_window with custom moment parameter."""
         # Test during market hours on a non-holiday
@@ -41,7 +41,7 @@ class TestTimeUtilsComprehensive:
         assert result is True
         mock_now_est.assert_not_called()
 
-    @patch("alphagen.core.time_utils.now_est")
+    @patch("src.alphagen.core.time_utils.now_est")
     def test_within_trading_window_with_none_moment(self, mock_now_est):
         """Test within_trading_window with None moment (uses now_est)."""
         market_time = datetime(
@@ -53,7 +53,7 @@ class TestTimeUtilsComprehensive:
         assert result is True
         mock_now_est.assert_called_once()
 
-    @patch("alphagen.core.time_utils.US_MARKET_HOLIDAYS")
+    @patch("src.alphagen.core.time_utils.US_MARKET_HOLIDAYS")
     def test_within_trading_window_holiday(self, mock_holidays):
         """Test within_trading_window on a market holiday."""
         # Mock holiday check
@@ -65,10 +65,10 @@ class TestTimeUtilsComprehensive:
         result = within_trading_window(market_time)
         assert result is False
 
-    @patch("alphagen.core.time_utils.MARKET_OPEN", time(9, 0))
-    @patch("alphagen.core.time_utils.MARKET_CLOSE", time(16, 0))
-    @patch("alphagen.core.time_utils.SESSION_BUFFER", timedelta(minutes=30))
-    @patch("alphagen.core.time_utils.US_MARKET_HOLIDAYS")
+    @patch("src.alphagen.core.time_utils.MARKET_OPEN", time(9, 0))
+    @patch("src.alphagen.core.time_utils.MARKET_CLOSE", time(16, 0))
+    @patch("src.alphagen.core.time_utils.SESSION_BUFFER", timedelta(minutes=30))
+    @patch("src.alphagen.core.time_utils.US_MARKET_HOLIDAYS")
     def test_within_trading_window_buffer_timing(self, mock_holidays):
         """Test within_trading_window with session buffer timing."""
         mock_holidays.__contains__ = MagicMock(return_value=False)
@@ -119,7 +119,7 @@ class TestTimeUtilsComprehensive:
         # Start should be before end
         assert start_time < end_time
 
-    @patch("alphagen.core.time_utils.now_est")
+    @patch("src.alphagen.core.time_utils.now_est")
     def test_session_bounds_with_none_day(self, mock_now_est):
         """Test session_bounds with None day (uses now_est)."""
         current_time = datetime(
@@ -133,9 +133,9 @@ class TestTimeUtilsComprehensive:
         assert isinstance(result, tuple)
         assert len(result) == 2
 
-    @patch("alphagen.core.time_utils.MARKET_OPEN", time(9, 0))
-    @patch("alphagen.core.time_utils.MARKET_CLOSE", time(16, 0))
-    @patch("alphagen.core.time_utils.SESSION_BUFFER", timedelta(minutes=30))
+    @patch("src.alphagen.core.time_utils.MARKET_OPEN", time(9, 0))
+    @patch("src.alphagen.core.time_utils.MARKET_CLOSE", time(16, 0))
+    @patch("src.alphagen.core.time_utils.SESSION_BUFFER", timedelta(minutes=30))
     def test_session_bounds_exact_times(self):
         """Test session_bounds returns exact market times with buffer."""
         test_day = datetime(2024, 1, 15, 12, 0, 0, tzinfo=ZoneInfo("America/New_York"))
@@ -151,7 +151,7 @@ class TestTimeUtilsComprehensive:
         assert end_time.minute == 30
         assert end_time.second == 0
 
-    @patch("alphagen.core.time_utils.now_est")
+    @patch("src.alphagen.core.time_utils.now_est")
     def test_next_session_open_with_custom_after(self, mock_now_est):
         """Test next_session_open with custom after parameter."""
         current_time = datetime(
@@ -159,7 +159,7 @@ class TestTimeUtilsComprehensive:
         )
         mock_now_est.return_value = current_time
 
-        with patch("alphagen.core.time_utils.session_bounds") as mock_bounds:
+        with patch("src.alphagen.core.time_utils.session_bounds") as mock_bounds:
             # Mock session bounds to return next day's session
             next_session_start = datetime(
                 2024, 1, 16, 8, 30, 0, tzinfo=ZoneInfo("America/New_York")
@@ -169,14 +169,14 @@ class TestTimeUtilsComprehensive:
             )
             mock_bounds.return_value = (next_session_start, next_session_end)
 
-            with patch("alphagen.core.time_utils.US_MARKET_HOLIDAYS") as mock_holidays:
+            with patch("src.alphagen.core.time_utils.US_MARKET_HOLIDAYS") as mock_holidays:
                 mock_holidays.__contains__ = MagicMock(return_value=False)
 
                 result = next_session_open(current_time)
                 assert result == next_session_start
                 mock_now_est.assert_not_called()  # Should not call now_est when after is provided
 
-    @patch("alphagen.core.time_utils.now_est")
+    @patch("src.alphagen.core.time_utils.now_est")
     def test_next_session_open_with_none_after(self, mock_now_est):
         """Test next_session_open with None after (uses now_est)."""
         current_time = datetime(
@@ -184,7 +184,7 @@ class TestTimeUtilsComprehensive:
         )
         mock_now_est.return_value = current_time
 
-        with patch("alphagen.core.time_utils.session_bounds") as mock_bounds:
+        with patch("src.alphagen.core.time_utils.session_bounds") as mock_bounds:
             next_session_start = datetime(
                 2024, 1, 16, 8, 30, 0, tzinfo=ZoneInfo("America/New_York")
             )
@@ -193,7 +193,7 @@ class TestTimeUtilsComprehensive:
             )
             mock_bounds.return_value = (next_session_start, next_session_end)
 
-            with patch("alphagen.core.time_utils.US_MARKET_HOLIDAYS") as mock_holidays:
+            with patch("src.alphagen.core.time_utils.US_MARKET_HOLIDAYS") as mock_holidays:
                 mock_holidays.__contains__ = MagicMock(return_value=False)
 
                 result = next_session_open(None)
@@ -201,7 +201,7 @@ class TestTimeUtilsComprehensive:
                 assert mock_now_est.call_count == 2
                 assert result == next_session_start
 
-    @patch("alphagen.core.time_utils.now_est")
+    @patch("src.alphagen.core.time_utils.now_est")
     def test_next_session_open_multiple_holidays(self, mock_now_est):
         """Test next_session_open skips multiple consecutive holidays."""
         current_time = datetime(
@@ -209,7 +209,7 @@ class TestTimeUtilsComprehensive:
         )
         mock_now_est.return_value = current_time
 
-        with patch("alphagen.core.time_utils.session_bounds") as mock_bounds:
+        with patch("src.alphagen.core.time_utils.session_bounds") as mock_bounds:
             # Mock multiple calls - first two days are holidays, third is not
             def mock_bounds_side_effect(probe_day):
                 if probe_day.date() == datetime(2024, 1, 16).date():
@@ -242,7 +242,7 @@ class TestTimeUtilsComprehensive:
 
             mock_bounds.side_effect = mock_bounds_side_effect
 
-            with patch("alphagen.core.time_utils.US_MARKET_HOLIDAYS") as mock_holidays:
+            with patch("src.alphagen.core.time_utils.US_MARKET_HOLIDAYS") as mock_holidays:
 
                 def mock_holiday_check(date):
                     return date in [
@@ -258,7 +258,7 @@ class TestTimeUtilsComprehensive:
                     2024, 1, 18, 8, 30, 0, tzinfo=ZoneInfo("America/New_York")
                 )
 
-    @patch("alphagen.core.time_utils.now_est")
+    @patch("src.alphagen.core.time_utils.now_est")
     def test_next_session_open_same_day_future_time(self, mock_now_est):
         """Test next_session_open when next session is later same day."""
         current_time = datetime(
@@ -266,7 +266,7 @@ class TestTimeUtilsComprehensive:
         )  # Before market
         mock_now_est.return_value = current_time
 
-        with patch("alphagen.core.time_utils.session_bounds") as mock_bounds:
+        with patch("src.alphagen.core.time_utils.session_bounds") as mock_bounds:
             # Same day session that starts later
             same_day_start = datetime(
                 2024, 1, 15, 8, 30, 0, tzinfo=ZoneInfo("America/New_York")
@@ -276,7 +276,7 @@ class TestTimeUtilsComprehensive:
             )
             mock_bounds.return_value = (same_day_start, same_day_end)
 
-            with patch("alphagen.core.time_utils.US_MARKET_HOLIDAYS") as mock_holidays:
+            with patch("src.alphagen.core.time_utils.US_MARKET_HOLIDAYS") as mock_holidays:
                 mock_holidays.__contains__ = MagicMock(return_value=False)
 
                 result = next_session_open(current_time)
@@ -355,10 +355,10 @@ class TestTimeUtilsComprehensive:
         assert result.hour == 9  # UTC to EST conversion
         assert result.minute == 30
 
-    @patch("alphagen.core.time_utils.US_MARKET_HOLIDAYS")
-    @patch("alphagen.core.time_utils.MARKET_OPEN", time(9, 0))
-    @patch("alphagen.core.time_utils.MARKET_CLOSE", time(16, 0))
-    @patch("alphagen.core.time_utils.SESSION_BUFFER", timedelta(minutes=30))
+    @patch("src.alphagen.core.time_utils.US_MARKET_HOLIDAYS")
+    @patch("src.alphagen.core.time_utils.MARKET_OPEN", time(9, 0))
+    @patch("src.alphagen.core.time_utils.MARKET_CLOSE", time(16, 0))
+    @patch("src.alphagen.core.time_utils.SESSION_BUFFER", timedelta(minutes=30))
     def test_within_trading_window_comprehensive_timing(self, mock_holidays):
         """Test within_trading_window with comprehensive timing scenarios."""
         mock_holidays.__contains__ = MagicMock(return_value=False)
@@ -425,17 +425,17 @@ class TestTimeUtilsComprehensive:
         for diff in time_diffs:
             assert diff < 10
 
-    @patch("alphagen.core.time_utils.relativedelta")
+    @patch("src.alphagen.core.time_utils.relativedelta")
     def test_next_session_open_uses_relativedelta(self, mock_relativedelta):
         """Test next_session_open uses relativedelta for day increment."""
         current_time = datetime(
             2024, 1, 15, 10, 0, 0, tzinfo=ZoneInfo("America/New_York")
         )
 
-        with patch("alphagen.core.time_utils.now_est") as mock_now_est:
+        with patch("src.alphagen.core.time_utils.now_est") as mock_now_est:
             mock_now_est.return_value = current_time
 
-            with patch("alphagen.core.time_utils.session_bounds") as mock_bounds:
+            with patch("src.alphagen.core.time_utils.session_bounds") as mock_bounds:
                 next_session_start = datetime(
                     2024, 1, 16, 8, 30, 0, tzinfo=ZoneInfo("America/New_York")
                 )
@@ -445,7 +445,7 @@ class TestTimeUtilsComprehensive:
                 mock_bounds.return_value = (next_session_start, next_session_end)
 
                 with patch(
-                    "alphagen.core.time_utils.US_MARKET_HOLIDAYS"
+                    "src.alphagen.core.time_utils.US_MARKET_HOLIDAYS"
                 ) as mock_holidays:
                     mock_holidays.__contains__ = MagicMock(return_value=False)
 

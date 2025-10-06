@@ -19,7 +19,7 @@ class TestLiveChartComprehensive:
 
     def test_init_default_params(self):
         """Test LiveChart initialization with default parameters."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
         assert chart._max_points == 600
@@ -30,14 +30,14 @@ class TestLiveChartComprehensive:
 
     def test_init_custom_max_points(self):
         """Test LiveChart initialization with custom max_points."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart(max_points=100)
         assert chart._max_points == 100
 
     def test_start_when_already_running(self):
         """Test start() when chart is already running."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
         chart._running = True
@@ -48,10 +48,10 @@ class TestLiveChartComprehensive:
 
     def test_start_creates_thread(self):
         """Test start() creates and starts a new thread."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
-        with patch("alphagen.visualization.live_chart.Thread") as mock_thread_class:
+        with patch("src.alphagen.visualization.live_chart.Thread") as mock_thread_class:
             mock_thread = Mock()
             mock_thread_class.return_value = mock_thread
 
@@ -67,7 +67,7 @@ class TestLiveChartComprehensive:
     @pytest.mark.asyncio
     async def test_stop_when_not_running(self):
         """Test stop() when chart is not running."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
         chart._running = False
@@ -78,7 +78,7 @@ class TestLiveChartComprehensive:
     @pytest.mark.asyncio
     async def test_stop_when_running(self):
         """Test stop() when chart is running."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
         chart._running = True
@@ -96,7 +96,7 @@ class TestLiveChartComprehensive:
     @pytest.mark.asyncio
     async def test_join_thread_with_timeout(self):
         """Test _join_thread with thread timeout."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
         mock_thread = Mock()
@@ -109,7 +109,7 @@ class TestLiveChartComprehensive:
     @pytest.mark.asyncio
     async def test_join_thread_with_none_thread(self):
         """Test _join_thread when thread is None."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
         chart._thread = None
@@ -118,7 +118,7 @@ class TestLiveChartComprehensive:
 
     def test_handle_tick_starts_chart_if_not_running(self):
         """Test handle_tick starts chart if not running."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
         chart._queue = Mock()
@@ -136,7 +136,7 @@ class TestLiveChartComprehensive:
 
     def test_handle_tick_when_running(self):
         """Test handle_tick when chart is already running."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
         chart._running = True
@@ -153,7 +153,7 @@ class TestLiveChartComprehensive:
 
     def test_handle_signal_starts_chart_if_not_running(self):
         """Test handle_signal starts chart if not running."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
         chart._queue = Mock()
@@ -171,7 +171,7 @@ class TestLiveChartComprehensive:
 
     def test_handle_signal_when_running(self):
         """Test handle_signal when chart is already running."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
         chart._running = True
@@ -188,7 +188,7 @@ class TestLiveChartComprehensive:
 
     def test_run_matplotlib_import_failure(self):
         """Test _run when matplotlib import fails."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
 
@@ -206,7 +206,7 @@ class TestLiveChartComprehensive:
 
     def test_run_matplotlib_setup(self):
         """Test _run matplotlib setup and configuration."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
         chart._running = True
@@ -262,14 +262,14 @@ class TestLiveChartComprehensive:
 
     def test_run_with_data_processing(self):
         """Test _run with tick and signal data processing."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
         chart._running = True
         chart._queue = Mock()
 
         # Add some tick data
-        from alphagen.visualization.live_chart import _TickPoint
+        from src.alphagen.visualization.live_chart import _TickPoint
 
         tick_point = _TickPoint(
             timestamp=datetime.now(timezone.utc), vwap=100.0, ma9=99.5
@@ -331,7 +331,7 @@ class TestLiveChartComprehensive:
 
     def test_run_window_management(self):
         """Test _run window management and attributes."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
         chart._running = True
@@ -393,7 +393,7 @@ class TestLiveChartComprehensive:
 
     def test_run_window_manager_not_available(self):
         """Test _run when window manager is not available."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
         chart._running = True
@@ -448,7 +448,7 @@ class TestLiveChartComprehensive:
 
     def test_run_window_attributes_exception(self):
         """Test _run when window attributes fail."""
-        from alphagen.visualization.live_chart import LiveChart
+        from src.alphagen.visualization.live_chart import LiveChart
 
         chart = LiveChart()
         chart._running = True
@@ -509,7 +509,7 @@ class TestSimpleChartComprehensive:
 
     def test_init_default_params(self):
         """Test SimpleChart initialization with default parameters."""
-        from alphagen.visualization.simple_chart import SimpleChart
+        from src.alphagen.visualization.simple_chart import SimpleChart
 
         chart = SimpleChart()
         assert chart._max_points == 100
@@ -521,14 +521,14 @@ class TestSimpleChartComprehensive:
 
     def test_init_custom_max_points(self):
         """Test SimpleChart initialization with custom max_points."""
-        from alphagen.visualization.simple_chart import SimpleChart
+        from src.alphagen.visualization.simple_chart import SimpleChart
 
         chart = SimpleChart(max_points=50)
         assert chart._max_points == 50
 
     def test_start_when_already_running(self):
         """Test start() when chart is already running."""
-        from alphagen.visualization.simple_chart import SimpleChart
+        from src.alphagen.visualization.simple_chart import SimpleChart
 
         chart = SimpleChart()
         chart._running = True
@@ -538,7 +538,7 @@ class TestSimpleChartComprehensive:
 
     def test_start_sets_up_chart(self):
         """Test start() sets up the chart."""
-        from alphagen.visualization.simple_chart import SimpleChart
+        from src.alphagen.visualization.simple_chart import SimpleChart
 
         chart = SimpleChart()
         mock_fig = Mock()
@@ -578,7 +578,7 @@ class TestSimpleChartComprehensive:
 
     def test_start_chart_setup_exception(self):
         """Test start() handles chart setup exceptions."""
-        from alphagen.visualization.simple_chart import SimpleChart
+        from src.alphagen.visualization.simple_chart import SimpleChart
 
         chart = SimpleChart()
         mock_plt = Mock()
@@ -593,7 +593,7 @@ class TestSimpleChartComprehensive:
 
     def test_stop_when_not_running(self):
         """Test stop() when chart is not running."""
-        from alphagen.visualization.simple_chart import SimpleChart
+        from src.alphagen.visualization.simple_chart import SimpleChart
 
         chart = SimpleChart()
         chart._running = False
@@ -603,7 +603,7 @@ class TestSimpleChartComprehensive:
 
     def test_stop_closes_figure(self):
         """Test stop() closes the figure."""
-        from alphagen.visualization.simple_chart import SimpleChart
+        from src.alphagen.visualization.simple_chart import SimpleChart
 
         chart = SimpleChart()
         chart._running = True
@@ -619,7 +619,7 @@ class TestSimpleChartComprehensive:
 
     def test_stop_with_none_figure(self):
         """Test stop() when figure is None."""
-        from alphagen.visualization.simple_chart import SimpleChart
+        from src.alphagen.visualization.simple_chart import SimpleChart
 
         chart = SimpleChart()
         chart._running = True
@@ -634,7 +634,7 @@ class TestSimpleChartComprehensive:
 
     def test_update_chart_when_not_running(self):
         """Test _update_chart when chart is not running."""
-        from alphagen.visualization.simple_chart import SimpleChart
+        from src.alphagen.visualization.simple_chart import SimpleChart
 
         chart = SimpleChart()
         chart._running = False
@@ -643,7 +643,7 @@ class TestSimpleChartComprehensive:
 
     def test_update_chart_with_empty_buffer(self):
         """Test _update_chart with empty tick buffer."""
-        from alphagen.visualization.simple_chart import SimpleChart
+        from src.alphagen.visualization.simple_chart import SimpleChart
 
         chart = SimpleChart()
         chart._running = True
@@ -653,7 +653,7 @@ class TestSimpleChartComprehensive:
 
     def test_update_chart_with_data(self):
         """Test _update_chart with tick data."""
-        from alphagen.visualization.simple_chart import SimpleChart, _TickPoint
+        from src.alphagen.visualization.simple_chart import SimpleChart, _TickPoint
 
         chart = SimpleChart()
         chart._running = True
@@ -678,7 +678,7 @@ class TestSimpleChartComprehensive:
 
     def test_update_chart_with_signals(self):
         """Test _update_chart with signal data."""
-        from alphagen.visualization.simple_chart import (
+        from src.alphagen.visualization.simple_chart import (
             SimpleChart,
             _TickPoint,
             _SignalPoint,
@@ -708,7 +708,7 @@ class TestSimpleChartComprehensive:
 
     def test_update_chart_exception_handling(self):
         """Test _update_chart handles exceptions."""
-        from alphagen.visualization.simple_chart import SimpleChart, _TickPoint
+        from src.alphagen.visualization.simple_chart import SimpleChart, _TickPoint
 
         chart = SimpleChart()
         chart._running = True
@@ -730,7 +730,7 @@ class TestSimpleChartComprehensive:
 
     def test_handle_tick_when_not_running(self):
         """Test handle_tick when chart is not running."""
-        from alphagen.visualization.simple_chart import SimpleChart
+        from src.alphagen.visualization.simple_chart import SimpleChart
 
         chart = SimpleChart()
         chart._running = False
@@ -745,7 +745,7 @@ class TestSimpleChartComprehensive:
 
     def test_handle_tick_when_running(self):
         """Test handle_tick when chart is running."""
-        from alphagen.visualization.simple_chart import SimpleChart
+        from src.alphagen.visualization.simple_chart import SimpleChart
 
         chart = SimpleChart()
         chart._running = True
@@ -760,7 +760,7 @@ class TestSimpleChartComprehensive:
 
     def test_handle_signal_when_not_running(self):
         """Test handle_signal when chart is not running."""
-        from alphagen.visualization.simple_chart import SimpleChart
+        from src.alphagen.visualization.simple_chart import SimpleChart
 
         chart = SimpleChart()
         chart._running = False
@@ -775,7 +775,7 @@ class TestSimpleChartComprehensive:
 
     def test_handle_signal_when_running(self):
         """Test handle_signal when chart is running."""
-        from alphagen.visualization.simple_chart import SimpleChart
+        from src.alphagen.visualization.simple_chart import SimpleChart
 
         chart = SimpleChart()
         chart._running = True
@@ -794,7 +794,7 @@ class TestFileChartComprehensive:
 
     def test_init_default_params(self):
         """Test FileChart initialization with default parameters."""
-        from alphagen.visualization.file_chart import FileChart
+        from src.alphagen.visualization.file_chart import FileChart
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir)
@@ -806,7 +806,7 @@ class TestFileChartComprehensive:
 
     def test_init_custom_params(self):
         """Test FileChart initialization with custom parameters."""
-        from alphagen.visualization.file_chart import FileChart
+        from src.alphagen.visualization.file_chart import FileChart
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir, max_points=50)
@@ -815,7 +815,7 @@ class TestFileChartComprehensive:
 
     def test_init_creates_output_directory(self):
         """Test FileChart creates output directory if it doesn't exist."""
-        from alphagen.visualization.file_chart import FileChart
+        from src.alphagen.visualization.file_chart import FileChart
 
         with tempfile.TemporaryDirectory() as temp_dir:
             new_dir = Path(temp_dir) / "charts"
@@ -824,7 +824,7 @@ class TestFileChartComprehensive:
 
     def test_start_when_already_running(self):
         """Test start() when chart is already running."""
-        from alphagen.visualization.file_chart import FileChart
+        from src.alphagen.visualization.file_chart import FileChart
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir)
@@ -835,7 +835,7 @@ class TestFileChartComprehensive:
 
     def test_start_sets_running_flag(self):
         """Test start() sets running flag."""
-        from alphagen.visualization.file_chart import FileChart
+        from src.alphagen.visualization.file_chart import FileChart
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir)
@@ -844,7 +844,7 @@ class TestFileChartComprehensive:
 
     def test_stop_when_not_running(self):
         """Test stop() when chart is not running."""
-        from alphagen.visualization.file_chart import FileChart
+        from src.alphagen.visualization.file_chart import FileChart
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir)
@@ -855,7 +855,7 @@ class TestFileChartComprehensive:
 
     def test_stop_sets_running_flag_false(self):
         """Test stop() sets running flag to False."""
-        from alphagen.visualization.file_chart import FileChart
+        from src.alphagen.visualization.file_chart import FileChart
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir)
@@ -865,7 +865,7 @@ class TestFileChartComprehensive:
 
     def test_handle_tick_when_not_running(self):
         """Test handle_tick when chart is not running."""
-        from alphagen.visualization.file_chart import FileChart
+        from src.alphagen.visualization.file_chart import FileChart
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir)
@@ -881,7 +881,7 @@ class TestFileChartComprehensive:
 
     def test_handle_tick_when_running(self):
         """Test handle_tick when chart is running."""
-        from alphagen.visualization.file_chart import FileChart
+        from src.alphagen.visualization.file_chart import FileChart
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir)
@@ -897,7 +897,7 @@ class TestFileChartComprehensive:
 
     def test_handle_tick_triggers_save_every_5_ticks(self):
         """Test handle_tick triggers save every 5 ticks."""
-        from alphagen.visualization.file_chart import FileChart
+        from src.alphagen.visualization.file_chart import FileChart
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir)
@@ -917,7 +917,7 @@ class TestFileChartComprehensive:
 
     def test_handle_signal_when_not_running(self):
         """Test handle_signal when chart is not running."""
-        from alphagen.visualization.file_chart import FileChart
+        from src.alphagen.visualization.file_chart import FileChart
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir)
@@ -933,7 +933,7 @@ class TestFileChartComprehensive:
 
     def test_handle_signal_when_running(self):
         """Test handle_signal when chart is running."""
-        from alphagen.visualization.file_chart import FileChart
+        from src.alphagen.visualization.file_chart import FileChart
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir)
@@ -949,7 +949,7 @@ class TestFileChartComprehensive:
 
     def test_handle_signal_triggers_save(self):
         """Test handle_signal triggers save."""
-        from alphagen.visualization.file_chart import FileChart
+        from src.alphagen.visualization.file_chart import FileChart
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir)
@@ -966,7 +966,7 @@ class TestFileChartComprehensive:
 
     def test_save_chart_with_empty_buffer(self):
         """Test _save_chart with empty tick buffer."""
-        from alphagen.visualization.file_chart import FileChart
+        from src.alphagen.visualization.file_chart import FileChart
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir)
@@ -976,7 +976,7 @@ class TestFileChartComprehensive:
 
     def test_save_chart_with_data(self):
         """Test _save_chart with tick data."""
-        from alphagen.visualization.file_chart import FileChart, _TickPoint
+        from src.alphagen.visualization.file_chart import FileChart, _TickPoint
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir)
@@ -1016,7 +1016,7 @@ class TestFileChartComprehensive:
 
     def test_save_chart_with_signals(self):
         """Test _save_chart with signal data."""
-        from alphagen.visualization.file_chart import (
+        from src.alphagen.visualization.file_chart import (
             FileChart,
             _TickPoint,
             _SignalPoint,
@@ -1063,7 +1063,7 @@ class TestFileChartComprehensive:
 
     def test_save_chart_exception_handling(self):
         """Test _save_chart handles exceptions."""
-        from alphagen.visualization.file_chart import FileChart, _TickPoint
+        from src.alphagen.visualization.file_chart import FileChart, _TickPoint
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir)
@@ -1083,7 +1083,7 @@ class TestFileChartComprehensive:
 
     def test_save_chart_filename_generation(self):
         """Test _save_chart generates proper filename."""
-        from alphagen.visualization.file_chart import FileChart, _TickPoint
+        from src.alphagen.visualization.file_chart import FileChart, _TickPoint
 
         with tempfile.TemporaryDirectory() as temp_dir:
             chart = FileChart(output_dir=temp_dir)
@@ -1144,11 +1144,11 @@ class TestSimpleGUIChartComprehensive:
 
         return mock_parent, mock_fig, mock_ax, mock_line, mock_canvas
 
-    @patch("alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
-    @patch("alphagen.visualization.simple_gui_chart.Figure")
+    @patch("src.alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
+    @patch("src.alphagen.visualization.simple_gui_chart.Figure")
     def test_init_default_params(self, mock_figure_class, mock_canvas_class):
         """Test SimpleGUChart initialization with default parameters."""
-        from alphagen.visualization.simple_gui_chart import SimpleGUChart
+        from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
         # Setup mocks
         mock_parent = Mock()
@@ -1173,11 +1173,11 @@ class TestSimpleGUIChartComprehensive:
         assert len(chart.data_buffer) == 0
         assert chart.parent_frame == mock_parent
 
-    @patch("alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
-    @patch("alphagen.visualization.simple_gui_chart.Figure")
+    @patch("src.alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
+    @patch("src.alphagen.visualization.simple_gui_chart.Figure")
     def test_init_custom_max_points(self, mock_figure_class, mock_canvas_class):
         """Test SimpleGUChart initialization with custom max_points."""
-        from alphagen.visualization.simple_gui_chart import SimpleGUChart
+        from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
         # Setup mocks
         mock_parent = Mock()
@@ -1199,11 +1199,11 @@ class TestSimpleGUIChartComprehensive:
 
         assert chart.max_points == 50
 
-    @patch("alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
-    @patch("alphagen.visualization.simple_gui_chart.Figure")
+    @patch("src.alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
+    @patch("src.alphagen.visualization.simple_gui_chart.Figure")
     def test_scale_configs(self, mock_figure_class, mock_canvas_class):
         """Test scale configurations are properly set."""
-        from alphagen.visualization.simple_gui_chart import SimpleGUChart
+        from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
         # Setup mocks
         mock_parent = Mock()
@@ -1231,11 +1231,11 @@ class TestSimpleGUIChartComprehensive:
             assert "max_points" in config
             assert "label" in config
 
-    @patch("alphagen.visualization.simple_gui_chart.Figure")
-    @patch("alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
+    @patch("src.alphagen.visualization.simple_gui_chart.Figure")
+    @patch("src.alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
     def test_chart_initialization(self, mock_canvas_class, mock_figure_class):
         """Test chart initialization creates figure and canvas."""
-        from alphagen.visualization.simple_gui_chart import SimpleGUChart
+        from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
         # Setup mocks
         mock_parent = Mock()
@@ -1260,11 +1260,11 @@ class TestSimpleGUIChartComprehensive:
         mock_canvas_class.assert_called_once()
         mock_canvas.get_tk_widget().pack.assert_called_once()
 
-    @patch("alphagen.visualization.simple_gui_chart.Figure")
-    @patch("alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
+    @patch("src.alphagen.visualization.simple_gui_chart.Figure")
+    @patch("src.alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
     def test_plot_lines_initialization(self, mock_canvas_class, mock_figure_class):
         """Test plot lines are properly initialized."""
-        from alphagen.visualization.simple_gui_chart import SimpleGUChart
+        from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
         mock_parent = Mock()
         mock_fig = Mock()
@@ -1286,11 +1286,11 @@ class TestSimpleGUIChartComprehensive:
         mock_ax.legend.assert_called_once()
         mock_ax.grid.assert_called_once_with(True, alpha=0.3)
 
-    @patch("alphagen.visualization.simple_gui_chart.Figure")
-    @patch("alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
+    @patch("src.alphagen.visualization.simple_gui_chart.Figure")
+    @patch("src.alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
     def test_time_formatting_setup(self, mock_canvas_class, mock_figure_class):
         """Test time formatting is properly set up."""
-        from alphagen.visualization.simple_gui_chart import SimpleGUChart
+        from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
         # Setup mocks
         mock_parent = Mock()
@@ -1314,11 +1314,11 @@ class TestSimpleGUIChartComprehensive:
         mock_ax.xaxis.set_major_formatter.assert_called()
         mock_ax.xaxis.set_major_locator.assert_called()
 
-    @patch("alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
-    @patch("alphagen.visualization.simple_gui_chart.Figure")
+    @patch("src.alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
+    @patch("src.alphagen.visualization.simple_gui_chart.Figure")
     def test_add_tick_data(self, mock_figure_class, mock_canvas_class):
         """Test adding tick data to the chart."""
-        from alphagen.visualization.simple_gui_chart import SimpleGUChart
+        from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
         # Setup mocks
         mock_parent = Mock()
@@ -1351,11 +1351,11 @@ class TestSimpleGUIChartComprehensive:
 
         assert len(chart.data_buffer) == 1
 
-    @patch("alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
-    @patch("alphagen.visualization.simple_gui_chart.Figure")
+    @patch("src.alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
+    @patch("src.alphagen.visualization.simple_gui_chart.Figure")
     def test_add_tick_data_buffer_limit(self, mock_figure_class, mock_canvas_class):
         """Test tick data buffer respects max_points limit."""
-        from alphagen.visualization.simple_gui_chart import SimpleGUChart
+        from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
         mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
         mock_figure_class.return_value = mock_fig
@@ -1378,11 +1378,11 @@ class TestSimpleGUIChartComprehensive:
         # Should only keep last 3 ticks
         assert len(chart.data_buffer) == 3
 
-    @patch("alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
-    @patch("alphagen.visualization.simple_gui_chart.Figure")
+    @patch("src.alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
+    @patch("src.alphagen.visualization.simple_gui_chart.Figure")
     def test_change_time_scale(self, mock_figure_class, mock_canvas_class):
         """Test changing time scale."""
-        from alphagen.visualization.simple_gui_chart import SimpleGUChart
+        from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
         mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
         mock_figure_class.return_value = mock_fig
@@ -1393,11 +1393,11 @@ class TestSimpleGUIChartComprehensive:
         chart.set_time_scale("5min")
         assert chart.time_scale == "5min"
 
-    @patch("alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
-    @patch("alphagen.visualization.simple_gui_chart.Figure")
+    @patch("src.alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
+    @patch("src.alphagen.visualization.simple_gui_chart.Figure")
     def test_change_time_scale_invalid(self, mock_figure_class, mock_canvas_class):
         """Test changing to invalid time scale."""
-        from alphagen.visualization.simple_gui_chart import SimpleGUChart
+        from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
         mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
         mock_figure_class.return_value = mock_fig
@@ -1409,11 +1409,11 @@ class TestSimpleGUIChartComprehensive:
         chart.set_time_scale("invalid")
         assert chart.time_scale == original_scale  # Should remain unchanged
 
-    @patch("alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
-    @patch("alphagen.visualization.simple_gui_chart.Figure")
+    @patch("src.alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
+    @patch("src.alphagen.visualization.simple_gui_chart.Figure")
     def test_get_current_data(self, mock_figure_class, mock_canvas_class):
         """Test getting current data from buffer."""
-        from alphagen.visualization.simple_gui_chart import SimpleGUChart
+        from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
         mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
         mock_figure_class.return_value = mock_fig
@@ -1436,11 +1436,11 @@ class TestSimpleGUIChartComprehensive:
         # Test that data was added to buffer
         assert len(chart.data_buffer) == 3
 
-    @patch("alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
-    @patch("alphagen.visualization.simple_gui_chart.Figure")
+    @patch("src.alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
+    @patch("src.alphagen.visualization.simple_gui_chart.Figure")
     def test_get_current_data_empty(self, mock_figure_class, mock_canvas_class):
         """Test getting current data when buffer is empty."""
-        from alphagen.visualization.simple_gui_chart import SimpleGUChart
+        from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
         mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
         mock_figure_class.return_value = mock_fig
@@ -1451,11 +1451,11 @@ class TestSimpleGUIChartComprehensive:
         # Test that buffer is empty
         assert len(chart.data_buffer) == 0
 
-    @patch("alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
-    @patch("alphagen.visualization.simple_gui_chart.Figure")
+    @patch("src.alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
+    @patch("src.alphagen.visualization.simple_gui_chart.Figure")
     def test_clear_data(self, mock_figure_class, mock_canvas_class):
         """Test clearing all data from buffer."""
-        from alphagen.visualization.simple_gui_chart import SimpleGUChart
+        from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
         mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
         mock_figure_class.return_value = mock_fig
@@ -1479,11 +1479,11 @@ class TestSimpleGUIChartComprehensive:
         chart.clear()
         assert len(chart.data_buffer) == 0
 
-    @patch("alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
-    @patch("alphagen.visualization.simple_gui_chart.Figure")
+    @patch("src.alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
+    @patch("src.alphagen.visualization.simple_gui_chart.Figure")
     def test_get_time_scale_label(self, mock_figure_class, mock_canvas_class):
         """Test getting time scale label."""
-        from alphagen.visualization.simple_gui_chart import SimpleGUChart
+        from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
         mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
         mock_figure_class.return_value = mock_fig
@@ -1499,11 +1499,11 @@ class TestSimpleGUIChartComprehensive:
         label = chart.scale_configs["5min"]["label"]
         assert label == "5 Minutes"
 
-    @patch("alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
-    @patch("alphagen.visualization.simple_gui_chart.Figure")
+    @patch("src.alphagen.visualization.simple_gui_chart.FigureCanvasTkAgg")
+    @patch("src.alphagen.visualization.simple_gui_chart.Figure")
     def test_get_available_scales(self, mock_figure_class, mock_canvas_class):
         """Test getting available time scales."""
-        from alphagen.visualization.simple_gui_chart import SimpleGUChart
+        from src.alphagen.visualization.simple_gui_chart import SimpleGUChart
 
         mock_parent, mock_fig, mock_ax, mock_line, mock_canvas = self._setup_mocks()
         mock_figure_class.return_value = mock_fig

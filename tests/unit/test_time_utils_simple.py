@@ -4,7 +4,7 @@ from unittest.mock import patch, MagicMock
 from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 
-from alphagen.core.time_utils import (
+from src.alphagen.core.time_utils import (
     now_est,
     within_trading_window,
     session_bounds,
@@ -51,7 +51,7 @@ class TestTimeUtilsSimple:
         assert result.hour == 9
         assert result.minute == 30
 
-    @patch("alphagen.core.time_utils.now_est")
+    @patch("src.alphagen.core.time_utils.now_est")
     def test_within_trading_window_during_market_hours(self, mock_now_est):
         """Test within_trading_window during market hours."""
         # Mock current time to be during market hours (10:30 AM EST) on a non-holiday
@@ -64,7 +64,7 @@ class TestTimeUtilsSimple:
         # The function uses SESSION_BUFFER, so we need to check if it's within the buffered window
         assert result is True
 
-    @patch("alphagen.core.time_utils.now_est")
+    @patch("src.alphagen.core.time_utils.now_est")
     def test_within_trading_window_before_market_hours(self, mock_now_est):
         """Test within_trading_window before market hours."""
         # Mock current time to be before market hours (8:00 AM EST) on a non-holiday
@@ -76,7 +76,7 @@ class TestTimeUtilsSimple:
         result = within_trading_window()
         assert result is False
 
-    @patch("alphagen.core.time_utils.now_est")
+    @patch("src.alphagen.core.time_utils.now_est")
     def test_within_trading_window_after_market_hours(self, mock_now_est):
         """Test within_trading_window after market hours."""
         # Mock current time to be after market hours (5:00 PM EST) on a non-holiday
@@ -88,7 +88,7 @@ class TestTimeUtilsSimple:
         result = within_trading_window()
         assert result is False
 
-    @patch("alphagen.core.time_utils.now_est")
+    @patch("src.alphagen.core.time_utils.now_est")
     def test_within_trading_window_weekend(self, mock_now_est):
         """Test within_trading_window on weekend."""
         # Mock current time to be Saturday (weekend)
@@ -129,9 +129,9 @@ class TestTimeUtilsSimple:
         assert end_time.hour == 16
         assert end_time.minute == 30
 
-    @patch("alphagen.core.time_utils.US_MARKET_HOLIDAYS")
-    @patch("alphagen.core.time_utils.session_bounds")
-    @patch("alphagen.core.time_utils.now_est")
+    @patch("src.alphagen.core.time_utils.US_MARKET_HOLIDAYS")
+    @patch("src.alphagen.core.time_utils.session_bounds")
+    @patch("src.alphagen.core.time_utils.now_est")
     def test_next_session_open_regular_day(
         self, mock_now_est, mock_session_bounds, mock_holidays
     ):
@@ -160,9 +160,9 @@ class TestTimeUtilsSimple:
         mock_now_est.assert_called()
         mock_session_bounds.assert_called()
 
-    @patch("alphagen.core.time_utils.US_MARKET_HOLIDAYS")
-    @patch("alphagen.core.time_utils.session_bounds")
-    @patch("alphagen.core.time_utils.now_est")
+    @patch("src.alphagen.core.time_utils.US_MARKET_HOLIDAYS")
+    @patch("src.alphagen.core.time_utils.session_bounds")
+    @patch("src.alphagen.core.time_utils.now_est")
     def test_next_session_open_holiday_skipped(
         self, mock_now_est, mock_session_bounds, mock_holidays
     ):
@@ -220,7 +220,7 @@ class TestTimeUtilsSimple:
 
     def test_within_trading_window_edge_cases(self):
         """Test within_trading_window edge cases."""
-        with patch("alphagen.core.time_utils.now_est") as mock_now_est:
+        with patch("src.alphagen.core.time_utils.now_est") as mock_now_est:
             # Test exactly at market open (with buffer, so 9:00 AM) on non-holiday
             market_open = datetime(
                 2024, 1, 16, 9, 0, 0, tzinfo=ZoneInfo("America/New_York")

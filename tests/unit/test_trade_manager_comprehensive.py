@@ -4,15 +4,15 @@ import pytest
 from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock
 
-from alphagen.trade_manager import TradeManager
-from alphagen.core.events import (
+from src.alphagen.trade_manager import TradeManager
+from src.alphagen.core.events import (
     NormalizedTick,
     EquityTick,
     OptionQuote,
     TradeIntent,
     TradeExecution,
 )
-from alphagen.config import EST
+from src.alphagen.config import EST
 
 
 class TestTradeManagerComprehensive:

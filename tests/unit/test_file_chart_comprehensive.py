@@ -4,7 +4,7 @@ import pytest
 from unittest.mock import Mock, patch
 from datetime import datetime
 
-from alphagen.visualization.file_chart import FileChart, _TickPoint
+from src.alphagen.visualization.file_chart import FileChart, _TickPoint
 
 
 class TestFileChartComprehensive:

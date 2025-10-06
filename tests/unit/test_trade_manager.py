@@ -4,9 +4,9 @@ import pytest
 from datetime import timedelta
 from unittest.mock import AsyncMock, MagicMock
 
-from alphagen.trade_manager import TradeManager
-from alphagen.core.events import TradeIntent, TradeExecution, OptionQuote
-from alphagen.core.time_utils import now_est
+from src.alphagen.trade_manager import TradeManager
+from src.alphagen.core.events import TradeIntent, TradeExecution, OptionQuote
+from src.alphagen.core.time_utils import now_est
 
 
 @pytest.fixture

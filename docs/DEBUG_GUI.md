@@ -13,12 +13,25 @@ The Alpha-Gen Debug GUI provides a user-friendly interface for monitoring live m
 
 ### Starting the Debug GUI
 
+#### Method 1: VS Code Launch Configuration (Recommended)
+1. Open VS Code in the project root
+2. Go to Run and Debug (Ctrl+Shift+D)
+3. Select "🐛 Run Alpha-Gen (Unified GUI)" from the dropdown
+4. Press F5 or click the play button
+
+#### Method 2: Command Line
 ```bash
 # Activate virtual environment
 source .venv/bin/activate
 
 # Start the debug GUI
-python -m alphagen debug
+python -m src.alphagen debug
+```
+
+#### Method 3: Direct Module Execution
+```bash
+# From project root
+PYTHONPATH=.:src python -m src.alphagen debug
 ```
 
 ### Using the Interface

@@ -4,7 +4,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from freezegun import freeze_time
 
-from alphagen.core.time_utils import (
+from src.alphagen.core.time_utils import (
     now_est,
     within_trading_window,
     session_bounds,
@@ -12,7 +12,7 @@ from alphagen.core.time_utils import (
     to_est,
     US_MARKET_HOLIDAYS,
 )
-from alphagen.config import EST, MARKET_OPEN, MARKET_CLOSE, SESSION_BUFFER
+from src.alphagen.config import EST, MARKET_OPEN, MARKET_CLOSE, SESSION_BUFFER
 
 
 class TestTimeUtils:

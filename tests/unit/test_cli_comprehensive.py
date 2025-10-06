@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 from click.testing import CliRunner
 
-from alphagen.cli import cli, debug, report, run
+from src.alphagen.cli import cli, debug, report, run
 
 
 class TestCLICommands:
@@ -36,7 +36,7 @@ class TestCLICommands:
         assert result.exit_code == 0
         assert "Start the unified debug GUI" in result.output
 
-    @patch("alphagen.cli.run_app")
+    @patch("src.alphagen.cli.run_app")
     def test_run_command_execution(self, mock_run_app):
         """Test run command execution."""
         mock_run_app.return_value = None
@@ -47,7 +47,7 @@ class TestCLICommands:
         assert result.exit_code == 0
         mock_run_app.assert_called_once()
 
-    @patch("alphagen.cli.fetch_daily_pnl")
+    @patch("src.alphagen.cli.fetch_daily_pnl")
     def test_report_command_without_date(self, mock_fetch_daily_pnl):
         """Test report command without date parameter."""
         # Mock the async function
@@ -65,7 +65,7 @@ class TestCLICommands:
         assert "2024-01-16: PnL=-75.25 on 3 trades" in result.output
         mock_fetch_daily_pnl.assert_called_once_with(None)
 
-    @patch("alphagen.cli.fetch_daily_pnl")
+    @patch("src.alphagen.cli.fetch_daily_pnl")
     def test_report_command_with_date(self, mock_fetch_daily_pnl):
         """Test report command with specific date."""
         mock_data = [
@@ -80,7 +80,7 @@ class TestCLICommands:
         assert "2024-01-15: PnL=200.75 on 8 trades" in result.output
         mock_fetch_daily_pnl.assert_called_once()
 
-    @patch("alphagen.cli.fetch_daily_pnl")
+    @patch("src.alphagen.cli.fetch_daily_pnl")
     def test_report_command_empty_data(self, mock_fetch_daily_pnl):
         """Test report command with empty data."""
         mock_fetch_daily_pnl.return_value = []
@@ -92,7 +92,7 @@ class TestCLICommands:
         assert result.output.strip() == ""  # No output for empty data
         mock_fetch_daily_pnl.assert_called_once_with(None)
 
-    @patch("alphagen.cli.fetch_daily_pnl")
+    @patch("src.alphagen.cli.fetch_daily_pnl")
     def test_report_command_with_zero_pnl(self, mock_fetch_daily_pnl):
         """Test report command with zero PnL."""
         mock_data = [
@@ -106,7 +106,7 @@ class TestCLICommands:
         assert result.exit_code == 0
         assert "2024-01-15: PnL=0.00 on 0 trades" in result.output
 
-    @patch("alphagen.cli.fetch_daily_pnl")
+    @patch("src.alphagen.cli.fetch_daily_pnl")
     def test_report_command_with_negative_pnl(self, mock_fetch_daily_pnl):
         """Test report command with negative PnL."""
         mock_data = [
@@ -120,7 +120,7 @@ class TestCLICommands:
         assert result.exit_code == 0
         assert "2024-01-15: PnL=-123.45 on 2 trades" in result.output
 
-    @patch("alphagen.gui.debug_app.main")
+    @patch("src.alphagen.gui.debug_app.main")
     def test_debug_command_execution(self, mock_debug_gui):
         """Test debug command execution."""
         mock_debug_gui.return_value = None
@@ -149,7 +149,7 @@ class TestCLICommands:
         assert "report" in result.output
         assert "debug" in result.output
 
-    @patch("alphagen.cli.run_app")
+    @patch("src.alphagen.cli.run_app")
     def test_run_command_async_error_handling(self, mock_run_app):
         """Test run command handles async errors."""
         mock_run_app.side_effect = Exception("Test error")
@@ -160,7 +160,7 @@ class TestCLICommands:
         # Should still exit with 0 but the error would be in the output
         assert result.exit_code == 0
 
-    @patch("alphagen.cli.fetch_daily_pnl")
+    @patch("src.alphagen.cli.fetch_daily_pnl")
     def test_report_command_async_error_handling(self, mock_fetch_daily_pnl):
         """Test report command handles async errors."""
         mock_fetch_daily_pnl.side_effect = Exception("Database error")
@@ -171,7 +171,7 @@ class TestCLICommands:
         # Should still exit with 0 but the error would be in the output
         assert result.exit_code == 0
 
-    @patch("alphagen.gui.debug_app.main")
+    @patch("src.alphagen.gui.debug_app.main")
     def test_debug_command_error_handling(self, mock_debug_gui):
         """Test debug command handles errors."""
         mock_debug_gui.side_effect = Exception("GUI error")
@@ -199,7 +199,7 @@ class TestCLICommands:
         assert result.exit_code != 0
         assert "Error" in result.output or "Invalid" in result.output
 
-    @patch("alphagen.cli.fetch_daily_pnl")
+    @patch("src.alphagen.cli.fetch_daily_pnl")
     def test_report_command_multiple_days(self, mock_fetch_daily_pnl):
         """Test report command with multiple days of data."""
         mock_data = [
@@ -226,7 +226,7 @@ class TestCLICommands:
 
     def test_cli_import_structure(self):
         """Test CLI import structure."""
-        from alphagen.cli import cli, debug, report, run
+        from src.alphagen.cli import cli, debug, report, run
 
         # All functions should be importable
         assert cli is not None

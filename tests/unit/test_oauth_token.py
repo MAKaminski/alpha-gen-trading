@@ -3,8 +3,8 @@
 import pytest
 from unittest.mock import patch, AsyncMock, MagicMock
 
-from alphagen.schwab_oauth_client import SchwabOAuthClient
-from alphagen.core.events import EquityTick
+from src.alphagen.schwab_oauth_client import SchwabOAuthClient
+from src.alphagen.core.events import EquityTick
 
 
 class TestOAuthTokenHandling:
@@ -22,7 +22,7 @@ class TestOAuthTokenHandling:
     def oauth_client(self, mock_client):
         """Create an OAuth client with mocked dependencies."""
         with patch(
-            "alphagen.schwab_oauth_client.client_from_token_file"
+            "src.alphagen.schwab_oauth_client.client_from_token_file"
         ) as mock_token_file:
             mock_token_file.return_value = mock_client
             client = SchwabOAuthClient.create()
@@ -185,9 +185,9 @@ class TestOAuthClientCreation:
         """Test client creation with valid token file."""
         with (
             patch(
-                "alphagen.schwab_oauth_client.client_from_token_file"
+                "src.alphagen.schwab_oauth_client.client_from_token_file"
             ) as mock_token_file,
-            patch("alphagen.schwab_oauth_client.load_app_config") as mock_config,
+            patch("src.alphagen.schwab_oauth_client.load_app_config") as mock_config,
         ):
             # Mock valid config
             mock_config.return_value.schwab.api_key = "test_key"
@@ -208,7 +208,7 @@ class TestOAuthClientCreation:
 
     def test_client_creation_with_missing_config(self):
         """Test client creation with missing configuration."""
-        with patch("alphagen.schwab_oauth_client.load_app_config") as mock_config:
+        with patch("src.alphagen.schwab_oauth_client.load_app_config") as mock_config:
             # Mock missing config
             mock_config.return_value.schwab.api_key = None
             mock_config.return_value.schwab.api_secret = None
@@ -222,9 +222,9 @@ class TestOAuthClientCreation:
         """Test client creation when token file loading fails."""
         with (
             patch(
-                "alphagen.schwab_oauth_client.client_from_token_file"
+                "src.alphagen.schwab_oauth_client.client_from_token_file"
             ) as mock_token_file,
-            patch("alphagen.schwab_oauth_client.load_app_config") as mock_config,
+            patch("src.alphagen.schwab_oauth_client.load_app_config") as mock_config,
         ):
             # Mock valid config
             mock_config.return_value.schwab.api_key = "test_key"

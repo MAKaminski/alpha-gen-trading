@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta
 
-from alphagen.core.events import (
+from src.alphagen.core.events import (
     EquityTick,
     OptionQuote,
     PositionSnapshot,
@@ -13,7 +13,7 @@ from alphagen.core.events import (
     CooldownState,
     PositionState,
 )
-from alphagen.config import EST
+from src.alphagen.config import EST
 
 
 class TestEquityTick:

@@ -4,18 +4,18 @@ import pytest
 from unittest.mock import AsyncMock, patch
 from datetime import datetime, timezone
 
-from alphagen.app import AlphaGenApp
-from alphagen.core.events import EquityTick, OptionQuote, NormalizedTick
-from alphagen.core.time_utils import now_est
+from src.alphagen.app import AlphaGenApp
+from src.alphagen.core.events import EquityTick, OptionQuote, NormalizedTick
+from src.alphagen.core.time_utils import now_est
 
 
 @pytest.mark.asyncio
 async def test_market_data_to_signal_flow():
     """Test complete data flow from market data to signal generation."""
     with (
-        patch("alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("alphagen.app.create_market_data_provider") as mock_market_data_factory,
-        patch("alphagen.app.init_models") as mock_init_models,
+        patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
+        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch("src.alphagen.app.init_models") as mock_init_models,
     ):
         # Mock Schwab client
         mock_schwab = AsyncMock()
@@ -75,9 +75,9 @@ async def test_market_data_to_signal_flow():
 async def test_position_polling_integration():
     """Test integration of position polling with the main app."""
     with (
-        patch("alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("alphagen.app.create_market_data_provider") as mock_market_data_factory,
-        patch("alphagen.app.init_models") as mock_init_models,
+        patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
+        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch("src.alphagen.app.init_models") as mock_init_models,
     ):
         # Mock Schwab client with position data
         mock_schwab = AsyncMock()
@@ -118,9 +118,9 @@ async def test_position_polling_integration():
 async def test_signal_to_trade_flow():
     """Test integration from signal generation to trade execution."""
     with (
-        patch("alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("alphagen.app.create_market_data_provider") as mock_market_data_factory,
-        patch("alphagen.app.init_models") as mock_init_models,
+        patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
+        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch("src.alphagen.app.init_models") as mock_init_models,
     ):
         # Mock Schwab client
         mock_schwab = AsyncMock()
@@ -165,9 +165,9 @@ async def test_signal_to_trade_flow():
 async def test_error_handling_integration():
     """Test error handling across the integrated system."""
     with (
-        patch("alphagen.app.SchwabOAuthClient") as mock_schwab_class,
-        patch("alphagen.app.create_market_data_provider") as mock_market_data_factory,
-        patch("alphagen.app.init_models") as mock_init_models,
+        patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
+        patch("src.alphagen.app.create_market_data_provider") as mock_market_data_factory,
+        patch("src.alphagen.app.init_models") as mock_init_models,
     ):
         # Mock Schwab client that raises an error
         mock_schwab = AsyncMock()
