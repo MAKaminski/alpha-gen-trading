@@ -23,15 +23,25 @@ A concise entry point for newcomers. Pair this with `README.md` and `docs/archit
    - `schwab_client.py`: REST interactions; `fetch_option_quote` powers stop-loss checks.
    - `market_data/`: provider factory (Schwab polling vs Polygon stub).
 4. **Important constraints**: single-position rule, 30s cooldown, minute VWAP/SMA, EST timestamps.
-5. **Tests**: (pending) – preferred location `tests/`. Add integration tests with mocked Schwab endpoints.
+5. **Tests**: Comprehensive test suite in `tests/` with 47% overall coverage. See `docs/TEST_COVERAGE_VISUALIZATION.md` for details.
 6. **Deployment**: review `Dockerfile`, `docker-compose.yml`, `deploy/README.md`.
 
 ### Developer To-Do Template
 - [ ] Update `.env` with real keys (never commit).
 - [ ] Run locally via `python -m alphagen.cli run`.
 - [ ] Verify SQLite schema: `sqlite3 alpha_gen.db '.tables'`.
+- [ ] Run tests: `pytest --cov=src/alphagen --cov-report=html`
+- [ ] Add tests for new modules (target 80%+ coverage).
 - [ ] Add structured logging context for new modules.
 - [ ] Document changes in `docs/architecture.md` and `AGENT.md` when behavior shifts.
+
+### Testing Guidelines
+- **Unit Tests**: Test individual components in isolation
+- **Integration Tests**: Test component interactions and data flow
+- **E2E Tests**: Test complete trading workflows
+- **Coverage Target**: 80%+ for new code, critical components
+- **Test Location**: `tests/` directory with appropriate subdirectories
+- **Coverage Report**: Available in `htmlcov/index.html` after running tests
 
 ---
 

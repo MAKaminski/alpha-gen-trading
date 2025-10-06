@@ -18,7 +18,11 @@ def cli() -> None:
 @cli.command()
 def run() -> None:
     """Start the real-time Alpha-Gen service."""
-    asyncio.run(run_app())
+    try:
+        asyncio.run(run_app())
+    except Exception as e:
+        click.echo(f"Error running Alpha-Gen service: {e}", err=True)
+        return
 
 
 @cli.command()
@@ -32,14 +36,22 @@ def report(for_date: datetime | None) -> None:
                 f"{row['trade_date']}: PnL={row['realized_pnl']:.2f} on {row['trade_count']} trades"
             )
 
-    asyncio.run(_display())
+    try:
+        asyncio.run(_display())
+    except Exception as e:
+        click.echo(f"Error generating report: {e}", err=True)
+        return
 
 
 @cli.command()
 def debug() -> None:
     """Start the unified debug GUI with live data streaming and charts."""
-    from alphagen.gui.debug_app import main as run_debug_gui
-    run_debug_gui()
+    try:
+        from alphagen.gui.debug_app import main as run_debug_gui
+        run_debug_gui()
+    except Exception as e:
+        click.echo(f"Error starting debug GUI: {e}", err=True)
+        return
 
 
 if __name__ == "__main__":

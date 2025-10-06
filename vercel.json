@@ -13,7 +13,7 @@
     }
   ],
   "env": {
-    "NEXT_PUBLIC_WS_URL": "wss://your-backend-url.railway.app/ws/market-data",
-    "NEXT_PUBLIC_API_URL": "https://your-backend-url.railway.app"
+    "NEXT_PUBLIC_WS_URL": "wss://alpha-gen-backend.railway.app/ws/market-data",
+    "NEXT_PUBLIC_API_URL": "https://alpha-gen-backend.railway.app"
   }
 }

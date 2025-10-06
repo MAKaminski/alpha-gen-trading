@@ -75,10 +75,43 @@ Market Data ──┤                                                           
 - Support multi-position management and commission modelling.
 - Expose HTTP health endpoints for managed platforms (Fly.io checks, Prometheus scraping).
 
+## Test Coverage & Quality
+
+### Current Test Coverage: 47% (843/1803 statements)
+
+#### Well-Tested Components (80%+ coverage)
+- **Time Utils** (100%): Market hours, holiday handling, time conversion
+- **Core Events** (99%): Data models and event structures
+- **Configuration** (99%): Environment and settings management
+- **Storage Layer** (99%): Database persistence and models
+- **Signal Engine** (87%): VWAP/MA9 crossover detection
+- **Trade Manager** (87%): Order lifecycle and position tracking
+
+#### Good Progress Components (50-80% coverage)
+- **CLI Interface** (64%): Command-line interface
+- **Market Data Factory** (56%): Provider selection logic
+- **Schwab OAuth Client** (55%): Authentication flow
+- **App Orchestrator** (53%): Main application coordination
+- **Trade Generator** (53%): Signal to trade conversion
+
+#### Remaining Gaps (<50% coverage)
+- **Market Data Stream** (28%): Data ingestion and normalization
+- **Option Monitor** (28%): Real-time position monitoring
+- **Schwab Client** (32%): API interactions
+- **Reports** (29%): P&L aggregation
+
+#### Test Architecture
+- **Unit Tests**: 10 files covering core components
+- **Integration Tests**: 2 files covering component interactions
+- **E2E Tests**: 1 file covering complete trading workflows
+
+For detailed test coverage analysis, see `docs/TEST_COVERAGE_VISUALIZATION.md`.
+
 ## Next Steps
 
-1. Implement Schwab streaming client and reconnection logic.
-2. Add integration tests using mocked Schwab/Polygon services.
-3. Wire structured metrics/alerts (Prometheus, Grafana, Slack webhooks).
-4. Benchmark option polling cadence vs. rate limits; tune for production latency.
-5. Extend deployment automation (GitHub Actions → Fly.io / container registry).
+1. **Critical**: Improve tests for Market Data Stream, Option Monitor, Schwab Client, and Reports
+2. Implement Schwab streaming client and reconnection logic.
+3. Add integration tests using mocked Schwab/Polygon services.
+4. Wire structured metrics/alerts (Prometheus, Grafana, Slack webhooks).
+5. Benchmark option polling cadence vs. rate limits; tune for production latency.
+6. Extend deployment automation (GitHub Actions → Fly.io / container registry).

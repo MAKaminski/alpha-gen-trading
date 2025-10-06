@@ -29,6 +29,10 @@ charts/*.jpeg
 config/schwab_token.json
 !config/schwab_token.json.example
 
+# Railway configuration
+.env.railway
+railway.env
+
 # IDE
 .vscode/
 .idea/

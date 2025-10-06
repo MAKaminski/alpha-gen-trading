@@ -71,7 +71,7 @@ class DebugGUI:
             return
             
         try:
-            from datetime import datetime, timezone
+            from datetime import datetime, timezone, timedelta
             import random
             
             # Generate sample data for warm-up
@@ -80,7 +80,7 @@ class DebugGUI:
             
             # Add 10 sample data points
             for i in range(10):
-                sample_time = current_time.replace(second=current_time.second - (10-i))
+                sample_time = current_time - timedelta(seconds=10-i)
                 price_change = random.uniform(-2.0, 2.0)
                 sample_price = base_price + price_change + (i * 0.1)
                 

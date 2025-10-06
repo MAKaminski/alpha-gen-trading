@@ -41,6 +41,7 @@ test = [
     "pytest-cov>=4.0",
     "pytest-mock>=3.10",
     "pytest-xdist>=3.3",
+    "pytest-timeout>=2.1",
     "httpx>=0.25.0",
     "respx>=0.20.0",
     "freezegun>=1.2.0"

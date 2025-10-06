@@ -21,12 +21,23 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS middleware
+# CORS middleware - Railway production configuration
+allowed_origins = [
+    "http://localhost:3000",  # Local development
+    "https://alpha-gen.vercel.app",  # Vercel frontend
+    "https://alpha-gen-git-main.vercel.app",  # Vercel preview
+]
+
+# Add Railway domain when available
+railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN")
+if railway_domain:
+    allowed_origins.append(f"https://{railway_domain}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure this properly for production
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
