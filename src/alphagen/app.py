@@ -10,7 +10,6 @@ import structlog
 from alphagen import __version__
 from alphagen.config import load_app_config
 from alphagen.core.events import EquityTick, NormalizedTick, OptionQuote, PositionState, Signal, TradeExecution, TradeIntent
-from alphagen.core.time_utils import now_est
 from alphagen.etl.normalizer import Normalizer
 from alphagen.etl.position import PositionCalculator
 from alphagen.market_data import StreamCallbacks, create_market_data_provider
@@ -28,7 +27,6 @@ from alphagen.storage import (
 )
 from alphagen.trade_generator import TradeGenerator
 from alphagen.trade_manager import TradeManager
-from alphagen.visualization.simple_chart import SimpleChart
 from alphagen.visualization.file_chart import FileChart
 from alphagen.option_monitor import OptionMonitor
 

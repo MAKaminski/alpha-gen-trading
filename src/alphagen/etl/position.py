@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from datetime import datetime
 from typing import Callable, Coroutine, Iterable
 
 from alphagen.core.events import PositionSnapshot, PositionState, TradeExecution

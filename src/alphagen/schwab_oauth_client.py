@@ -1,15 +1,13 @@
 """Schwab OAuth2 client wrapper using schwab-py library."""
 from __future__ import annotations
 
-import asyncio
-import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
 import structlog
-from schwab.auth import client_from_login_flow, client_from_token_file
+from schwab.auth import client_from_token_file
 from schwab.client import Client
 
 from alphagen.config import load_app_config

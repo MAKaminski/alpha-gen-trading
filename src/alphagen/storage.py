@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 from datetime import datetime
-from typing import AsyncIterator
+from typing import AsyncIterator, TYPE_CHECKING
 
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from sqlmodel import Field, SQLModel
@@ -115,8 +115,6 @@ async def session_scope() -> AsyncIterator[AsyncSession]:
 
 
 # --- Persistence helpers -------------------------------------------------
-from typing import TYPE_CHECKING
-
 if TYPE_CHECKING:
     from alphagen.core.events import (
         EquityTick,

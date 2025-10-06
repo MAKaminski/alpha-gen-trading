@@ -2,13 +2,11 @@
 from __future__ import annotations
 
 import asyncio
-import json
 from datetime import datetime, timezone
 from typing import Optional
 
 import structlog
 import websockets
-from websockets.exceptions import ConnectionClosed, WebSocketException
 
 from alphagen.config import load_app_config
 from alphagen.core.events import EquityTick, OptionQuote

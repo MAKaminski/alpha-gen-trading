@@ -2,13 +2,10 @@
 from __future__ import annotations
 
 import tkinter as tk
-from tkinter import ttk
-import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from collections import deque
-from datetime import datetime
-from typing import Deque, Optional
+from typing import Deque
 
 from alphagen.core.events import NormalizedTick
 

@@ -165,7 +165,7 @@ class LiveChart:
             fig.autofmt_xdate()
             return line_vwap, line_ma9, scatter
 
-        anim = FuncAnimation(fig, update, interval=250, cache_frame_data=False)
+        FuncAnimation(fig, update, interval=250, cache_frame_data=False)
         try:
             self._logger.info("live_chart_displaying", backend=matplotlib.get_backend(), interactive=matplotlib.is_interactive())
             

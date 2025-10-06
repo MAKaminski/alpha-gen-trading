@@ -1,7 +1,6 @@
 """Generate trade intents from signals."""
 from __future__ import annotations
 
-from datetime import timedelta
 from typing import Callable, Coroutine
 
 from alphagen.config import load_app_config

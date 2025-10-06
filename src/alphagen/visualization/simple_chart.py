@@ -6,7 +6,7 @@ import matplotlib.animation as animation
 from collections import deque
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Deque, Optional
+from typing import Deque
 
 import structlog
 

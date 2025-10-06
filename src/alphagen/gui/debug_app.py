@@ -9,7 +9,7 @@ from typing import Optional
 
 import structlog
 
-from alphagen.core.events import EquityTick, NormalizedTick, OptionQuote, Signal
+from alphagen.core.events import EquityTick, NormalizedTick, OptionQuote
 from alphagen.market_data.base import StreamCallbacks
 from alphagen.visualization.simple_gui_chart import SimpleGUChart
 from alphagen.etl.normalizer import Normalizer

@@ -42,7 +42,6 @@ class TradeManager:
     async def handle_tick(self, tick: NormalizedTick) -> None:
         if not tick.option:
             return
-        symbol = tick.option.option_symbol
         await self.update_option_quote(tick.option)
 
     async def update_option_quote(self, quote: OptionQuote) -> None:
