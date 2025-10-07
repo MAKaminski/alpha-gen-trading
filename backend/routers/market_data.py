@@ -8,7 +8,7 @@ import os
 # Add the parent directory to the path to import alphagen modules
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
 
-from routers.auth import get_current_user, User
+from .auth import get_current_user, User
 
 router = APIRouter()
 

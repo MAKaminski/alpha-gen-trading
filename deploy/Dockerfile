@@ -14,6 +14,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml ./
+COPY main.py ./
 COPY src ./src
 COPY backend ./backend
 COPY deploy ./deploy
@@ -21,9 +22,6 @@ COPY docs ./docs
 
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir . \
-    && pip install uvicorn fastapi websockets
+    && pip install uvicorn[standard] fastapi websockets python-multipart python-jose[cryptography] passlib[bcrypt]
 
 ENV PYTHONPATH=${APP_HOME}/src
-
-# Use the Railway start script if it exists, otherwise run the CLI
-CMD ["python", "deploy/railway_start.py"]

@@ -11,9 +11,11 @@ from datetime import datetime
 # Add the parent directory to the path to import alphagen modules
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from routers import auth, market_data, websocket
-from services.schwab_client import SchwabWebSocketService
-from models.schemas import WebSocketMessage, MarketDataResponse
+from .routers.auth import router as auth_router
+from .routers.market_data import router as market_data_router
+from .routers.websocket import router as websocket_router
+from .services.schwab_client import SchwabWebSocketService
+from .models.schemas import WebSocketMessage, MarketDataResponse
 
 app = FastAPI(
     title="Alpha-Gen API",
@@ -42,9 +44,9 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(auth.router, prefix="/api/auth", tags=["authentication"])
-app.include_router(market_data.router, prefix="/api/market-data", tags=["market-data"])
-app.include_router(websocket.router, prefix="/ws", tags=["websocket"])
+app.include_router(auth_router, prefix="/api/auth", tags=["authentication"])
+app.include_router(market_data_router, prefix="/api/market-data", tags=["market-data"])
+app.include_router(websocket_router, prefix="/ws", tags=["websocket"])
 
 # Global WebSocket connection manager
 class ConnectionManager:
