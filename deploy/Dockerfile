@@ -15,11 +15,15 @@ RUN apt-get update \
 
 COPY pyproject.toml ./
 COPY src ./src
+COPY backend ./backend
+COPY deploy ./deploy
 COPY docs ./docs
 
 RUN pip install --upgrade pip \
-    && pip install --no-cache-dir .
+    && pip install --no-cache-dir . \
+    && pip install uvicorn fastapi websockets
 
 ENV PYTHONPATH=${APP_HOME}/src
 
-ENTRYPOINT ["python", "-m", "alphagen.cli", "run"]
+# Use the Railway start script if it exists, otherwise run the CLI
+CMD ["python", "deploy/railway_start.py"]
