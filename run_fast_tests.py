@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Test runner script for VS Code launch configuration."""
+"""Fast test runner script - only runs a few key tests for quick feedback."""
 
 import sys
 import subprocess
 import os
 
 def main():
-    print("=== Test Runner Starting ===")
+    print("=== Fast Test Runner Starting (Key Tests Only) ===")
     print(f"Current directory: {os.getcwd()}")
     print(f"Python executable: {sys.executable}")
     
@@ -21,16 +21,16 @@ def main():
         print(f"ERROR: Python 3.11 not found at {python_cmd}")
         sys.exit(1)
     
-    # Run pytest with all the arguments
+    # Run only a few key tests for quick feedback
     cmd = [
         python_cmd, "-m", "pytest",
-        "tests/",
+        "tests/unit/test_app_simple.py",  # Just the app tests
+        "tests/unit/test_events.py",      # Just the events tests
+        "tests/unit/test_storage_simple.py",  # Just the storage tests
         "-v",
         "--tb=short",
-        "--cov=src/alphagen",
-        "--cov-report=term-missing",
-        "--cov-fail-under=30",
-        "--timeout=300"  # 5 minute timeout for full test suite
+        "--maxfail=3",
+        "-x"  # Stop on first failure
     ]
     
     print(f"Running: {' '.join(cmd)}")

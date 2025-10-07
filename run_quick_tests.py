@@ -22,13 +22,17 @@ def main():
         sys.exit(1)
     
     # Run pytest with unit tests only (much faster)
+    # Exclude integration and E2E tests that might hang
     cmd = [
         python_cmd, "-m", "pytest",
         "tests/unit/",
         "-v",
         "--tb=short",
         "--maxfail=5",
-        "-x"  # Stop on first failure
+        "-x",  # Stop on first failure
+        "--ignore=tests/integration/",  # Skip integration tests
+        "--ignore=tests/e2e/",  # Skip E2E tests
+        "-m", "not slow"  # Skip any tests marked as slow
     ]
     
     print(f"Running: {' '.join(cmd)}")

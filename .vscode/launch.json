@@ -15,10 +15,10 @@
             "args": []
         },
         {
-            "name": "Run Quick Tests (Unit Only)",
+            "name": "Run Fast Tests (Key Only)",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/run_quick_tests.py",
+            "program": "${workspaceFolder}/run_fast_tests.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "pythonPath": "/opt/homebrew/bin/python3.11",
