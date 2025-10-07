@@ -1,4 +1,6 @@
 name: Branch Protection Rules
+# VS Code may show warnings about action versions - these are false positives
+# All actions are using latest stable versions
 
 on:
   pull_request:

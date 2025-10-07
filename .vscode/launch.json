@@ -2,57 +2,30 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "🐛 Run Alpha-Gen (Unified GUI)",
+            "name": "Run Test Suite",
             "type": "python",
             "request": "launch",
-            "module": "src.alphagen",
+            "program": "${workspaceFolder}/run_tests.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
+            "pythonPath": "/opt/homebrew/bin/python3.11",
             "env": {
                 "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/src"
             },
-            "args": ["debug"]
+            "args": []
         },
         {
-            "name": "🧪 Run Test Suite [All Tests - Unit, Integration E2E]",
+            "name": "Run Application [Launch GUI]",
             "type": "python",
             "request": "launch",
-            "module": "pytest",
+            "program": "${workspaceFolder}/run_app.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
+            "pythonPath": "/opt/homebrew/bin/python3.11",
             "env": {
                 "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/src"
             },
-            "args": [
-                "tests/",
-                "-v",
-                "--tb=short",
-                "--cov=src/alphagen",
-                "--cov-report=term-missing",
-                "--cov-report=html:htmlcov",
-                "--cov-fail-under=80"
-            ]
-        },
-        {
-            "name": "🚀 Run Backend API",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/backend/main.py",
-            "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}",
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/src"
-            }
-        },
-        {
-            "name": "🔧 Run Frontend Dev Server",
-            "type": "node",
-            "request": "launch",
-            "program": "${workspaceFolder}/frontend",
-            "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}/frontend",
-            "runtimeExecutable": "npm",
-            "runtimeArgs": ["run", "dev"]
+            "args": []
         }
     ]
 }
