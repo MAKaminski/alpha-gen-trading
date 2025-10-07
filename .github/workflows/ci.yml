@@ -44,6 +44,17 @@ jobs:
         echo "Skipping mypy type checking for now due to configuration issues"
         # mypy -p alphagen --ignore-missing-imports
     
+    - name: Initialize database
+      run: |
+        python -c "
+        import asyncio
+        import sys
+        sys.path.insert(0, 'src')
+        from alphagen.storage import init_models
+        asyncio.run(init_models())
+        print('Database tables initialized successfully')
+        "
+    
     - name: Run unit tests
       run: |
         pytest tests/unit -v --cov=src/alphagen --cov-report=xml
