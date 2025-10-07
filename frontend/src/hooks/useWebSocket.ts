@@ -2,9 +2,23 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 
+interface NormalizedTickData {
+  timestamp: string;
+  equity?: {
+    session_vwap?: number;
+    ma9?: number;
+  };
+  option?: {
+    delta?: number;
+    gamma?: number;
+    theta?: number;
+    vega?: number;
+  };
+}
+
 interface WebSocketMessage {
   type: string;
-  data?: unknown;
+  data?: NormalizedTickData | unknown;
   [key: string]: unknown;
 }
 

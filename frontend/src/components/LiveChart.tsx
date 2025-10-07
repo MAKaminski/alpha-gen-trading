@@ -27,7 +27,7 @@ export default function LiveChart({ className = "" }: LiveChartProps) {
 
   useEffect(() => {
     if (lastMessage && lastMessage.type === 'normalized_tick') {
-      const tickData = lastMessage.data;
+      const tickData = lastMessage.data as { timestamp: string; equity?: { session_vwap?: number; ma9?: number } } | undefined;
       if (tickData && tickData.equity) {
         const timestamp = new Date(tickData.timestamp);
         const timeStr = timestamp.toLocaleTimeString('en-US', {
