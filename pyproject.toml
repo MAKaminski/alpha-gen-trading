@@ -20,7 +20,15 @@ dependencies = [
     "pydantic-settings>=2.1",
     "matplotlib>=3.8",
     "python-dotenv>=1.0",
-    "schwab-py>=1.5.1"
+    "schwab-py>=1.5.1",
+    "fastapi>=0.109.1",
+    "python-jose[cryptography]>=3.4.0",
+    "python-multipart>=0.0.18",
+    "certifi>=2024.7.4",
+    "idna>=3.7",
+    "requests>=2.32.4",
+    "urllib3>=2.5.0",
+    "werkzeug>=3.0.6"
 ]
 
 [project.optional-dependencies]
