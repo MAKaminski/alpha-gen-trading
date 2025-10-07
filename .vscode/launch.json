@@ -2,10 +2,23 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Run Test Suite",
+            "name": "Run Test Suite (Full)",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/run_tests.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "pythonPath": "/opt/homebrew/bin/python3.11",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/src"
+            },
+            "args": []
+        },
+        {
+            "name": "Run Quick Tests (Unit Only)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/run_quick_tests.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "pythonPath": "/opt/homebrew/bin/python3.11",
