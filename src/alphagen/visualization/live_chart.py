@@ -120,8 +120,10 @@ class LiveChart:
         # Set up time formatting with better spacing
         ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
         ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=5))  # Every 5 minutes
-        ax.xaxis.set_minor_locator(mdates.MinuteLocator(interval=1))  # Minor every minute
-        ax.tick_params(axis='x', rotation=45)
+        ax.xaxis.set_minor_locator(
+            mdates.MinuteLocator(interval=1)
+        )  # Minor every minute
+        ax.tick_params(axis="x", rotation=45)
 
         def update(_frame: int):
             closing = False

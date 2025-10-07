@@ -128,7 +128,7 @@ class DebugGUI:
         main_frame.columnconfigure(1, weight=1)
         main_frame.rowconfigure(2, weight=1)
 
-        # Control panel
+        # Control panel with larger font
         control_frame = ttk.LabelFrame(
             main_frame, text="Alpha-Gen Debug Controls", padding="10"
         )
@@ -136,12 +136,19 @@ class DebugGUI:
             row=0, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10)
         )
 
+        # Configure larger font for control elements
+        style = ttk.Style()
+        style.configure("Large.TCheckbutton", font=("Arial", 11))
+        style.configure("Large.TLabel", font=("Arial", 11))
+        style.configure("Large.TCombobox", font=("Arial", 11))
+
         # Stream Data checkbox
         stream_check = ttk.Checkbutton(
             control_frame,
             text="Stream Data",
             variable=self.stream_data_active,
             command=self._on_stream_toggle,
+            style="Large.TCheckbutton",
         )
         stream_check.grid(row=0, column=0, padx=(0, 20))
 
@@ -151,11 +158,14 @@ class DebugGUI:
             text="View Chart",
             variable=self.view_chart_active,
             command=self._on_chart_toggle,
+            style="Large.TCheckbutton",
         )
         chart_check.grid(row=0, column=1, padx=(0, 20))
 
         # Time scale controls
-        ttk.Label(control_frame, text="Time Scale:").grid(row=0, column=2, padx=(20, 5))
+        ttk.Label(control_frame, text="Time Scale:", style="Large.TLabel").grid(
+            row=0, column=2, padx=(20, 5)
+        )
         self.time_scale = tk.StringVar(value="1min")
         scale_combo = ttk.Combobox(
             control_frame,
@@ -163,12 +173,15 @@ class DebugGUI:
             values=["1min", "5min", "15min", "1hour", "4hour", "1day"],
             state="readonly",
             width=8,
+            style="Large.TCombobox",
         )
         scale_combo.grid(row=0, column=3, padx=(5, 10))
         scale_combo.bind("<<ComboboxSelected>>", self._on_time_scale_change)
 
         # Status label
-        self.status_label = ttk.Label(control_frame, text="Status: Stopped")
+        self.status_label = ttk.Label(
+            control_frame, text="Status: Stopped", style="Large.TLabel"
+        )
         self.status_label.grid(row=0, column=4, padx=(20, 0))
 
         # Quick actions frame
@@ -177,21 +190,33 @@ class DebugGUI:
             row=1, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(10, 0)
         )
 
+        # Configure button style
+        style.configure("Large.TButton", font=("Arial", 11))
+
         # OAuth setup button
         oauth_btn = ttk.Button(
-            actions_frame, text="Setup OAuth", command=self._setup_oauth
+            actions_frame,
+            text="Setup OAuth",
+            command=self._setup_oauth,
+            style="Large.TButton",
         )
         oauth_btn.grid(row=0, column=0, padx=(0, 10))
 
         # Clear console button
         clear_btn = ttk.Button(
-            actions_frame, text="Clear Console", command=self._clear_console
+            actions_frame,
+            text="Clear Console",
+            command=self._clear_console,
+            style="Large.TButton",
         )
         clear_btn.grid(row=0, column=1, padx=(0, 10))
 
         # Export logs button
         export_btn = ttk.Button(
-            actions_frame, text="Export Logs", command=self._export_logs
+            actions_frame,
+            text="Export Logs",
+            command=self._export_logs,
+            style="Large.TButton",
         )
         export_btn.grid(row=0, column=2, padx=(0, 10))
 
@@ -211,26 +236,30 @@ class DebugGUI:
         console_frame.columnconfigure(0, weight=1)
         console_frame.rowconfigure(0, weight=1)
 
+        # Configure LabelFrame styles for better readability
+        style.configure("Large.TLabelframe", font=("Arial", 12, "bold"))
+        style.configure("Large.TLabelframe.Label", font=("Arial", 12, "bold"))
+
         # Console text widget with better styling
         self.console_text = scrolledtext.ScrolledText(
-            console_frame, 
-            height=15, 
-            state=tk.DISABLED, 
+            console_frame,
+            height=15,
+            state=tk.DISABLED,
             wrap=tk.WORD,
             bg="#1e1e1e",  # Dark background
             fg="#ffffff",  # White text
             insertbackground="#ffffff",  # White cursor
             selectbackground="#404040",  # Dark selection background
             selectforeground="#ffffff",  # White selection text
-            font=("Consolas", 10)  # Monospace font for better readability
+            font=("Consolas", 12),  # Larger monospace font for better readability
         )
         self.console_text.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 
         # Configure text tags for different log levels with better contrast
-        self.console_text.tag_configure("info", foreground="#00ff00")      # Bright green
-        self.console_text.tag_configure("warning", foreground="#ffaa00")   # Orange
-        self.console_text.tag_configure("error", foreground="#ff4444")     # Bright red
-        self.console_text.tag_configure("debug", foreground="#888888")     # Gray
+        self.console_text.tag_configure("info", foreground="#00ff00")  # Bright green
+        self.console_text.tag_configure("warning", foreground="#ffaa00")  # Orange
+        self.console_text.tag_configure("error", foreground="#ff4444")  # Bright red
+        self.console_text.tag_configure("debug", foreground="#888888")  # Gray
 
     def _setup_async_loop(self):
         """Set up the async event loop in a separate thread."""

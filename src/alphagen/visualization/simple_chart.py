@@ -96,10 +96,15 @@ class SimpleChart:
 
             # Set up time formatting with better spacing
             import matplotlib.dates as mdates
+
             self._ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
-            self._ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=5))  # Every 5 minutes
-            self._ax.xaxis.set_minor_locator(mdates.MinuteLocator(interval=1))  # Minor every minute
-            self._ax.tick_params(axis='x', rotation=45)
+            self._ax.xaxis.set_major_locator(
+                mdates.MinuteLocator(interval=5)
+            )  # Every 5 minutes
+            self._ax.xaxis.set_minor_locator(
+                mdates.MinuteLocator(interval=1)
+            )  # Minor every minute
+            self._ax.tick_params(axis="x", rotation=45)
 
             # Set up animation
             self._ani = animation.FuncAnimation(
