@@ -97,7 +97,7 @@ class DebugGUI:
                 )
 
                 sample_tick = NormalizedTick(
-                    timestamp=sample_time, equity=sample_equity, option=None
+                    as_of=sample_time, equity=sample_equity, option=None
                 )
 
                 # Add to chart
