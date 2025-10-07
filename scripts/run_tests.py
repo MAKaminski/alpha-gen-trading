@@ -1,19 +1,27 @@
 #!/usr/bin/env python3
-"""Application runner script for VS Code launch configuration."""
+"""Test runner script for VS Code launch configuration."""
 
 import sys
 import subprocess
 import os
 
 def main():
-    print("=== App Runner Starting ===")
+    print("=== Test Runner Starting ===")
+    
+    # Get project root (parent of scripts/)
+    from pathlib import Path
+    project_root = Path(__file__).parent.parent
+    os.chdir(project_root)
+    
     print(f"Current directory: {os.getcwd()}")
     print(f"Python executable: {sys.executable}")
     
     # Set up environment
-    os.environ['PYTHONPATH'] = f"{os.getcwd()}:{os.getcwd()}/src"
+    os.environ['PYTHONPATH'] = f"{project_root}/src:{project_root}"
+    # Use mock data for tests to avoid OAuth issues
+    os.environ['ALPHAGEN_USE_MOCK_DATA'] = 'true'
     
-    # Use Python 3.11 specifically
+    # Use system Python 3.11
     python_cmd = "/opt/homebrew/bin/python3.11"
     
     # Check if Python 3.11 exists
@@ -21,10 +29,16 @@ def main():
         print(f"ERROR: Python 3.11 not found at {python_cmd}")
         sys.exit(1)
     
-    # Run the application with debug argument
+    # Run pytest with all the arguments
     cmd = [
-        python_cmd, "-m", "src.alphagen",
-        "debug"
+        python_cmd, "-m", "pytest",
+        "tests/",
+        "-v",
+        "--tb=short",
+        "--cov=src/alphagen",
+        "--cov-report=term-missing",
+        "--cov-fail-under=30",
+        "--timeout=300"  # 5 minute timeout for full test suite
     ]
     
     print(f"Running: {' '.join(cmd)}")

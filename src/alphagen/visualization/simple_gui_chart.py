@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
+import asyncio
 import tkinter as tk
+from contextlib import asynccontextmanager
+from datetime import datetime, timedelta, timezone
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 from collections import deque
 from typing import Deque
+from sqlmodel import select
 
 from alphagen.core.events import NormalizedTick
 
@@ -16,11 +20,11 @@ from alphagen.core.events import NormalizedTick
 class SimpleGUChart:
     """Simple chart that embeds in tkinter GUI."""
 
-    def __init__(self, parent_frame: tk.Widget, max_points: int = 100):
+    def __init__(self, parent_frame: tk.Widget, max_points: int = 4320):  # 3 days of minute data
         self.parent_frame = parent_frame
         self.max_points = max_points
         self.data_buffer: Deque[NormalizedTick] = deque(maxlen=max_points)
-        self.time_scale = "1min"  # Default time scale
+        self.time_scale = "3day"  # Default to 3-day view
 
         # Track min/max values for Y-axis scaling
         self.min_price = float("inf")
@@ -33,6 +37,7 @@ class SimpleGUChart:
             "1hour": {"max_points": 24, "label": "1 Hour"},
             "4hour": {"max_points": 18, "label": "4 Hours"},
             "1day": {"max_points": 24, "label": "1 Day"},
+            "3day": {"max_points": 72, "label": "3 Days"},
         }
 
         # Create matplotlib figure with higher DPI for better readability
@@ -53,9 +58,12 @@ class SimpleGUChart:
 
         # Create tkinter canvas
         self.canvas = FigureCanvasTkAgg(self.fig, parent_frame)
-        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+        # Don't pack here - will be packed when shown in GUI
 
         # Initialize plot
+        (self.line_price,) = self.ax.plot(
+            [], [], label="Price", color="#ff6b35", linewidth=2
+        )
         (self.line_vwap,) = self.ax.plot(
             [], [], label="VWAP", color="#4caf50", linewidth=2
         )
@@ -64,18 +72,14 @@ class SimpleGUChart:
         )
         self.ax.set_xlabel("Time")
         self.ax.set_ylabel("Price ($)")
-        self.ax.set_title("Alpha-Gen QQQ VWAP vs MA9 - 1 Minute Scale")
+        self.ax.set_title("Alpha-Gen QQQ Price vs VWAP vs MA9 - 3 Day Scale")
         self.ax.legend()
         self.ax.grid(True, alpha=0.3)
 
         # Set up time formatting with better spacing
         self.ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
-        self.ax.xaxis.set_major_locator(
-            mdates.MinuteLocator(interval=10)
-        )  # Show every 10 minutes by default
-        self.ax.xaxis.set_minor_locator(
-            mdates.MinuteLocator(interval=5)
-        )  # Minor ticks every 5 minutes
+        # Limit to maximum 6 labels on X-axis to prevent crowding
+        self.ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
 
         # Rotate labels for better readability and add padding
         self.ax.tick_params(axis="x", rotation=45, labelsize=10)
@@ -93,54 +97,34 @@ class SimpleGUChart:
             self.data_buffer = deque(self.data_buffer, maxlen=config["max_points"])
             self.ax.set_title(f"Alpha-Gen QQQ VWAP vs MA9 - {config['label']} Scale")
 
-            # Update time axis formatting based on scale with better spacing
+            # Update time axis formatting based on scale - limit to max 6 labels
             if scale == "1min":
-                self.ax.xaxis.set_major_locator(
-                    mdates.MinuteLocator(interval=10)
-                )  # Every 10 minutes
-                self.ax.xaxis.set_minor_locator(
-                    mdates.MinuteLocator(interval=5)
-                )  # Minor every 5 minutes
+                # Limit to maximum 6 labels on X-axis
+                self.ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
                 self.ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
             elif scale == "5min":
-                self.ax.xaxis.set_major_locator(
-                    mdates.MinuteLocator(interval=30)
-                )  # Every 30 minutes
-                self.ax.xaxis.set_minor_locator(
-                    mdates.MinuteLocator(interval=15)
-                )  # Minor every 15 minutes
+                # Limit to maximum 6 labels on X-axis
+                self.ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
                 self.ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
             elif scale == "15min":
-                self.ax.xaxis.set_major_locator(
-                    mdates.HourLocator(interval=1)
-                )  # Every hour
-                self.ax.xaxis.set_minor_locator(
-                    mdates.MinuteLocator(interval=30)
-                )  # Minor every 30 minutes
+                # Limit to maximum 6 labels on X-axis
+                self.ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
                 self.ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
             elif scale == "1hour":
-                self.ax.xaxis.set_major_locator(
-                    mdates.HourLocator(interval=4)
-                )  # Every 4 hours
-                self.ax.xaxis.set_minor_locator(
-                    mdates.HourLocator(interval=2)
-                )  # Minor every 2 hours
+                # Limit to maximum 6 labels on X-axis
+                self.ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
                 self.ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
             elif scale == "4hour":
-                self.ax.xaxis.set_major_locator(
-                    mdates.HourLocator(interval=12)
-                )  # Every 12 hours
-                self.ax.xaxis.set_minor_locator(
-                    mdates.HourLocator(interval=6)
-                )  # Minor every 6 hours
+                # Limit to maximum 6 labels on X-axis
+                self.ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
                 self.ax.xaxis.set_major_formatter(mdates.DateFormatter("%m/%d %H:%M"))
             elif scale == "1day":
-                self.ax.xaxis.set_major_locator(
-                    mdates.DayLocator(interval=1)
-                )  # Every day
-                self.ax.xaxis.set_minor_locator(
-                    mdates.HourLocator(interval=12)
-                )  # Minor every 12 hours
+                # Limit to maximum 6 labels on X-axis
+                self.ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
+                self.ax.xaxis.set_major_formatter(mdates.DateFormatter("%m/%d"))
+            elif scale == "3day":
+                # Show days for 3-day view
+                self.ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
                 self.ax.xaxis.set_major_formatter(mdates.DateFormatter("%m/%d"))
 
             self._update_plot()
@@ -150,6 +134,58 @@ class SimpleGUChart:
         self.data_buffer.append(tick)
         self._update_plot()
 
+    async def load_historical_data(self) -> None:
+        """Load last 3 days of historical data from database."""
+        from alphagen.storage import session_scope
+        from alphagen.storage import EquityTickRow
+        from alphagen.core.events import EquityTick, OptionQuote
+
+        try:
+            # Get last 3 days of data
+            cutoff_time = datetime.now(timezone.utc) - timedelta(days=3)
+
+            async with session_scope() as session:
+                # Query equity tick data from last 3 days
+                statement = select(EquityTickRow).where(
+                    EquityTickRow.as_of >= cutoff_time,
+                    EquityTickRow.price > 0  # Filter out zero prices
+                ).order_by(EquityTickRow.as_of)
+                result = await session.exec(statement)
+                rows = result.all()
+
+                # Convert to NormalizedTick objects
+                for row in rows:
+                    equity_tick = EquityTick(
+                        symbol=row.symbol,
+                        price=row.price,
+                        session_vwap=row.session_vwap,
+                        ma9=row.ma9,
+                        as_of=row.as_of
+                    )
+
+                    # Create a dummy option quote (not needed for chart)
+                    option_quote = OptionQuote(
+                        option_symbol="DUMMY",
+                        strike=0.0,
+                        bid=0.0,
+                        ask=0.0,
+                        as_of=row.as_of,
+                        expiry=row.as_of
+                    )
+
+                    normalized_tick = NormalizedTick(
+                        as_of=row.as_of,
+                        equity=equity_tick,
+                        option=option_quote
+                    )
+
+                    self.data_buffer.append(normalized_tick)
+
+                self._update_plot()
+
+        except Exception as e:
+            print(f"Error loading historical data: {e}")
+
     def _update_plot(self) -> None:
         """Update the plot with current data."""
         if not self.data_buffer:
@@ -157,11 +193,20 @@ class SimpleGUChart:
 
         # Extract data
         times = [t.as_of for t in self.data_buffer]
+        price_values = [t.equity.price for t in self.data_buffer]
         vwap_values = [t.equity.session_vwap for t in self.data_buffer]
         ma9_values = [t.equity.ma9 for t in self.data_buffer]
 
+        # Filter out zero prices that would skew the chart
+        valid_data = [(t, p, v, m) for t, p, v, m in zip(times, price_values, vwap_values, ma9_values) if p > 0]
+
+        if not valid_data:
+            return
+
+        times, price_values, vwap_values, ma9_values = zip(*valid_data)
+
         # Update min/max price tracking
-        all_prices = vwap_values + ma9_values
+        all_prices = list(price_values) + list(vwap_values) + list(ma9_values)
         if all_prices:
             current_min = min(all_prices)
             current_max = max(all_prices)
@@ -169,6 +214,7 @@ class SimpleGUChart:
             self.max_price = max(self.max_price, current_max)
 
         # Update lines
+        self.line_price.set_data(times, price_values)
         self.line_vwap.set_data(times, vwap_values)
         self.line_ma9.set_data(times, ma9_values)
 
@@ -239,9 +285,18 @@ class SimpleGUChart:
         # Redraw
         self.canvas.draw()
 
+    def show(self) -> None:
+        """Show the chart in its parent frame."""
+        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
+    def hide(self) -> None:
+        """Hide the chart."""
+        self.canvas.get_tk_widget().pack_forget()
+
     def clear(self) -> None:
         """Clear the chart."""
         self.data_buffer.clear()
+        self.line_price.set_data([], [])
         self.line_vwap.set_data([], [])
         self.line_ma9.set_data([], [])
 

@@ -18,14 +18,14 @@ from matplotlib.collections import PathCollection
 from alphagen.core.events import NormalizedTick, Signal
 
 
-@dataclass(slots=True)
+@dataclass
 class _TickPoint:
     timestamp: datetime
     vwap: float
     ma9: float
 
 
-@dataclass(slots=True)
+@dataclass
 class _SignalPoint:
     timestamp: datetime
     price: float

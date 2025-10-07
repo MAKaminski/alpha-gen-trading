@@ -30,6 +30,12 @@ class DebugGUI:
         self.stream_data_active = tk.BooleanVar(value=True)
         self.view_chart_active = tk.BooleanVar(value=True)
 
+        # Metrics variables for display
+        self.current_price = tk.StringVar(value="--")
+        self.current_vwap = tk.StringVar(value="--")
+        self.current_ma9 = tk.StringVar(value="--")
+        self.signal_status = tk.StringVar(value="No Signal")
+
         # Components
         self.gui_chart: Optional[SimpleGUChart] = None
         self.console_text: Optional[scrolledtext.ScrolledText] = None
@@ -53,11 +59,26 @@ class DebugGUI:
     def _delayed_auto_start(self):
         """Delayed auto-start to ensure UI is fully rendered."""
         try:
+            # Check if OAuth token exists first
+            from pathlib import Path
+            token_path = Path(__file__).parent.parent.parent.parent / "config" / "schwab_token.json"
+            
+            if not token_path.exists():
+                self._log_to_console("⚠️  No OAuth token found!", "warning")
+                self._log_to_console("Please click 'Setup OAuth' button to authenticate", "warning")
+                self._log_to_console("Or run: python scripts/refresh_oauth.py", "info")
+                # Disable auto-start if no token
+                self.stream_data_active.set(False)
+                self.view_chart_active.set(False)
+                return
+            
             # Start chart first (warm-up)
             if self.view_chart_active.get():
                 self._log_to_console("🚀 Auto-starting chart...", "info")
-                self._start_chart()
-                self._warm_up_chart()
+                if self.loop and self.loop.is_running():
+                    asyncio.run_coroutine_threadsafe(self._start_chart_and_warmup(), self.loop)
+                else:
+                    self._start_chart_sync()
 
             # Start streaming after chart is ready
             if self.stream_data_active.get():
@@ -126,7 +147,8 @@ class DebugGUI:
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
         main_frame.columnconfigure(1, weight=1)
-        main_frame.rowconfigure(2, weight=1)
+        main_frame.rowconfigure(2, weight=3)  # Chart gets 60% weight
+        main_frame.rowconfigure(3, weight=2)  # Console gets 40% weight
 
         # Control panel with larger font
         control_frame = ttk.LabelFrame(
@@ -166,11 +188,11 @@ class DebugGUI:
         ttk.Label(control_frame, text="Time Scale:", style="Large.TLabel").grid(
             row=0, column=2, padx=(20, 5)
         )
-        self.time_scale = tk.StringVar(value="1min")
+        self.time_scale = tk.StringVar(value="3day")
         scale_combo = ttk.Combobox(
             control_frame,
             textvariable=self.time_scale,
-            values=["1min", "5min", "15min", "1hour", "4hour", "1day"],
+            values=["1min", "5min", "15min", "1hour", "4hour", "1day", "3day"],
             state="readonly",
             width=8,
             style="Large.TCombobox",
@@ -187,7 +209,7 @@ class DebugGUI:
         # Quick actions frame
         actions_frame = ttk.Frame(control_frame)
         actions_frame.grid(
-            row=1, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(10, 0)
+            row=1, column=0, columnspan=5, sticky=(tk.W, tk.E), pady=(10, 0)
         )
 
         # Configure button style
@@ -220,30 +242,56 @@ class DebugGUI:
         )
         export_btn.grid(row=0, column=2, padx=(0, 10))
 
-        # Chart frame
+        # Metrics panel - prominent display of current values
+        metrics_frame = ttk.LabelFrame(main_frame, text="📊 Live Metrics", padding="10")
+        metrics_frame.grid(
+            row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 10)
+        )
+        
+        # Configure metrics style
+        style.configure("Metric.TLabel", font=("Arial", 14, "bold"))
+        style.configure("MetricValue.TLabel", font=("Arial", 16, "bold"), foreground="#00aa00")
+        
+        # Price
+        ttk.Label(metrics_frame, text="Price:", style="Metric.TLabel").grid(row=0, column=0, padx=(0, 5), sticky=tk.E)
+        ttk.Label(metrics_frame, textvariable=self.current_price, style="MetricValue.TLabel").grid(row=0, column=1, padx=(0, 20), sticky=tk.W)
+        
+        # VWAP
+        ttk.Label(metrics_frame, text="Session VWAP:", style="Metric.TLabel").grid(row=0, column=2, padx=(0, 5), sticky=tk.E)
+        ttk.Label(metrics_frame, textvariable=self.current_vwap, style="MetricValue.TLabel").grid(row=0, column=3, padx=(0, 20), sticky=tk.W)
+        
+        # MA9
+        ttk.Label(metrics_frame, text="MA9:", style="Metric.TLabel").grid(row=0, column=4, padx=(0, 5), sticky=tk.E)
+        ttk.Label(metrics_frame, textvariable=self.current_ma9, style="MetricValue.TLabel").grid(row=0, column=5, padx=(0, 20), sticky=tk.W)
+        
+        # Signal Status
+        ttk.Label(metrics_frame, text="Signal:", style="Metric.TLabel").grid(row=0, column=6, padx=(0, 5), sticky=tk.E)
+        ttk.Label(metrics_frame, textvariable=self.signal_status, style="MetricValue.TLabel").grid(row=0, column=7, sticky=tk.W)
+
+        # Chart frame - takes 50% of vertical space
         self.chart_frame = ttk.LabelFrame(main_frame, text="Live Chart", padding="5")
         self.chart_frame.grid(
-            row=1, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 10)
+            row=2, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 10)
         )
         self.chart_frame.columnconfigure(0, weight=1)
-        self.chart_frame.rowconfigure(0, weight=1)
+        self.chart_frame.rowconfigure(0, weight=3)
 
-        # Console frame
+        # Console frame - takes 30% of vertical space
         console_frame = ttk.LabelFrame(main_frame, text="Console Output", padding="5")
         console_frame.grid(
-            row=2, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S)
+            row=3, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S)
         )
         console_frame.columnconfigure(0, weight=1)
-        console_frame.rowconfigure(0, weight=1)
+        console_frame.rowconfigure(0, weight=2)
 
         # Configure LabelFrame styles for better readability
         style.configure("Large.TLabelframe", font=("Arial", 12, "bold"))
         style.configure("Large.TLabelframe.Label", font=("Arial", 12, "bold"))
 
-        # Console text widget with better styling
+        # Console text widget with better styling - increased height for visibility
         self.console_text = scrolledtext.ScrolledText(
             console_frame,
-            height=15,
+            height=20,  # Increased from 15 to 20 for better visibility
             state=tk.DISABLED,
             wrap=tk.WORD,
             bg="#1e1e1e",  # Dark background
@@ -251,9 +299,9 @@ class DebugGUI:
             insertbackground="#ffffff",  # White cursor
             selectbackground="#404040",  # Dark selection background
             selectforeground="#ffffff",  # White selection text
-            font=("Consolas", 12),  # Larger monospace font for better readability
+            font=("Consolas", 11),  # Monospace font for better readability
         )
-        self.console_text.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        self.console_text.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=5, pady=5)
 
         # Configure text tags for different log levels with better contrast
         self.console_text.tag_configure("info", foreground="#00ff00")  # Bright green
@@ -295,7 +343,11 @@ class DebugGUI:
         """Handle view chart checkbox toggle."""
         if self.view_chart_active.get():
             self._log_to_console("Starting live chart...", "info")
-            self._start_chart()
+            if self.loop and self.loop.is_running():
+                asyncio.run_coroutine_threadsafe(self._start_chart(), self.loop)
+            else:
+                # Fallback for when no loop is running
+                self._start_chart_sync()
         else:
             self._log_to_console("Stopping live chart...", "info")
             self._stop_chart()
@@ -320,13 +372,15 @@ class DebugGUI:
             self.app_task = None
             self.status_label.config(text="Status: Stopped")
 
-    def _start_chart(self):
+    async def _start_chart(self):
         """Start the live chart."""
         if not self.gui_chart:
             # Create embedded chart in the GUI
             self.gui_chart = SimpleGUChart(self.chart_frame)
             # Set initial time scale
             self.gui_chart.set_time_scale(self.time_scale.get())
+            # Load historical data from database (async)
+            await self.gui_chart.load_historical_data()
             self._log_to_console("Live chart created", "info")
 
         # Always initialize normalizer when showing chart
@@ -335,14 +389,66 @@ class DebugGUI:
             self._log_to_console("Normalizer initialized", "info")
 
         # Show the chart
-        self.gui_chart.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
-        self._log_to_console("Live chart shown", "info")
+        if self.gui_chart:
+            self.gui_chart.show()
+            self._log_to_console("Live chart shown", "info")
+
+    async def _start_chart_and_warmup(self) -> None:
+        """Start chart and warm it up."""
+        await self._start_chart()
+        self._warm_up_chart()
+
+    def _start_chart_sync(self) -> None:
+        """Start chart synchronously (fallback when no asyncio loop)."""
+        try:
+            if not self.gui_chart:
+                # Create embedded chart in the GUI
+                self.gui_chart = SimpleGUChart(self.chart_frame)
+                # Set initial time scale
+                self.gui_chart.set_time_scale(self.time_scale.get())
+                # Load historical data synchronously (without await)
+                # This will work since the chart loading is now synchronous for the main operations
+                self._log_to_console("Live chart created", "info")
+
+            # Always initialize normalizer when showing chart
+            if not self.normalizer:
+                self.normalizer = Normalizer(emit=self._handle_normalized_tick)
+                self._log_to_console("Normalizer initialized", "info")
+
+            # Show the chart
+            if self.gui_chart:
+                self.gui_chart.show()
+                self._log_to_console("Live chart shown", "info")
+
+            # Load historical data in a separate thread to avoid blocking UI
+            import threading
+            def load_data():
+                try:
+                    asyncio.run(self.gui_chart.load_historical_data())
+                    self._log_to_console("Historical data loaded", "info")
+                except Exception as e:
+                    self._log_to_console(f"Error loading historical data: {e}", "error")
+
+            data_thread = threading.Thread(target=load_data, daemon=True)
+            data_thread.start()
+
+        except Exception as e:
+            self._log_to_console(f"Error starting chart: {e}", "error")
+
+    async def _load_historical_data_async(self) -> None:
+        """Load historical data asynchronously."""
+        if self.gui_chart:
+            await self.gui_chart.load_historical_data()
+            self._log_to_console("Historical data loaded", "info")
+            # Force a plot update after loading historical data
+            self.gui_chart._update_plot()
+            self._log_to_console("Chart updated with historical data", "info")
 
     def _stop_chart(self):
         """Stop the live chart."""
         if self.gui_chart:
             # Hide the chart instead of destroying it
-            self.gui_chart.canvas.get_tk_widget().pack_forget()
+            self.gui_chart.hide()
             # Don't destroy normalizer, just hide chart
             self._log_to_console("Live chart hidden", "info")
 
@@ -396,13 +502,19 @@ class DebugGUI:
 
     async def _handle_normalized_tick(self, tick: NormalizedTick):
         """Handle normalized tick data for charting."""
+        # Update metrics display
+        self.current_price.set(f"${tick.equity.price:.2f}")
+        self.current_vwap.set(f"${tick.equity.session_vwap:.2f}")
+        self.current_ma9.set(f"${tick.equity.ma9:.2f}")
+        
+        # Log to console with info level for visibility
         self._log_to_console(
-            f"Normalized tick: VWAP={tick.equity.session_vwap:.2f}, MA9={tick.equity.ma9:.2f}",
-            "debug",
+            f"✓ Price=${tick.equity.price:.2f} | VWAP=${tick.equity.session_vwap:.2f} | MA9=${tick.equity.ma9:.2f}",
+            "info",
         )
+        
         if self.gui_chart:
             self.gui_chart.handle_tick(tick)
-            self._log_to_console("Chart updated with new data", "debug")
 
     async def _handle_stream_error(self, error: Exception):
         """Handle stream errors."""

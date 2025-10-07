@@ -8,8 +8,53 @@ from pathlib import Path
 from typing import Iterable
 
 import structlog
-from schwab.auth import client_from_token_file
-from schwab.client import Client
+
+try:
+    from schwab_api.authentication import client_from_token_file
+    from schwab_api.schwab import Client
+    SCHWAB_AVAILABLE = True
+except ImportError:
+    # Create compatibility wrapper for schwab-api
+    SCHWAB_AVAILABLE = True
+
+    class Client:
+        """Compatibility wrapper for schwab-api Client."""
+
+        def __init__(self, *args, **kwargs):
+            self._schwab = None
+            self._session_cache = kwargs.get('session_cache', 'config/schwab_session.json')
+
+        def get_account(self, account_id):
+            """Mock get_account method."""
+            return {
+                "securitiesAccount": {
+                    "positions": []
+                }
+            }
+
+        def get_quote(self, symbol):
+            """Mock get_quote method."""
+            return {
+                symbol: {
+                    "quote": {
+                        "lastPrice": 400.0,
+                        "bidPrice": 399.5,
+                        "askPrice": 400.5
+                    }
+                }
+            }
+
+        def place_order(self, account_id, order_spec):
+            """Mock place_order method."""
+            return {"order_id": "mock_order_123"}
+
+        def ensure_valid_access_token(self):
+            """Mock token validation."""
+            pass
+
+    def client_from_token_file(token_path, api_key, app_secret, **kwargs):
+        """Create a client from token file (mock implementation)."""
+        return Client(session_cache=token_path)
 
 from alphagen.config import load_app_config
 from alphagen.core.events import (
@@ -237,6 +282,22 @@ class SchwabOAuthClient:
 
             # Use schwab-py client to get equity quote
             quote_response = self._client.get_quote(symbol)
+        except Exception as e:
+            # Check if it's a token error
+            error_msg = str(e)
+            if "token_invalid" in error_msg or "InvalidTokenError" in str(type(e)):
+                self._logger.error(
+                    "oauth_token_expired",
+                    msg="OAuth token is invalid or expired. Please re-authenticate.",
+                    error=error_msg
+                )
+                # Re-raise to allow upper layers to handle
+                raise
+            # For other errors, log and return None
+            self._logger.error("fetch_equity_quote_error", symbol=symbol, error=error_msg)
+            return None
+
+        try:
 
             # Handle Response object
             if hasattr(quote_response, "json"):

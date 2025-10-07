@@ -9,7 +9,7 @@ from typing import Optional
 from alphagen.config import EST
 
 
-@dataclass(slots=True)
+@dataclass
 class EquityTick:
     symbol: str
     price: float
@@ -22,7 +22,7 @@ class EquityTick:
             self.as_of = self.as_of.replace(tzinfo=EST)
 
 
-@dataclass(slots=True)
+@dataclass
 class OptionQuote:
     option_symbol: str
     strike: float
@@ -35,7 +35,7 @@ class OptionQuote:
         return (self.bid + self.ask) / 2
 
 
-@dataclass(slots=True)
+@dataclass
 class PositionSnapshot:
     symbol: str
     quantity: int
@@ -44,14 +44,14 @@ class PositionSnapshot:
     as_of: datetime
 
 
-@dataclass(slots=True)
+@dataclass
 class NormalizedTick:
     as_of: datetime
     equity: EquityTick
     option: Optional[OptionQuote]
 
 
-@dataclass(slots=True)
+@dataclass
 class Signal:
     as_of: datetime
     action: str
@@ -61,7 +61,7 @@ class Signal:
     cooldown_until: datetime
 
 
-@dataclass(slots=True)
+@dataclass
 class TradeIntent:
     as_of: datetime
     action: str
@@ -72,7 +72,7 @@ class TradeIntent:
     take_profit: float
 
 
-@dataclass(slots=True)
+@dataclass
 class TradeExecution:
     order_id: str
     status: str
@@ -82,7 +82,7 @@ class TradeExecution:
     intent: TradeIntent
 
 
-@dataclass(slots=True)
+@dataclass
 class CooldownState:
     until: datetime
 
@@ -100,7 +100,7 @@ class CooldownState:
         return CooldownState(until=start + duration)
 
 
-@dataclass(slots=True)
+@dataclass
 class PositionState:
     as_of: datetime
     symbols: dict[str, PositionSnapshot]

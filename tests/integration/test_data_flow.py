@@ -1,5 +1,6 @@
 """Integration tests for data flow through the system."""
 
+import asyncio
 import pytest
 from unittest.mock import AsyncMock, patch
 from datetime import datetime, timezone
@@ -13,16 +14,24 @@ from src.alphagen.core.time_utils import now_est
 async def test_market_data_to_signal_flow():
     """Test complete data flow from market data to signal generation."""
     with (
-        patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
+        patch("alphagen.app.SchwabOAuthClient") as mock_schwab_class,
         patch(
-            "src.alphagen.app.create_market_data_provider"
+            "alphagen.app.create_market_data_provider"
         ) as mock_market_data_factory,
-        patch("src.alphagen.app.init_models") as mock_init_models,
+        patch("alphagen.app.init_models") as mock_init_models,
         patch("asyncio.Event.wait") as mock_wait,  # Mock the stop_event.wait()
     ):
         # Mock Schwab client
         mock_schwab = AsyncMock()
         mock_schwab.fetch_positions.return_value = []
+        # Configure fetch_equity_quote to return a proper EquityTick
+        mock_schwab.fetch_equity_quote.return_value = EquityTick(
+            symbol="QQQ",
+            price=400.0,
+            session_vwap=399.0,
+            ma9=401.0,
+            as_of=now_est()
+        )
         mock_schwab_class.create.return_value = mock_schwab
 
         # Mock market data provider
@@ -81,12 +90,12 @@ async def test_market_data_to_signal_flow():
 async def test_position_polling_integration():
     """Test integration of position polling with the main app."""
     with (
-        patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
+        patch("alphagen.app.SchwabOAuthClient.create") as mock_schwab_create,
         patch(
-            "src.alphagen.app.create_market_data_provider"
+            "alphagen.app.create_market_data_provider"
         ) as mock_market_data_factory,
-        patch("src.alphagen.app.init_models") as mock_init_models,
-        patch("asyncio.Event.wait") as mock_wait,  # Mock the stop_event.wait()
+        patch("alphagen.app.init_models") as mock_init_models,
+        patch("alphagen.app.asyncio.Event") as mock_event_class,  # Mock Event creation
     ):
         # Mock Schwab client with position data
         mock_schwab = AsyncMock()
@@ -100,15 +109,19 @@ async def test_position_polling_integration():
             }
         ]
         mock_schwab.fetch_positions.return_value = mock_positions
-        mock_schwab_class.create.return_value = mock_schwab
+        mock_schwab_create.return_value = mock_schwab
 
         # Mock other components
         mock_market_data = AsyncMock()
         mock_market_data_factory.return_value = mock_market_data
         mock_init_models.return_value = AsyncMock()
 
-        # Mock the stop_event.wait() to return immediately
-        mock_wait.return_value = None
+        # Mock the Event to allow background tasks to run before stopping
+        mock_event = AsyncMock()
+        async def mock_wait_with_delay():
+            await asyncio.sleep(0.1)  # Give background tasks time to run
+        mock_event.wait.side_effect = mock_wait_with_delay
+        mock_event_class.return_value = mock_event
 
         # Create app
         app = AlphaGenApp()
@@ -119,7 +132,7 @@ async def test_position_polling_integration():
 
         mock_market_data.start.side_effect = mock_start
 
-        # Start the app (this will now return immediately due to mocked wait)
+        # Start the app (this will now return after a brief delay)
         await app.run()
 
         # Verify position polling was called
@@ -130,17 +143,25 @@ async def test_position_polling_integration():
 async def test_signal_to_trade_flow():
     """Test integration from signal generation to trade execution."""
     with (
-        patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
+        patch("alphagen.app.SchwabOAuthClient") as mock_schwab_class,
         patch(
-            "src.alphagen.app.create_market_data_provider"
+            "alphagen.app.create_market_data_provider"
         ) as mock_market_data_factory,
-        patch("src.alphagen.app.init_models") as mock_init_models,
+        patch("alphagen.app.init_models") as mock_init_models,
         patch("asyncio.Event.wait") as mock_wait,  # Mock the stop_event.wait()
     ):
         # Mock Schwab client
         mock_schwab = AsyncMock()
         mock_schwab.fetch_positions.return_value = []
         mock_schwab.submit_order.return_value = AsyncMock()
+        # Configure fetch_equity_quote to return a proper EquityTick
+        mock_schwab.fetch_equity_quote.return_value = EquityTick(
+            symbol="QQQ",
+            price=400.0,
+            session_vwap=399.0,
+            ma9=401.0,
+            as_of=now_est()
+        )
         mock_schwab_class.create.return_value = mock_schwab
 
         # Mock other components
@@ -183,16 +204,24 @@ async def test_signal_to_trade_flow():
 async def test_error_handling_integration():
     """Test error handling across the integrated system."""
     with (
-        patch("src.alphagen.app.SchwabOAuthClient") as mock_schwab_class,
+        patch("alphagen.app.SchwabOAuthClient") as mock_schwab_class,
         patch(
-            "src.alphagen.app.create_market_data_provider"
+            "alphagen.app.create_market_data_provider"
         ) as mock_market_data_factory,
-        patch("src.alphagen.app.init_models") as mock_init_models,
+        patch("alphagen.app.init_models") as mock_init_models,
         patch("asyncio.Event.wait") as mock_wait,  # Mock the stop_event.wait()
     ):
         # Mock Schwab client that raises an error
         mock_schwab = AsyncMock()
         mock_schwab.fetch_positions.side_effect = Exception("API Error")
+        # Configure fetch_equity_quote to return a proper EquityTick
+        mock_schwab.fetch_equity_quote.return_value = EquityTick(
+            symbol="QQQ",
+            price=400.0,
+            session_vwap=399.0,
+            ma9=401.0,
+            as_of=now_est()
+        )
         mock_schwab_class.create.return_value = mock_schwab
 
         # Mock other components

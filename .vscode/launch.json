@@ -2,43 +2,45 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Run Test Suite (Full)",
-            "type": "python",
+            "name": "Run App",
+            "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/run_tests.py",
+            "program": "${workspaceFolder}/scripts/run_app.py",
             "console": "integratedTerminal",
+            "justMyCode": false,
             "cwd": "${workspaceFolder}",
-            "pythonPath": "/opt/homebrew/bin/python3.11",
+            "python": "/opt/homebrew/bin/python3.11",
             "env": {
-                "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/src"
-            },
-            "args": []
+                "ALPHAGEN_USE_MOCK_DATA": "true"
+            }
         },
         {
-            "name": "Run Fast Tests (Key Only)",
-            "type": "python",
+            "name": "Run Tests",
+            "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/run_fast_tests.py",
+            "program": "${workspaceFolder}/run_pytest.py",
             "console": "integratedTerminal",
+            "justMyCode": true,
             "cwd": "${workspaceFolder}",
-            "pythonPath": "/opt/homebrew/bin/python3.11",
+            "python": "/opt/homebrew/bin/python3.11",
             "env": {
-                "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/src"
+                "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/src",
+                "PYTHONDONTWRITEBYTECODE": "1"
             },
-            "args": []
+            "debugOptions": ["IgnoreCancelledError"]
         },
         {
-            "name": "Run Application [Launch GUI]",
-            "type": "python",
+            "name": "Refresh OAuth",
+            "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/run_app.py",
+            "program": "${workspaceFolder}/scripts/refresh_oauth.py",
             "console": "integratedTerminal",
+            "justMyCode": false,
             "cwd": "${workspaceFolder}",
-            "pythonPath": "/opt/homebrew/bin/python3.11",
+            "python": "/opt/homebrew/bin/python3.11",
             "env": {
-                "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/src"
-            },
-            "args": []
+                "PYTHONPATH": "${workspaceFolder}/src:${workspaceFolder}"
+            }
         }
     ]
 }

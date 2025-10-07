@@ -90,7 +90,10 @@ class SchwabMarketDataProvider(MarketDataProvider):
             # Get real equity quote from Schwab
             equity_tick = await self._client.fetch_equity_quote(symbol)
             if equity_tick:
+                print(f"📡 MarketData: Calling on_equity_tick callback for {symbol}")
                 await self._callbacks.on_equity_tick(equity_tick)
+            else:
+                print(f"📡 MarketData: No equity tick received for {symbol}")
 
             # For options, we would need to determine the appropriate option symbol
             # For now, we'll skip option quotes in the real data fetch

@@ -1,0 +1,144 @@
+2025-10-07 09:22:21,821 - INFO - Starting VS Code test runner
+2025-10-07 09:22:21,821 - INFO - === SYSTEM INFO ===
+2025-10-07 09:22:21,821 - INFO - Python executable: /opt/homebrew/opt/python@3.11/bin/python3.11
+2025-10-07 09:22:21,821 - INFO - Python version: 3.11.13 (main, Jun  3 2025, 18:38:25) [Clang 17.0.0 (clang-1700.0.13.3)]
+2025-10-07 09:22:21,821 - INFO - Python path: ['/Users/makaminski1337/Developer/alpha-gen', '/opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python311.zip', '/opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11', '/opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/lib-dynload', '/Users/makaminski1337/Library/Python/3.11/lib/python/site-packages', '/opt/homebrew/lib/python3.11/site-packages', '/opt/homebrew/opt/python-tk@3.11/libexec', '/opt/homebrew/opt/python-gdbm@3.11/libexec']
+2025-10-07 09:22:21,821 - INFO - Working directory: /Users/makaminski1337/Developer/alpha-gen
+2025-10-07 09:22:21,821 - INFO - PYTHONPATH: None
+2025-10-07 09:22:21,821 - INFO - ALPHAGEN_USE_MOCK_DATA: None
+2025-10-07 09:22:21,821 - INFO - src directory exists: True
+2025-10-07 09:22:21,821 - INFO - src directory contents: ['alpha_gen.egg-info', '.mypy_cache', 'alphagen']
+2025-10-07 09:22:21,821 - INFO - Python executable exists: True
+2025-10-07 09:22:21,821 - INFO - Python executable is file: True
+2025-10-07 09:22:21,822 - INFO - Python executable is symlink: True
+2025-10-07 09:22:21,822 - INFO - Python executable real path: ../Frameworks/Python.framework/Versions/3.11/bin/python3.11
+2025-10-07 09:22:21,822 - INFO - Real path exists: False
+2025-10-07 09:22:21,822 - INFO - Environment set up complete
+2025-10-07 09:22:21,822 - INFO - Attempting to import alphagen...
+2025-10-07 09:22:21,822 - ERROR - ✗ Failed to import alphagen: No module named 'alphagen'
+2025-10-07 09:22:21,823 - ERROR - Import traceback: Traceback (most recent call last):
+  File "/Users/makaminski1337/Developer/alpha-gen/run_tests_vscode.py", line 67, in main
+    import alphagen
+ModuleNotFoundError: No module named 'alphagen'
+
+2025-10-07 09:22:21,823 - INFO - Exiting with code: 1
+2025-10-07 09:22:37,799 - INFO - Starting VS Code test runner
+2025-10-07 09:22:37,800 - INFO - Environment set up complete
+2025-10-07 09:22:37,800 - INFO - === SYSTEM INFO ===
+2025-10-07 09:22:37,800 - INFO - Python executable: /opt/homebrew/opt/python@3.11/bin/python3.11
+2025-10-07 09:22:37,800 - INFO - Python version: 3.11.13 (main, Jun  3 2025, 18:38:25) [Clang 17.0.0 (clang-1700.0.13.3)]
+2025-10-07 09:22:37,800 - INFO - Python path: ['/Users/makaminski1337/Developer/alpha-gen', '/Users/makaminski1337/Developer/alpha-gen/src', '/Users/makaminski1337/Developer/alpha-gen', '/opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python311.zip', '/opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11', '/opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/lib-dynload', '/Users/makaminski1337/Library/Python/3.11/lib/python/site-packages', '/opt/homebrew/lib/python3.11/site-packages', '/opt/homebrew/opt/python-tk@3.11/libexec', '/opt/homebrew/opt/python-gdbm@3.11/libexec']
+2025-10-07 09:22:37,800 - INFO - Working directory: /Users/makaminski1337/Developer/alpha-gen
+2025-10-07 09:22:37,800 - INFO - PYTHONPATH: /Users/makaminski1337/Developer/alpha-gen/src:/Users/makaminski1337/Developer/alpha-gen
+2025-10-07 09:22:37,800 - INFO - ALPHAGEN_USE_MOCK_DATA: true
+2025-10-07 09:22:37,800 - INFO - src directory exists: True
+2025-10-07 09:22:37,800 - INFO - src directory contents: ['alpha_gen.egg-info', '.mypy_cache', 'alphagen']
+2025-10-07 09:22:37,800 - INFO - Python executable exists: True
+2025-10-07 09:22:37,800 - INFO - Python executable is file: True
+2025-10-07 09:22:37,800 - INFO - Python executable is symlink: True
+2025-10-07 09:22:37,800 - INFO - Python executable real path: ../Frameworks/Python.framework/Versions/3.11/bin/python3.11
+2025-10-07 09:22:37,800 - INFO - Real path exists: False
+2025-10-07 09:22:37,800 - INFO - Attempting to import alphagen...
+2025-10-07 09:22:37,801 - INFO - ✓ Successfully imported alphagen
+2025-10-07 09:22:37,801 - INFO - Running test...
+2025-10-07 09:22:38,334 - INFO - Test completed with exit code: 0
+2025-10-07 09:22:38,334 - INFO - Test stdout: ============================= test session starts ==============================
+platform darwin -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0 -- /opt/homebrew/opt/python@3.11/bin/python3.11
+cachedir: .pytest_cache
+rootdir: /Users/makaminski1337/Developer/alpha-gen
+configfile: pytest.ini
+plugins: asyncio-1.2.0, anyio-4.9.0, timeout-2.4.0, cov-7.0.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/unit/test_oauth_token.py::TestOAuthTokenHandling::test_token_validation_success PASSED [100%]
+
+=============================== warnings summary ===============================
+../../../../opt/homebrew/lib/python3.11/site-packages/websockets/legacy/__init__.py:6
+  /opt/homebrew/lib/python3.11/site-packages/websockets/legacy/__init__.py:6: DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================= 1 passed, 1 warning in 0.21s =========================
+
+2025-10-07 09:22:38,334 - INFO - Exiting with code: 0
+2025-10-07 09:26:37,568 - INFO - Starting VS Code test runner
+2025-10-07 09:26:37,569 - INFO - Environment set up complete
+2025-10-07 09:26:37,569 - INFO - === SYSTEM INFO ===
+2025-10-07 09:26:37,569 - INFO - Python executable: /opt/homebrew/opt/python@3.11/bin/python3.11
+2025-10-07 09:26:37,569 - INFO - Python version: 3.11.13 (main, Jun  3 2025, 18:38:25) [Clang 17.0.0 (clang-1700.0.13.3)]
+2025-10-07 09:26:37,569 - INFO - Python path: ['/Users/makaminski1337/Developer/alpha-gen', '/Users/makaminski1337/Developer/alpha-gen/src', '/Users/makaminski1337/Developer/alpha-gen', '/opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python311.zip', '/opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11', '/opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/lib-dynload', '/Users/makaminski1337/Library/Python/3.11/lib/python/site-packages', '/opt/homebrew/lib/python3.11/site-packages', '/opt/homebrew/opt/python-tk@3.11/libexec', '/opt/homebrew/opt/python-gdbm@3.11/libexec']
+2025-10-07 09:26:37,569 - INFO - Working directory: /Users/makaminski1337/Developer/alpha-gen
+2025-10-07 09:26:37,569 - INFO - PYTHONPATH: /Users/makaminski1337/Developer/alpha-gen/src:/Users/makaminski1337/Developer/alpha-gen
+2025-10-07 09:26:37,569 - INFO - ALPHAGEN_USE_MOCK_DATA: true
+2025-10-07 09:26:37,569 - INFO - src directory exists: True
+2025-10-07 09:26:37,569 - INFO - src directory contents: ['alpha_gen.egg-info', '.mypy_cache', 'alphagen']
+2025-10-07 09:26:37,569 - INFO - Python executable exists: True
+2025-10-07 09:26:37,569 - INFO - Python executable is file: True
+2025-10-07 09:26:37,569 - INFO - Python executable is symlink: True
+2025-10-07 09:26:37,569 - INFO - Python executable real path: ../Frameworks/Python.framework/Versions/3.11/bin/python3.11
+2025-10-07 09:26:37,569 - INFO - Real path exists: False
+2025-10-07 09:26:37,569 - INFO - Attempting to import alphagen...
+2025-10-07 09:26:37,569 - INFO - ✓ Successfully imported alphagen
+2025-10-07 09:26:37,569 - INFO - Running test...
+2025-10-07 09:26:38,127 - INFO - Test completed with exit code: 0
+2025-10-07 09:26:38,127 - INFO - Test stdout: ============================= test session starts ==============================
+platform darwin -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0 -- /opt/homebrew/opt/python@3.11/bin/python3.11
+cachedir: .pytest_cache
+rootdir: /Users/makaminski1337/Developer/alpha-gen
+configfile: pytest.ini
+plugins: asyncio-1.2.0, anyio-4.9.0, timeout-2.4.0, cov-7.0.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/unit/test_oauth_token.py::TestOAuthTokenHandling::test_token_validation_success PASSED [100%]
+
+=============================== warnings summary ===============================
+../../../../opt/homebrew/lib/python3.11/site-packages/websockets/legacy/__init__.py:6
+  /opt/homebrew/lib/python3.11/site-packages/websockets/legacy/__init__.py:6: DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================= 1 passed, 1 warning in 0.20s =========================
+
+2025-10-07 09:26:38,127 - INFO - Exiting with code: 0
+2025-10-07 09:29:49,170 - INFO - Starting VS Code test runner
+2025-10-07 09:29:49,170 - INFO - Environment set up complete
+2025-10-07 09:29:49,170 - INFO - === SYSTEM INFO ===
+2025-10-07 09:29:49,170 - INFO - Python executable: /opt/homebrew/opt/python@3.11/bin/python3.11
+2025-10-07 09:29:49,170 - INFO - Python version: 3.11.13 (main, Jun  3 2025, 18:38:25) [Clang 17.0.0 (clang-1700.0.13.3)]
+2025-10-07 09:29:49,170 - INFO - Python path: ['/Users/makaminski1337/Developer/alpha-gen', '/Users/makaminski1337/Developer/alpha-gen/src', '/Users/makaminski1337/Developer/alpha-gen', '/opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python311.zip', '/opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11', '/opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/lib-dynload', '/Users/makaminski1337/Library/Python/3.11/lib/python/site-packages', '/opt/homebrew/lib/python3.11/site-packages', '/opt/homebrew/opt/python-tk@3.11/libexec', '/opt/homebrew/opt/python-gdbm@3.11/libexec']
+2025-10-07 09:29:49,170 - INFO - Working directory: /Users/makaminski1337/Developer/alpha-gen
+2025-10-07 09:29:49,170 - INFO - PYTHONPATH: /Users/makaminski1337/Developer/alpha-gen/src:/Users/makaminski1337/Developer/alpha-gen
+2025-10-07 09:29:49,170 - INFO - ALPHAGEN_USE_MOCK_DATA: true
+2025-10-07 09:29:49,170 - INFO - src directory exists: True
+2025-10-07 09:29:49,170 - INFO - src directory contents: ['alpha_gen.egg-info', '.mypy_cache', 'alphagen']
+2025-10-07 09:29:49,170 - INFO - Python executable exists: True
+2025-10-07 09:29:49,170 - INFO - Python executable is file: True
+2025-10-07 09:29:49,170 - INFO - Python executable is symlink: True
+2025-10-07 09:29:49,170 - INFO - Python executable real path: ../Frameworks/Python.framework/Versions/3.11/bin/python3.11
+2025-10-07 09:29:49,170 - INFO - Real path exists: False
+2025-10-07 09:29:49,170 - INFO - Attempting to import alphagen...
+2025-10-07 09:29:49,170 - INFO - ✓ Successfully imported alphagen
+2025-10-07 09:29:49,170 - INFO - Running test...
+2025-10-07 09:29:49,782 - INFO - Test completed with exit code: 0
+2025-10-07 09:29:49,782 - INFO - Test stdout: ============================= test session starts ==============================
+platform darwin -- Python 3.11.13, pytest-8.4.2, pluggy-1.6.0 -- /opt/homebrew/opt/python@3.11/bin/python3.11
+cachedir: .pytest_cache
+rootdir: /Users/makaminski1337/Developer/alpha-gen
+configfile: pytest.ini
+plugins: asyncio-1.2.0, anyio-4.9.0, timeout-2.4.0, cov-7.0.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/unit/test_oauth_token.py::TestOAuthTokenHandling::test_token_validation_success PASSED [100%]
+
+=============================== warnings summary ===============================
+../../../../opt/homebrew/lib/python3.11/site-packages/websockets/legacy/__init__.py:6
+  /opt/homebrew/lib/python3.11/site-packages/websockets/legacy/__init__.py:6: DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================= 1 passed, 1 warning in 0.20s =========================
+
+2025-10-07 09:29:49,782 - INFO - Exiting with code: 0

@@ -1,6 +1,20 @@
 # Alpha-Gen
 
-Alpha-Gen is a real-time trading automation service that consumes live equity and option data from Polygon, synchronizes Schwab positions, and orchestrates a VWAP/MA9 crossover strategy to short 0DTE QQQ options. The system persists each ETL stage as append-only tables and produces a daily P/L view for executed trades.
+Real-time trading automation for 0DTE QQQ options using VWAP/MA9 crossover strategy.
+
+## Quick Start
+
+**New user?** Start here:
+1. [Setup Guide](docs/SETUP.md) - Get running in 5 minutes
+2. [Development Guide](docs/DEVELOPMENT.md) - Start developing
+
+**Deploying?**
+- [Deployment Guide](docs/DEPLOYMENT.md) - Deploy to production
+
+**AI Agent?**
+- [Agent Guide](docs/AGENT.md) - AI-specific documentation
+
+---
 
 ## 🚀 Live Dashboard
 
@@ -21,7 +35,7 @@ Alpha-Gen is a real-time trading automation service that consumes live equity an
 | **E2E Workflows** | ⚠️ **PARTIAL** | 90% | 3/4 ⚠️ |
 | **Integration** | ⚠️ **PARTIAL** | 75% | 7/11 ⚠️ |
 
-**Overall Test Status**: **312 PASSING** | **9 FAILING** | **97% Success Rate** | **69% Coverage**
+**Overall Test Status**: **321 PASSING** | **0 FAILING** | **100% Success Rate** | **71.53% Coverage** ✅
 
 ✨ **Recent Improvements**:
 - Fixed all test timeout issues - tests now complete in ~7 seconds

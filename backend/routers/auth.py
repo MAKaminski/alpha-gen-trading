@@ -35,7 +35,7 @@ fake_users_db = {
     "admin": {
         "username": "admin",
         "email": "admin@alphagen.com",
-        "hashed_password": pwd_context.hash("admin123"),
+        "hashed_password": "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj",  # "admin123" hashed
         "is_active": True,
     }
 }

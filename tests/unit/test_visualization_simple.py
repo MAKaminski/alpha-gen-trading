@@ -293,8 +293,8 @@ class TestSimpleGUIChartSimple:
 
         chart = SimpleGUChart(mock_parent)
 
-        assert chart.max_points == 100
-        assert chart.time_scale == "1min"
+        assert chart.max_points == 4320  # 3 days of minute data
+        assert chart.time_scale == "3day"
         assert len(chart.data_buffer) == 0
         assert chart.parent_frame == mock_parent
 
@@ -324,7 +324,7 @@ class TestSimpleGUIChartSimple:
 
         chart = SimpleGUChart(mock_parent)
 
-        expected_scales = ["1min", "5min", "15min", "1hour", "4hour", "1day"]
+        expected_scales = ["1min", "5min", "15min", "1hour", "4hour", "1day", "3day"]
         assert list(chart.scale_configs.keys()) == expected_scales
 
         for scale in expected_scales:
@@ -393,6 +393,7 @@ class TestSimpleGUIChartSimple:
         # Add some data
         for i in range(3):
             mock_equity = Mock()
+            mock_equity.price = 101.0 + i
             mock_equity.session_vwap = 100.0 + i
             mock_equity.ma9 = 99.5 + i
 
@@ -439,5 +440,5 @@ class TestSimpleGUIChartSimple:
         chart = SimpleGUChart(mock_parent)
 
         scales = list(chart.scale_configs.keys())
-        expected_scales = ["1min", "5min", "15min", "1hour", "4hour", "1day"]
+        expected_scales = ["1min", "5min", "15min", "1hour", "4hour", "1day", "3day"]
         assert scales == expected_scales

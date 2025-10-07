@@ -4,9 +4,9 @@ import pytest
 from unittest.mock import AsyncMock, patch, Mock
 from datetime import datetime
 
-from src.alphagen.trade_generator import TradeGenerator
-from src.alphagen.core.events import Signal, TradeIntent
-from src.alphagen.config import EST
+from alphagen.trade_generator import TradeGenerator
+from alphagen.core.events import Signal, TradeIntent
+from alphagen.config import EST
 
 
 class TestTradeGeneratorComprehensive:
@@ -33,7 +33,7 @@ class TestTradeGeneratorComprehensive:
     @pytest.mark.asyncio
     async def test_handle_signal_creates_trade_intent(self, mock_emit, sample_signal):
         """Test handle_signal creates and emits trade intent."""
-        with patch("src.alphagen.trade_generator.load_app_config") as mock_load_config:
+        with patch("alphagen.trade_generator.load_app_config") as mock_load_config:
             # Mock the config
             mock_config = Mock()
             mock_config.risk.stop_loss_multiple = 2.0
@@ -60,7 +60,7 @@ class TestTradeGeneratorComprehensive:
     @pytest.mark.asyncio
     async def test_handle_signal_with_zero_take_profit(self, mock_emit, sample_signal):
         """Test handle_signal with very small reference price ensures minimum take profit."""
-        with patch("src.alphagen.trade_generator.load_app_config") as mock_load_config:
+        with patch("alphagen.trade_generator.load_app_config") as mock_load_config:
             # Mock the config
             mock_config = Mock()
             mock_config.risk.stop_loss_multiple = 2.0
@@ -85,7 +85,7 @@ class TestTradeGeneratorComprehensive:
         self, mock_emit, sample_signal
     ):
         """Test handle_signal with large reference price."""
-        with patch("src.alphagen.trade_generator.load_app_config") as mock_load_config:
+        with patch("alphagen.trade_generator.load_app_config") as mock_load_config:
             # Mock the config
             mock_config = Mock()
             mock_config.risk.stop_loss_multiple = 1.5
@@ -110,7 +110,7 @@ class TestTradeGeneratorComprehensive:
 
     def test_initialization_loads_config(self, mock_emit):
         """Test initialization loads app config."""
-        with patch("src.alphagen.trade_generator.load_app_config") as mock_load_config:
+        with patch("alphagen.trade_generator.load_app_config") as mock_load_config:
             mock_config = Mock()
             mock_load_config.return_value = mock_config
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from collections import deque
 from dataclasses import dataclass
 from datetime import datetime
@@ -44,9 +45,32 @@ class Normalizer:
         normalized = NormalizedTick(
             as_of=self._latest_equity.as_of.replace(microsecond=0),
             equity=self._latest_equity,
-            option=self._latest_option,
+            option=self._latest_option,  # Can be None
         )
-        await self.emit(normalized)
+        print(f"📊 Normalizer: Emitting normalized tick with VWAP={self._latest_equity.session_vwap}, MA9={self._latest_equity.ma9}")
+        print(f"📊 Normalizer: About to call emit callback: {self.emit}")
+        print(f"📊 Normalizer: Callback type: {type(self.emit)}")
+        if hasattr(self.emit, '__name__'):
+            print(f"📊 Normalizer: Callback method name: {self.emit.__name__}")
+        if hasattr(self.emit, '__self__'):
+            print(f"📊 Normalizer: Callback self type: {type(self.emit.__self__)}")
+        try:
+            result = self.emit(normalized)
+            print(f"📊 Normalizer: Emit call result: {result}")
+            if asyncio.iscoroutine(result):
+                print(f"📊 Normalizer: Awaiting coroutine...")
+                await result
+                print(f"📊 Normalizer: Successfully awaited emit callback")
+            else:
+                print(f"📊 Normalizer: Emit callback returned non-coroutine: {result}")
+                if hasattr(result, '__await__'):
+                    print(f"📊 Normalizer: Result has __await__, awaiting...")
+                    await result
+                    print(f"📊 Normalizer: Successfully awaited result with __await__")
+        except Exception as e:
+            print(f"📊 Normalizer: Error calling emit callback: {e}")
+            import traceback
+            traceback.print_exc()
 
     def _select_nearest_option(self, now: datetime) -> Optional[OptionQuote]:
         same_day_quotes = [

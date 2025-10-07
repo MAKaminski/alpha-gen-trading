@@ -8,7 +8,7 @@ from typing import Protocol
 from alphagen.core.events import EquityTick, OptionQuote
 
 
-@dataclass(slots=True)
+@dataclass
 class StreamCallbacks:
     on_equity_tick: "Callback[EquityTick]"
     on_option_quote: "Callback[OptionQuote]"

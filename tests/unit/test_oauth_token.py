@@ -3,8 +3,8 @@
 import pytest
 from unittest.mock import patch, AsyncMock, MagicMock
 
-from src.alphagen.schwab_oauth_client import SchwabOAuthClient
-from src.alphagen.core.events import EquityTick
+from alphagen.schwab_oauth_client import SchwabOAuthClient
+from alphagen.core.events import EquityTick
 
 
 class TestOAuthTokenHandling:
@@ -22,7 +22,7 @@ class TestOAuthTokenHandling:
     def oauth_client(self, mock_client):
         """Create an OAuth client with mocked dependencies."""
         with patch(
-            "src.alphagen.schwab_oauth_client.client_from_token_file"
+            "alphagen.schwab_oauth_client.client_from_token_file"
         ) as mock_token_file:
             mock_token_file.return_value = mock_client
             client = SchwabOAuthClient.create()
@@ -185,10 +185,12 @@ class TestOAuthClientCreation:
         """Test client creation with valid token file."""
         with (
             patch(
-                "src.alphagen.schwab_oauth_client.client_from_token_file"
+                "alphagen.schwab_oauth_client.client_from_token_file"
             ) as mock_token_file,
-            patch("src.alphagen.schwab_oauth_client.load_app_config") as mock_config,
+            patch("alphagen.schwab_oauth_client.load_app_config") as mock_config,
+            patch("alphagen.schwab_oauth_client.Path") as mock_path,
         ):
+            from unittest.mock import Mock
             # Mock valid config
             mock_config.return_value.schwab.api_key = "test_key"
             mock_config.return_value.schwab.api_secret = "test_secret"
@@ -196,19 +198,20 @@ class TestOAuthClientCreation:
             mock_config.return_value.schwab.token_path = "test_token.json"
 
             # Mock token file exists and client creation succeeds
-            with patch("pathlib.Path.exists", return_value=True):
-                mock_client = AsyncMock()
-                mock_token_file.return_value = mock_client
+            mock_path_instance = mock_path.return_value
+            mock_path_instance.exists.return_value = True
+            mock_client = Mock()
+            mock_token_file.return_value = mock_client
 
-                client = SchwabOAuthClient.create()
+            client = SchwabOAuthClient.create()
 
-                assert client is not None
-                assert client._client == mock_client
-                mock_token_file.assert_called_once()
+            assert client is not None
+            assert client._client == mock_client
+            mock_token_file.assert_called_once()
 
     def test_client_creation_with_missing_config(self):
         """Test client creation with missing configuration."""
-        with patch("src.alphagen.schwab_oauth_client.load_app_config") as mock_config:
+        with patch("alphagen.schwab_oauth_client.load_app_config") as mock_config:
             # Mock missing config
             mock_config.return_value.schwab.api_key = None
             mock_config.return_value.schwab.api_secret = None
@@ -222,9 +225,10 @@ class TestOAuthClientCreation:
         """Test client creation when token file loading fails."""
         with (
             patch(
-                "src.alphagen.schwab_oauth_client.client_from_token_file"
+                "alphagen.schwab_oauth_client.client_from_token_file"
             ) as mock_token_file,
-            patch("src.alphagen.schwab_oauth_client.load_app_config") as mock_config,
+            patch("alphagen.schwab_oauth_client.load_app_config") as mock_config,
+            patch("alphagen.schwab_oauth_client.Path") as mock_path,
         ):
             # Mock valid config
             mock_config.return_value.schwab.api_key = "test_key"
@@ -233,11 +237,12 @@ class TestOAuthClientCreation:
             mock_config.return_value.schwab.token_path = "test_token.json"
 
             # Mock token file exists but loading fails
-            with patch("pathlib.Path.exists", return_value=True):
-                mock_token_file.side_effect = Exception("Token file corrupted")
+            mock_path_instance = mock_path.return_value
+            mock_path_instance.exists.return_value = True
+            mock_token_file.side_effect = Exception("Token file corrupted")
 
-                client = SchwabOAuthClient.create()
+            client = SchwabOAuthClient.create()
 
-                # Should return a client with None _client when token loading fails
-                assert client is not None
-                assert client._client is None
+            # Should return a client with None _client when token loading fails
+            assert client is not None
+            assert client._client is None

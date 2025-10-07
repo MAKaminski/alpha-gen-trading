@@ -33,7 +33,16 @@ config/schwab_token.json
 .env.railway
 railway.env
 
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+*.cover
+.pytest_cache/
+
 # IDE
-.vscode/
+.vscode/*
+!.vscode/launch.json
+!.vscode/settings.json
 .idea/
 .DS_Store

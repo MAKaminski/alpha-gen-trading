@@ -4,14 +4,14 @@ import pytest
 from unittest.mock import patch, AsyncMock
 from datetime import datetime, timezone
 
-from src.alphagen.schwab_oauth_client import SchwabOAuthClient
+from alphagen.schwab_oauth_client import SchwabOAuthClient
 
 
 @pytest.mark.asyncio
 async def test_schwab_oauth_client_creation():
     """Test Schwab OAuth client creation with mock token."""
     with patch(
-        "src.alphagen.schwab_oauth_client.client_from_token_file"
+        "alphagen.schwab_oauth_client.client_from_token_file"
     ) as mock_client_from_token:
         mock_client = AsyncMock()
         mock_client_from_token.return_value = mock_client
@@ -26,25 +26,29 @@ async def test_schwab_oauth_client_creation():
 async def test_fetch_positions_with_mock_data():
     """Test fetching positions with mock Schwab API response."""
     with patch(
-        "src.alphagen.schwab_oauth_client.client_from_token_file"
-    ) as mock_client_from_token:
-        mock_client = AsyncMock()
-        mock_client.get_account = AsyncMock(
-            return_value={
-                "securitiesAccount": {
-                    "positions": [
-                        {
-                            "instrument": {"symbol": "QQQ"},
-                            "longQuantity": 100,
-                            "shortQuantity": 0,
-                            "marketValue": 40000.0,
-                            "averagePrice": 400.0,
-                        }
-                    ]
-                }
+        "alphagen.schwab_oauth_client.client_from_token_file"
+    ) as mock_client_from_token, \
+    patch("alphagen.schwab_oauth_client.Path") as mock_path:
+        from unittest.mock import Mock
+        mock_client = Mock()
+        mock_client.get_account.return_value = {
+            "securitiesAccount": {
+                "positions": [
+                    {
+                        "instrument": {"symbol": "QQQ"},
+                        "longQuantity": 100,
+                        "shortQuantity": 0,
+                        "marketValue": 40000.0,
+                        "averagePrice": 400.0,
+                    }
+                ]
             }
-        )
+        }
+        mock_client.get_account_numbers.return_value = {"accountNumbers": ["123456789"]}
         mock_client_from_token.return_value = mock_client
+        # Mock Path.exists() to return True so token file is found
+        mock_path_instance = mock_path.return_value
+        mock_path_instance.exists.return_value = True
 
         client = SchwabOAuthClient.create()
         positions = await client.fetch_positions()
@@ -59,7 +63,7 @@ async def test_fetch_positions_with_mock_data():
 async def test_fetch_positions_handles_response_object():
     """Test fetching positions when API returns Response object."""
     with patch(
-        "src.alphagen.schwab_oauth_client.client_from_token_file"
+        "alphagen.schwab_oauth_client.client_from_token_file"
     ) as mock_client_from_token:
         mock_client = AsyncMock()
 
@@ -80,9 +84,11 @@ async def test_fetch_positions_handles_response_object():
 async def test_fetch_option_quote_success():
     """Test successful option quote fetching."""
     with patch(
-        "src.alphagen.schwab_oauth_client.client_from_token_file"
-    ) as mock_client_from_token:
-        mock_client = AsyncMock()
+        "alphagen.schwab_oauth_client.client_from_token_file"
+    ) as mock_client_from_token, \
+    patch("alphagen.schwab_oauth_client.Path") as mock_path:
+        from unittest.mock import Mock
+        mock_client = Mock()
         mock_client.get_option_chain.return_value = {
             "callExpDateMap": {
                 "2024-12-20:1": {
@@ -99,6 +105,9 @@ async def test_fetch_option_quote_success():
             }
         }
         mock_client_from_token.return_value = mock_client
+        # Mock Path.exists() to return True so token file is found
+        mock_path_instance = mock_path.return_value
+        mock_path_instance.exists.return_value = True
 
         client = SchwabOAuthClient.create()
         quote = await client.fetch_option_quote("QQQ241220C00400000")
@@ -114,7 +123,7 @@ async def test_fetch_option_quote_success():
 async def test_fetch_option_quote_not_found():
     """Test option quote fetching when option not found."""
     with patch(
-        "src.alphagen.schwab_oauth_client.client_from_token_file"
+        "alphagen.schwab_oauth_client.client_from_token_file"
     ) as mock_client_from_token:
         mock_client = AsyncMock()
         mock_client.get_option_chain.return_value = {"callExpDateMap": {}}
@@ -130,15 +139,21 @@ async def test_fetch_option_quote_not_found():
 async def test_submit_order_success():
     """Test successful order submission."""
     with patch(
-        "src.alphagen.schwab_oauth_client.client_from_token_file"
-    ) as mock_client_from_token:
-        mock_client = AsyncMock()
+        "alphagen.schwab_oauth_client.client_from_token_file"
+    ) as mock_client_from_token, \
+    patch("alphagen.schwab_oauth_client.Path") as mock_path:
+        from unittest.mock import Mock
+        mock_client = Mock()
         mock_client.place_order.return_value = {"order_id": "test_order_123"}
+        mock_client.get_account_numbers.return_value = {"accountNumbers": ["123456789"]}
         mock_client_from_token.return_value = mock_client
+        # Mock Path.exists() to return True so token file is found
+        mock_path_instance = mock_path.return_value
+        mock_path_instance.exists.return_value = True
 
         client = SchwabOAuthClient.create()
 
-        from src.alphagen.core.events import TradeIntent
+        from alphagen.core.events import TradeIntent
 
         intent = TradeIntent(
             as_of=datetime.now(timezone.utc),
@@ -161,7 +176,7 @@ async def test_submit_order_success():
 async def test_no_client_handling():
     """Test behavior when OAuth client is not available."""
     with patch(
-        "src.alphagen.schwab_oauth_client.client_from_token_file"
+        "alphagen.schwab_oauth_client.client_from_token_file"
     ) as mock_client_from_token:
         mock_client_from_token.side_effect = Exception("No token file")
 

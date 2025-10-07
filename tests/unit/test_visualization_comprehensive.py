@@ -1168,8 +1168,8 @@ class TestSimpleGUIChartComprehensive:
 
         chart = SimpleGUChart(mock_parent)
 
-        assert chart.max_points == 100
-        assert chart.time_scale == "1min"
+        assert chart.max_points == 4320  # 3 days of minute data
+        assert chart.time_scale == "3day"
         assert len(chart.data_buffer) == 0
         assert chart.parent_frame == mock_parent
 
@@ -1223,7 +1223,7 @@ class TestSimpleGUIChartComprehensive:
 
         chart = SimpleGUChart(mock_parent)
 
-        expected_scales = ["1min", "5min", "15min", "1hour", "4hour", "1day"]
+        expected_scales = ["1min", "5min", "15min", "1hour", "4hour", "1day", "3day"]
         assert list(chart.scale_configs.keys()) == expected_scales
 
         for scale in expected_scales:
@@ -1253,11 +1253,18 @@ class TestSimpleGUIChartComprehensive:
         mock_canvas = Mock()
         mock_canvas_class.return_value = mock_canvas
 
-        SimpleGUChart(mock_parent)
+        chart = SimpleGUChart(mock_parent)
 
         mock_figure_class.assert_called_once()
         mock_fig.add_subplot.assert_called_once_with(111)
         mock_canvas_class.assert_called_once()
+
+        # Chart should not be packed in constructor anymore
+        # It will be packed when show() is called
+        assert not mock_canvas.get_tk_widget().pack.called
+
+        # Test that show() packs the chart
+        chart.show()
         mock_canvas.get_tk_widget().pack.assert_called_once()
 
     @patch("src.alphagen.visualization.simple_gui_chart.Figure")
@@ -1279,7 +1286,7 @@ class TestSimpleGUIChartComprehensive:
         SimpleGUChart(mock_parent)
 
         # Verify plot calls
-        assert mock_ax.plot.call_count == 2  # VWAP and MA9 lines
+        assert mock_ax.plot.call_count == 3  # Price, VWAP, and MA9 lines
         mock_ax.set_xlabel.assert_called_once_with("Time")
         mock_ax.set_ylabel.assert_called_once_with("Price ($)")
         mock_ax.set_title.assert_called_once()
@@ -1340,6 +1347,7 @@ class TestSimpleGUIChartComprehensive:
 
         # Create mock tick
         mock_equity = Mock()
+        mock_equity.price = 101.0
         mock_equity.session_vwap = 100.0
         mock_equity.ma9 = 99.5
 
@@ -1366,6 +1374,7 @@ class TestSimpleGUIChartComprehensive:
         # Create mock ticks
         for i in range(5):
             mock_equity = Mock()
+            mock_equity.price = 101.0 + i
             mock_equity.session_vwap = 100.0 + i
             mock_equity.ma9 = 99.5 + i
 
@@ -1424,6 +1433,7 @@ class TestSimpleGUIChartComprehensive:
         # Add some data
         for i in range(3):
             mock_equity = Mock()
+            mock_equity.price = 101.0 + i
             mock_equity.session_vwap = 100.0 + i
             mock_equity.ma9 = 99.5 + i
 
@@ -1466,6 +1476,7 @@ class TestSimpleGUIChartComprehensive:
         # Add some data
         for i in range(3):
             mock_equity = Mock()
+            mock_equity.price = 101.0 + i
             mock_equity.session_vwap = 100.0 + i
             mock_equity.ma9 = 99.5 + i
 
@@ -1512,5 +1523,5 @@ class TestSimpleGUIChartComprehensive:
         chart = SimpleGUChart(mock_parent)
 
         scales = list(chart.scale_configs.keys())
-        expected_scales = ["1min", "5min", "15min", "1hour", "4hour", "1day"]
+        expected_scales = ["1min", "5min", "15min", "1hour", "4hour", "1day", "3day"]
         assert scales == expected_scales

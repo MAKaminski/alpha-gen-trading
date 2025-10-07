@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useWebSocket } from '../hooks/useWebSocket';
 
 interface ChartDataPoint {
   time: string;
@@ -18,81 +19,74 @@ export default function LiveChart({ className = "" }: LiveChartProps) {
   const [data, setData] = useState<ChartDataPoint[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
-
-  // Generate mock data that mimics the application's VWAP/MA9 crossover strategy
-  const generateMockData = () => {
-    const now = new Date();
-    const mockData: ChartDataPoint[] = [];
-    const basePrice = 400; // QQQ base price
-    
-    for (let i = 59; i >= 0; i--) {
-      const timestamp = new Date(now.getTime() - i * 60000); // 1 minute intervals
-      const timeStr = timestamp.toLocaleTimeString('en-US', { 
-        hour12: false, 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      });
-      
-      // Generate realistic VWAP and MA9 values with some correlation
-      const randomFactor = Math.sin(i * 0.1) * 2 + Math.random() * 0.5;
-      const vwap = basePrice + randomFactor;
-      const ma9 = basePrice + randomFactor * 0.8 + Math.random() * 0.3;
-      
-      mockData.push({
-        time: timeStr,
-        vwap: Number(vwap.toFixed(2)),
-        ma9: Number(ma9.toFixed(2))
-      });
-    }
-    
-    return mockData;
-  };
+  const { lastMessage, isConnected: wsConnected } = useWebSocket();
 
   useEffect(() => {
-    // Initialize with mock data
-    setData(generateMockData());
-    setIsConnected(true);
-    setLastUpdate(new Date());
+    setIsConnected(wsConnected);
+  }, [wsConnected]);
 
-    // Simulate live updates every 5 seconds
-    const interval = setInterval(() => {
-      setData(prevData => {
-        const newData = [...prevData];
-        
-        // Remove oldest point
-        newData.shift();
-        
-        // Add new point
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString('en-US', { 
-          hour12: false, 
-          hour: '2-digit', 
-          minute: '2-digit' 
+  useEffect(() => {
+    if (lastMessage && lastMessage.type === 'normalized_tick') {
+      const tickData = lastMessage.data;
+      if (tickData && tickData.equity) {
+        const timestamp = new Date(tickData.timestamp);
+        const timeStr = timestamp.toLocaleTimeString('en-US', {
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit'
         });
-        
-        const lastVwap = newData[newData.length - 1]?.vwap || 400;
-        const lastMa9 = newData[newData.length - 1]?.ma9 || 400;
-        
-        // Generate new values with some momentum
-        const vwapChange = (Math.random() - 0.5) * 0.5;
-        const ma9Change = (Math.random() - 0.5) * 0.3;
-        
-        const newVwap = Number((lastVwap + vwapChange).toFixed(2));
-        const newMa9 = Number((lastMa9 + ma9Change).toFixed(2));
-        
-        newData.push({
+
+        const vwap = tickData.equity.session_vwap;
+        const ma9 = tickData.equity.ma9;
+
+        if (vwap !== null && ma9 !== null && vwap !== undefined && ma9 !== undefined) {
+          setData(prevData => {
+            const newData = [...prevData];
+
+            // Remove oldest point if we have more than 60 points
+            if (newData.length >= 60) {
+              newData.shift();
+            }
+
+            // Add new point
+            newData.push({
+              time: timeStr,
+              vwap: Number(vwap.toFixed(2)),
+              ma9: Number(ma9.toFixed(2))
+            });
+
+            return newData;
+          });
+
+          setLastUpdate(new Date());
+        }
+      }
+    }
+  }, [lastMessage]);
+
+  // Initialize with some empty data points to show the chart structure
+  useEffect(() => {
+    if (data.length === 0) {
+      const now = new Date();
+      const initialData: ChartDataPoint[] = [];
+
+      for (let i = 59; i >= 0; i--) {
+        const timestamp = new Date(now.getTime() - i * 60000); // 1 minute intervals
+        const timeStr = timestamp.toLocaleTimeString('en-US', {
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        initialData.push({
           time: timeStr,
-          vwap: newVwap,
-          ma9: newMa9
+          vwap: 0,
+          ma9: 0
         });
-        
-        return newData;
-      });
-      
-      setLastUpdate(new Date());
-    }, 5000);
+      }
 
-    return () => clearInterval(interval);
+      setData(initialData);
+    }
   }, []);
 
   const formatTooltip = (value: number, name: string) => {
@@ -107,7 +101,7 @@ export default function LiveChart({ className = "" }: LiveChartProps) {
     <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold text-gray-800">
-          QQQ VWAP vs MA9 - Live Chart
+          Alpha-Gen QQQ VWAP vs MA9 - Live Chart
         </h3>
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
@@ -172,8 +166,8 @@ export default function LiveChart({ className = "" }: LiveChartProps) {
       </div>
       
       <div className="mt-4 text-xs text-gray-500">
-        <p>📊 This chart simulates the live VWAP/MA9 crossover strategy data from Alpha-Gen</p>
-        <p>🔄 Updates every 5 seconds with mock market data</p>
+        <p>📊 Real-time VWAP/MA9 crossover strategy data from Alpha-Gen</p>
+        <p>🔄 Updates automatically when new market data is received</p>
         <p>📈 Green line: VWAP (Volume Weighted Average Price)</p>
         <p>📈 Blue line: MA9 (9-period Moving Average)</p>
       </div>
