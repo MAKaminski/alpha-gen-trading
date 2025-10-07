@@ -120,7 +120,7 @@ class TestCLICommands:
         assert result.exit_code == 0
         assert "2024-01-15: PnL=-123.45 on 2 trades" in result.output
 
-    @patch("src.alphagen.gui.debug_app.main")
+    @patch("alphagen.gui.debug_app.main")
     def test_debug_command_execution(self, mock_debug_gui):
         """Test debug command execution."""
         mock_debug_gui.return_value = None
@@ -171,7 +171,7 @@ class TestCLICommands:
         # Should still exit with 0 but the error would be in the output
         assert result.exit_code == 0
 
-    @patch("src.alphagen.gui.debug_app.main")
+    @patch("alphagen.gui.debug_app.main")
     def test_debug_command_error_handling(self, mock_debug_gui):
         """Test debug command handles errors."""
         mock_debug_gui.side_effect = Exception("GUI error")

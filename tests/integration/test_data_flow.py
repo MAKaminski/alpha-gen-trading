@@ -18,6 +18,7 @@ async def test_market_data_to_signal_flow():
             "src.alphagen.app.create_market_data_provider"
         ) as mock_market_data_factory,
         patch("src.alphagen.app.init_models") as mock_init_models,
+        patch("asyncio.Event.wait") as mock_wait,  # Mock the stop_event.wait()
     ):
         # Mock Schwab client
         mock_schwab = AsyncMock()
@@ -31,6 +32,9 @@ async def test_market_data_to_signal_flow():
         # Mock database initialization
         mock_init_models.return_value = AsyncMock()
 
+        # Mock the stop_event.wait() to return immediately
+        mock_wait.return_value = None
+
         # Create app
         app = AlphaGenApp()
 
@@ -43,7 +47,7 @@ async def test_market_data_to_signal_flow():
 
         mock_market_data.start.side_effect = mock_start
 
-        # Start the app
+        # Start the app (this will now return immediately due to mocked wait)
         await app.run()
 
         # Simulate market data
@@ -82,6 +86,7 @@ async def test_position_polling_integration():
             "src.alphagen.app.create_market_data_provider"
         ) as mock_market_data_factory,
         patch("src.alphagen.app.init_models") as mock_init_models,
+        patch("asyncio.Event.wait") as mock_wait,  # Mock the stop_event.wait()
     ):
         # Mock Schwab client with position data
         mock_schwab = AsyncMock()
@@ -102,6 +107,9 @@ async def test_position_polling_integration():
         mock_market_data_factory.return_value = mock_market_data
         mock_init_models.return_value = AsyncMock()
 
+        # Mock the stop_event.wait() to return immediately
+        mock_wait.return_value = None
+
         # Create app
         app = AlphaGenApp()
 
@@ -111,7 +119,7 @@ async def test_position_polling_integration():
 
         mock_market_data.start.side_effect = mock_start
 
-        # Start the app
+        # Start the app (this will now return immediately due to mocked wait)
         await app.run()
 
         # Verify position polling was called
@@ -127,6 +135,7 @@ async def test_signal_to_trade_flow():
             "src.alphagen.app.create_market_data_provider"
         ) as mock_market_data_factory,
         patch("src.alphagen.app.init_models") as mock_init_models,
+        patch("asyncio.Event.wait") as mock_wait,  # Mock the stop_event.wait()
     ):
         # Mock Schwab client
         mock_schwab = AsyncMock()
@@ -139,6 +148,9 @@ async def test_signal_to_trade_flow():
         mock_market_data_factory.return_value = mock_market_data
         mock_init_models.return_value = AsyncMock()
 
+        # Mock the stop_event.wait() to return immediately
+        mock_wait.return_value = None
+
         # Create app
         app = AlphaGenApp()
 
@@ -148,7 +160,7 @@ async def test_signal_to_trade_flow():
 
         mock_market_data.start.side_effect = mock_start
 
-        # Start the app
+        # Start the app (this will now return immediately due to mocked wait)
         await app.run()
 
         # Create a normalized tick that should generate a signal
@@ -176,6 +188,7 @@ async def test_error_handling_integration():
             "src.alphagen.app.create_market_data_provider"
         ) as mock_market_data_factory,
         patch("src.alphagen.app.init_models") as mock_init_models,
+        patch("asyncio.Event.wait") as mock_wait,  # Mock the stop_event.wait()
     ):
         # Mock Schwab client that raises an error
         mock_schwab = AsyncMock()
@@ -187,6 +200,9 @@ async def test_error_handling_integration():
         mock_market_data_factory.return_value = mock_market_data
         mock_init_models.return_value = AsyncMock()
 
+        # Mock the stop_event.wait() to return immediately
+        mock_wait.return_value = None
+
         # Create app
         app = AlphaGenApp()
 
@@ -196,7 +212,7 @@ async def test_error_handling_integration():
 
         mock_market_data.start.side_effect = mock_start
 
-        # Start the app
+        # Start the app (this will now return immediately due to mocked wait)
         await app.run()
 
         # Verify that errors are handled gracefully

@@ -11,7 +11,7 @@ def main():
     print(f"Python executable: {sys.executable}")
     
     # Set up environment
-    os.environ['PYTHONPATH'] = f"{os.getcwd()}:{os.getcwd()}/src"
+    os.environ['PYTHONPATH'] = f"{os.getcwd()}/src:{os.getcwd()}"
     
     # Use Python 3.11 specifically
     python_cmd = "/opt/homebrew/bin/python3.11"

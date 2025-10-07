@@ -131,10 +131,13 @@ class FileChart:
             ax.legend(loc="upper left")
             ax.grid(True, linestyle="--", alpha=0.3)
 
-            # Format x-axis
+            # Format x-axis with better spacing
             import matplotlib.dates as mdates
 
-            ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M:%S"))
+            ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
+            ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=5))  # Every 5 minutes
+            ax.xaxis.set_minor_locator(mdates.MinuteLocator(interval=1))  # Minor every minute
+            ax.tick_params(axis='x', rotation=45)
             plt.setp(ax.xaxis.get_majorticklabels(), rotation=45)
 
             # Save to file

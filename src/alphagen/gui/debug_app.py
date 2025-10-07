@@ -211,17 +211,26 @@ class DebugGUI:
         console_frame.columnconfigure(0, weight=1)
         console_frame.rowconfigure(0, weight=1)
 
-        # Console text widget
+        # Console text widget with better styling
         self.console_text = scrolledtext.ScrolledText(
-            console_frame, height=15, state=tk.DISABLED, wrap=tk.WORD
+            console_frame, 
+            height=15, 
+            state=tk.DISABLED, 
+            wrap=tk.WORD,
+            bg="#1e1e1e",  # Dark background
+            fg="#ffffff",  # White text
+            insertbackground="#ffffff",  # White cursor
+            selectbackground="#404040",  # Dark selection background
+            selectforeground="#ffffff",  # White selection text
+            font=("Consolas", 10)  # Monospace font for better readability
         )
         self.console_text.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 
-        # Configure text tags for different log levels
-        self.console_text.tag_configure("info", foreground="black")
-        self.console_text.tag_configure("warning", foreground="orange")
-        self.console_text.tag_configure("error", foreground="red")
-        self.console_text.tag_configure("debug", foreground="gray")
+        # Configure text tags for different log levels with better contrast
+        self.console_text.tag_configure("info", foreground="#00ff00")      # Bright green
+        self.console_text.tag_configure("warning", foreground="#ffaa00")   # Orange
+        self.console_text.tag_configure("error", foreground="#ff4444")     # Bright red
+        self.console_text.tag_configure("debug", foreground="#888888")     # Gray
 
     def _setup_async_loop(self):
         """Set up the async event loop in a separate thread."""
