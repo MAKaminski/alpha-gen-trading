@@ -1,9 +1,6 @@
 "use client";
 
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import React from 'react'
-import GoogleSignIn from '@/components/GoogleSignIn'
 import UserProfile from '@/components/UserProfile'
 import Navigation from '@/components/Navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -11,30 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { TrendingUp, Activity, DollarSign, BarChart3 } from 'lucide-react'
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
 
-  React.useEffect(() => {
-    if (status === 'loading') return
-    if (!session) {
-      router.push('/auth/signin')
-    }
-  }, [session, status, router])
-
-  if (status === 'loading') {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 bg-blue-600 rounded-full animate-pulse mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!session) {
-    return null
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">

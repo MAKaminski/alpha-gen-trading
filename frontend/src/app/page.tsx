@@ -1,21 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
 import { Controls } from '@/components/Controls';
 import { Chart } from '@/components/Chart';
 import { Console } from '@/components/Console';
-import GoogleSignIn from '@/components/GoogleSignIn';
 import Navigation from '@/components/Navigation';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { useMarketData } from '@/hooks/useMarketData';
 
 export default function Home() {
-  const { data: session, status } = useSession();
   const [streamDataActive, setStreamDataActive] = useState(false);
   const [viewChartActive, setViewChartActive] = useState(false);
   const [timeScale, setTimeScale] = useState('1min');
-  
+
   const { isConnected, lastMessage, sendMessage } = useWebSocket();
   const { marketData, chartData, consoleLogs, startStreaming, stopStreaming } = useMarketData();
 
@@ -37,41 +34,6 @@ export default function Home() {
     sendMessage({ type: 'change_time_scale', scale });
   };
 
-  if (status === 'loading') {
-    return (
-      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 bg-blue-600 rounded-full animate-pulse mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!session) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Navigation />
-        <div className="container mx-auto p-6 pt-12">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              🚀 Alpha-Gen Trading Platform
-            </h1>
-            <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-              Real-time QQQ options trading automation. Sign in to access advanced charting, 
-              market data streaming, and automated trading strategies.
-            </p>
-            <div className="space-y-4">
-              <GoogleSignIn className="text-lg px-8 py-3" />
-              <p className="text-sm text-gray-500">
-                Secure authentication with Google
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
