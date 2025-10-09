@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "vercel-build": "next build",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint"
